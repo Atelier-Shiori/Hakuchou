@@ -45,7 +45,6 @@
 		592B8C802236C76E007D43F4 /* AniListConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 592B8C7D2236C76E007D43F4 /* AniListConstants.h */; };
 		592B8C812236C76E007D43F4 /* AniListConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 592B8C7E2236C76E007D43F4 /* AniListConstants.m */; };
 		592B8C822236C76E007D43F4 /* AniListConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 592B8C7E2236C76E007D43F4 /* AniListConstants.m */; };
-		592B8C842236C8A6007D43F4 /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 592B8C832236C8A6007D43F4 /* AFNetworking.framework */; };
 		592B8C872236CA56007D43F4 /* OAuthCredManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 592B8C852236CA56007D43F4 /* OAuthCredManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		592B8C882236CA56007D43F4 /* OAuthCredManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 592B8C852236CA56007D43F4 /* OAuthCredManager.h */; };
 		592B8C892236CA56007D43F4 /* OAuthCredManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 592B8C862236CA56007D43F4 /* OAuthCredManager.m */; };
@@ -79,7 +78,6 @@
 		590F75F622301EC300CDF83F /* SharedHTTPManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedHTTPManager.m; sourceTree = "<group>"; };
 		592B8C7D2236C76E007D43F4 /* AniListConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AniListConstants.h; sourceTree = "<group>"; };
 		592B8C7E2236C76E007D43F4 /* AniListConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AniListConstants.m; sourceTree = "<group>"; };
-		592B8C832236C8A6007D43F4 /* AFNetworking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AFNetworking.framework; sourceTree = "<group>"; };
 		592B8C852236CA56007D43F4 /* OAuthCredManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthCredManager.h; sourceTree = "<group>"; };
 		592B8C862236CA56007D43F4 /* OAuthCredManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAuthCredManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -89,7 +87,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				592B8C842236C8A6007D43F4 /* AFNetworking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,7 +103,6 @@
 		590B5E6D222D783F0099D056 = {
 			isa = PBXGroup;
 			children = (
-				590F75D422301DCE00CDF83F /* Dep */,
 				590B5E79222D783F0099D056 /* Hakuchou */,
 				590B5E88222D785F0099D056 /* Hakuchou-iOS */,
 				590B5E78222D783F0099D056 /* Products */,
@@ -192,14 +188,6 @@
 				590B5EA8222D80F80099D056 /* AniList.m */,
 			);
 			path = AniList;
-			sourceTree = "<group>";
-		};
-		590F75D422301DCE00CDF83F /* Dep */ = {
-			isa = PBXGroup;
-			children = (
-				592B8C832236C8A6007D43F4 /* AFNetworking.framework */,
-			);
-			path = Dep;
 			sourceTree = "<group>";
 		};
 		590F75EE22301E0F00CDF83F /* Frameworks */ = {
