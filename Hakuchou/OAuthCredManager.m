@@ -10,21 +10,22 @@
 #import <AFNetworking/AFNetworking.h>
 
 @implementation OAuthCredManager
-#if TARGET_OS_MAC
+
 #ifdef DEBUG
-    NSString *const kKitsuKeychainIdentifier = @"Shukofukurou - Kitsu DEBUG";
-    NSString *const kAniListKeychainIdentifier = @"Shukofukurou - AniList DEBUG";
-#else
-    NSString *const kKitsuKeychainIdentifier = @"Shukofukurou - Kitsu";
-    NSString *const kAniListKeychainIdentifier = @"Shukofukurou - AniList";
-#endif
-#elif TARGET_OS_IOS
-    #ifdef DEBUG
+    #if TARGET_OS_IOS
     NSString *const kKitsuKeychainIdentifier = @"Shukofukurou - Kitsu DEBUG";
     NSString *const kAniListKeychainIdentifier = @"Hiyoko - AniList DEBUG";
     #else
+        NSString *const kKitsuKeychainIdentifier = @"Shukofukurou - Kitsu DEBUG";
+        NSString *const kAniListKeychainIdentifier = @"Shukofukurou - AniList DEBUG";
+    #endif
+#else
+    #if TARGET_OS_IOS
     NSString *const kKitsuKeychainIdentifier = @"Shukofukurou - Kitsu";
     NSString *const kAniListKeychainIdentifier = @"Hiyoko - AniList";
+    #else
+    NSString *const kKitsuKeychainIdentifier = @"Shukofukurou - Kitsu";
+    NSString *const kAniListKeychainIdentifier = @"Shukofukurou - AniList";
     #endif
 #endif
 
