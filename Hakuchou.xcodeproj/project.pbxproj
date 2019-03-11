@@ -34,7 +34,7 @@
 		590B5ECB222D81100099D056 /* AtarashiiDataObjects.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5EBE222D81100099D056 /* AtarashiiDataObjects.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		590B5ECC222D81100099D056 /* AtarashiiDataObjects.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5EBE222D81100099D056 /* AtarashiiDataObjects.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		590B5ECD222D81100099D056 /* AtarashiiAPIKitsuStaffFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5EBF222D81100099D056 /* AtarashiiAPIKitsuStaffFormat.h */; };
-		590B5ECE222D81100099D056 /* AtarashiiAPIKitsuStaffFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5EBF222D81100099D056 /* AtarashiiAPIKitsuStaffFormat.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		590B5ECE222D81100099D056 /* AtarashiiAPIKitsuStaffFormat.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5EBF222D81100099D056 /* AtarashiiAPIKitsuStaffFormat.h */; };
 		590B5ECF222D81100099D056 /* AtarashiiAPIListFormatAniList.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5EC0222D81100099D056 /* AtarashiiAPIListFormatAniList.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		590B5ED0222D81100099D056 /* AtarashiiAPIListFormatAniList.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5EC0222D81100099D056 /* AtarashiiAPIListFormatAniList.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		590F75F722301EC300CDF83F /* SharedHTTPManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 590F75F522301EC300CDF83F /* SharedHTTPManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
