@@ -59,4 +59,42 @@
     formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     return [formatter dateFromString:datestring];
 }
+
++ (int)parseSeason:(NSString *)string {
+    // Season Parsing
+    NSArray *matches = [Utility findMatches:string pattern:@"((S|s|Season )\\d+|\\d+(st|nd|rd|th) Season|\\d+)"];
+    NSString *tmpseason;
+    if (matches.count > 0) {
+        tmpseason = matches[0];
+        tmpseason = [Utility searchreplace:tmpseason pattern:@"((st|nd|rd|th) Season)|Season |S|s|"];
+        return tmpseason.intValue;
+    }
+    return -1;
+}
+
++ (NSArray *)findMatches:(NSString *)string pattern:(NSString *)pattern {
+    if (string == nil) {
+        return [NSArray new]; // Can't check a match of a nil string.
+    }
+    NSError *errRegex = NULL;
+    NSRegularExpression *regex = [NSRegularExpression
+                                  regularExpressionWithPattern:pattern
+                                  options:NSRegularExpressionCaseInsensitive
+                                  error:&errRegex];
+    NSRange  searchrange = NSMakeRange(0, [string length]);
+    NSArray * a = [regex matchesInString:string options:0 range:searchrange];
+    NSMutableArray * results = [[NSMutableArray alloc] init];
+    for (NSTextCheckingResult * result in a ) {
+        [results addObject:[string substringWithRange:[result rangeAtIndex:0]]];
+    }
+    return results;
+}
++ (NSString *)searchreplace:(NSString *)string pattern:(NSString *)pattern{
+    if (string == nil)
+        return @""; // Can't check a match of a nil string.
+    NSError *errRegex = nil;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:&errRegex];
+    NSString * newString = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
+    return newString;
+}
 @end

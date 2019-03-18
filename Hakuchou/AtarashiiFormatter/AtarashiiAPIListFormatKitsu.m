@@ -270,6 +270,7 @@
             else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
                 aobject.status = @"not yet aired";
             }
+            [aobject parseSeason];
             [tmparray addObject:aobject.NSDictionaryRepresentation];
         }
     }

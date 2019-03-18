@@ -315,6 +315,7 @@
             }
             aobject.episodes = d[@"episodes"] != [NSNull null] ? ((NSNumber *)d[@"episodes"]).intValue : 0;
             aobject.type = d[@"format"] != [NSNull null] ? [Utility convertAnimeType:d[@"format"]] : @"";
+            [aobject parseSeason];
             [tmparray addObject:aobject.NSDictionaryRepresentation];
         }
     }
