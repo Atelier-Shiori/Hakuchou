@@ -201,6 +201,7 @@
     AFOAuth2Manager *OAuth2Manager = [[AFOAuth2Manager alloc] initWithBaseURL:[NSURL URLWithString:@"https://anilist.co/"]
                                                                      clientID:_clientid
                                                                        secret:_clientsecret];
+    NSString *redirecturi;
 #if TARGET_OS_IOS
     redirecturi = @"hiyokoauth://anilistauth/";
 #else
