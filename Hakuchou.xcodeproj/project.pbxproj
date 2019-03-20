@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		590B5E7C222D783F0099D056 /* Hakuchou.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5E7A222D783F0099D056 /* Hakuchou.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		590B5E8B222D785F0099D056 /* Hakuchou_iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5E89222D785F0099D056 /* Hakuchou_iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		590B5E92222D78B50099D056 /* Utility.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5E90222D78B50099D056 /* Utility.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		590B5E93222D78B50099D056 /* Utility.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5E90222D78B50099D056 /* Utility.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		590B5E94222D78B50099D056 /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 590B5E91222D78B50099D056 /* Utility.m */; };
-		590B5E95222D78B50099D056 /* Utility.m in Sources */ = {isa = PBXBuildFile; fileRef = 590B5E91222D78B50099D056 /* Utility.m */; };
+		590B5E92222D78B50099D056 /* HUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5E90222D78B50099D056 /* HUtility.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		590B5E93222D78B50099D056 /* HUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5E90222D78B50099D056 /* HUtility.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		590B5E94222D78B50099D056 /* HUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 590B5E91222D78B50099D056 /* HUtility.m */; };
+		590B5E95222D78B50099D056 /* HUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 590B5E91222D78B50099D056 /* HUtility.m */; };
 		590B5EA9222D80F80099D056 /* AniList.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5EA7222D80F80099D056 /* AniList.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		590B5EAA222D80F80099D056 /* AniList.h in Headers */ = {isa = PBXBuildFile; fileRef = 590B5EA7222D80F80099D056 /* AniList.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		590B5EAB222D80F80099D056 /* AniList.m in Sources */ = {isa = PBXBuildFile; fileRef = 590B5EA8222D80F80099D056 /* AniList.m */; };
@@ -60,8 +60,8 @@
 		590B5E87222D785F0099D056 /* Hakuchou_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Hakuchou_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		590B5E89222D785F0099D056 /* Hakuchou_iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Hakuchou_iOS.h; sourceTree = "<group>"; };
 		590B5E8A222D785F0099D056 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		590B5E90222D78B50099D056 /* Utility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utility.h; sourceTree = "<group>"; };
-		590B5E91222D78B50099D056 /* Utility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Utility.m; sourceTree = "<group>"; };
+		590B5E90222D78B50099D056 /* HUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HUtility.h; sourceTree = "<group>"; };
+		590B5E91222D78B50099D056 /* HUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HUtility.m; sourceTree = "<group>"; };
 		590B5E99222D7DE00099D056 /* SharedNSManagedObjectContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedNSManagedObjectContext.h; sourceTree = "<group>"; };
 		590B5E9A222D7DE00099D056 /* SharedNSManagedObjectContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedNSManagedObjectContext.m; sourceTree = "<group>"; };
 		590B5EA7222D80F80099D056 /* AniList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AniList.h; sourceTree = "<group>"; };
@@ -138,8 +138,8 @@
 				590B5E7B222D783F0099D056 /* Info.plist */,
 				592B8C852236CA56007D43F4 /* OAuthCredManager.h */,
 				592B8C862236CA56007D43F4 /* OAuthCredManager.m */,
-				590B5E90222D78B50099D056 /* Utility.h */,
-				590B5E91222D78B50099D056 /* Utility.m */,
+				590B5E90222D78B50099D056 /* HUtility.h */,
+				590B5E91222D78B50099D056 /* HUtility.m */,
 				590B5E99222D7DE00099D056 /* SharedNSManagedObjectContext.h */,
 				590B5E9A222D7DE00099D056 /* SharedNSManagedObjectContext.m */,
 			);
@@ -233,7 +233,7 @@
 				592B8C7F2236C76E007D43F4 /* AniListConstants.h in Headers */,
 				590B5EAF222D81000099D056 /* Kitsu.h in Headers */,
 				590B5E7C222D783F0099D056 /* Hakuchou.h in Headers */,
-				590B5E92222D78B50099D056 /* Utility.h in Headers */,
+				590B5E92222D78B50099D056 /* HUtility.h in Headers */,
 				590F75F722301EC300CDF83F /* SharedHTTPManager.h in Headers */,
 				592B8C872236CA56007D43F4 /* OAuthCredManager.h in Headers */,
 				590B5ECB222D81100099D056 /* AtarashiiDataObjects.h in Headers */,
@@ -251,7 +251,7 @@
 				592B8C802236C76E007D43F4 /* AniListConstants.h in Headers */,
 				590B5EB0222D81000099D056 /* Kitsu.h in Headers */,
 				590B5E8B222D785F0099D056 /* Hakuchou_iOS.h in Headers */,
-				590B5E93222D78B50099D056 /* Utility.h in Headers */,
+				590B5E93222D78B50099D056 /* HUtility.h in Headers */,
 				590B5ECE222D81100099D056 /* AtarashiiAPIKitsuStaffFormat.h in Headers */,
 				592B8C882236CA56007D43F4 /* OAuthCredManager.h in Headers */,
 				590F75F822301EC300CDF83F /* SharedHTTPManager.h in Headers */,
@@ -366,7 +366,7 @@
 				592B8C892236CA56007D43F4 /* OAuthCredManager.m in Sources */,
 				592B8C812236C76E007D43F4 /* AniListConstants.m in Sources */,
 				590B5EC1222D81100099D056 /* AtarashiiAPIListFormatKitsu.m in Sources */,
-				590B5E94222D78B50099D056 /* Utility.m in Sources */,
+				590B5E94222D78B50099D056 /* HUtility.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,7 +383,7 @@
 				592B8C8A2236CA56007D43F4 /* OAuthCredManager.m in Sources */,
 				592B8C822236C76E007D43F4 /* AniListConstants.m in Sources */,
 				590B5EC2222D81100099D056 /* AtarashiiAPIListFormatKitsu.m in Sources */,
-				590B5E95222D78B50099D056 /* Utility.m in Sources */,
+				590B5E95222D78B50099D056 /* HUtility.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,7 +9,7 @@
 #import "AtarashiiAPIListFormatKitsu.h"
 
 #import "AtarashiiDataObjects.h"
-#import "Utility.h"
+#import "HUtility.h"
 
 @implementation AtarashiiAPIListFormatKitsu
 
@@ -29,7 +29,7 @@
                         if (metadata[@"attributes"][@"posterImage"] != [NSNull null]) {
                             lentry.image_url = metadata[@"attributes"][@"posterImage"][@"large"];
                         }
-                        lentry.type = [Utility convertAnimeType:metadata[@"attributes"][@"showType"]];
+                        lentry.type = [HUtility convertAnimeType:metadata[@"attributes"][@"showType"]];
                         NSString *tmpstatus = metadata[@"attributes"][@"status"];
                         if ([tmpstatus isEqualToString:@"finished"]) {
                             lentry.status = @"finished airing";
@@ -63,13 +63,13 @@
                         lentry.rewatch_count = ((NSNumber *)entry[@"attributes"][@"reconsumeCount"]).intValue;
                         lentry.personal_comments = entry[@"attributes"][@"notes"];
                         lentry.private_entry = ((NSNumber *) entry[@"attributes"][@"private"]).boolValue;
-                        lentry.lastupdated = [Utility dateStringToDate:entry[@"attributes"][@"updatedAt"]].timeIntervalSince1970;
+                        lentry.lastupdated = [HUtility dateStringToDate:entry[@"attributes"][@"updatedAt"]].timeIntervalSince1970;
                         [tmpanimelist addObject: lentry.NSDictionaryRepresentation];
                     }
                 }
             }
         }
-    return @{@"anime" : tmpanimelist, @"statistics" : @{@"days" : @([Utility calculatedays:tmpanimelist])}};
+    return @{@"anime" : tmpanimelist, @"statistics" : @{@"days" : @([HUtility calculatedays:tmpanimelist])}};
 }
 + (NSDictionary *)KitsutoAtarashiiMangaList:(NSArray *)tmplist withMetaData:(NSArray *)metadataa {
     NSMutableArray *tmpmangalist = [NSMutableArray new];
@@ -125,7 +125,7 @@
                     lentry.reread_count = ((NSNumber *)entry[@"attributes"][@"reconsumeCount"]).intValue;
                     lentry.personal_comments = entry[@"attributes"][@"notes"];
                     lentry.private_entry = ((NSNumber *) entry[@"attributes"][@"private"]).boolValue;
-                    lentry.lastupdated = [Utility dateStringToDate:entry[@"attributes"][@"updatedAt"]].timeIntervalSince1970;
+                    lentry.lastupdated = [HUtility dateStringToDate:entry[@"attributes"][@"updatedAt"]].timeIntervalSince1970;
                     [tmpmangalist addObject: lentry.NSDictionaryRepresentation];
                 }
             }
@@ -146,7 +146,7 @@
     if (attributes[@"posterImage"] != [NSNull null]) {
         aobject.image_url = attributes[@"posterImage"][@"large"] && attributes[@"posterimage"][@"large"] != [NSNull null] ? attributes[@"posterImage"][@"large"] : @"";
     }
-    aobject.type = [Utility convertAnimeType:attributes[@"subtype"]];
+    aobject.type = [HUtility convertAnimeType:attributes[@"subtype"]];
     aobject.episodes = attributes[@"episodeCount"] != [NSNull null] ? ((NSNumber *)attributes[@"episodeCount"]).intValue : 0;
     aobject.start_date = attributes[@"startDate"];
     aobject.end_date = attributes[@"endDate"];
@@ -256,7 +256,7 @@
             aobject.title = d[@"attributes"][@"canonicalTitle"];
             aobject.other_titles =  @{@"synonyms" : (d[@"attributes"][@"abbreviatedTitles"] && d[@"attributes"][@"abbreviatedTitles"]  != [NSNull null]) ? d[@"attributes"][@"abbreviatedTitles"] : @[], @"english" : d[@"attributes"][@"titles"][@"en"] && d[@"attributes"][@"titles"][@"en"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en"]] : d[@"attributes"][@"titles"][@"en_jp"] && d[@"attributes"][@"titles"][@"en_jp"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en_jp"]] : @[], @"japanese" : d[@"attributes"][@"titles"][@"ja_jp"] && d[@"attributes"][@"titles"][@"ja_jp"] != [NSNull null] ?  @[d[@"attributes"][@"titles"][@"ja_jp"]] : @[] };
             aobject.episodes = d[@"attributes"][@"episodeCount"] != [NSNull null] ? ((NSNumber *)d[@"attributes"][@"episodeCount"]).intValue : 0;
-            aobject.type = [Utility convertAnimeType:d[@"attributes"][@"subtype"]];
+            aobject.type = [HUtility convertAnimeType:d[@"attributes"][@"subtype"]];
             if (d[@"attributes"][@"posterImage"] != [NSNull null]) {
                 aobject.image_url = d[@"attributes"][@"posterImage"][@"large"] && d[@"attributes"][@"posterImage"][@"large"] != [NSNull null] ? d[@"attributes"][@"posterImage"][@"large"] : @"";
             }
@@ -527,7 +527,7 @@
             if (d[@"attributes"][@"posterImage"] != [NSNull null]) {
                 aobject.image_url = d[@"attributes"][@"posterImage"][@"large"] && d[@"attributes"][@"posterImage"][@"large"] != [NSNull null] ? d[@"attributes"][@"posterImage"][@"large"] : @"";
             }
-            aobject.type = [Utility convertAnimeType:d[@"attributes"][@"showType"]];
+            aobject.type = [HUtility convertAnimeType:d[@"attributes"][@"showType"]];
             NSMutableDictionary *finaldict = [[NSMutableDictionary alloc] initWithDictionary:aobject.NSDictionaryRepresentation];
             finaldict[@"year"] = @(year);
             finaldict[@"season"] = season;

@@ -8,7 +8,7 @@
 
 #import "AtarashiiAPIListFormatAniList.h"
 #import "AtarashiiDataObjects.h"
-#import "Utility.h"
+#import "HUtility.h"
 
 @implementation AtarashiiAPIListFormatAniList
 + (id)AniListtoAtarashiiAnimeList:(id)data {
@@ -30,7 +30,7 @@
                 aentry.image_url = (entry[@"image_url"][@"coverImage"][@"large"] && entry[@"image_url"][@"coverImage"][@"large"] != [NSNull null] ) ? entry[@"image_url"][@"coverImage"][@"large"] : @"";
                 
             }
-            aentry.type = entry[@"type"][@"format"] != [NSNull null] ? [Utility convertAnimeType:entry[@"type"][@"format"]] : @"";
+            aentry.type = entry[@"type"][@"format"] != [NSNull null] ? [HUtility convertAnimeType:entry[@"type"][@"format"]] : @"";
             aentry.status =  entry[@"status"][@"status"] != [NSNull null] ? entry[@"status"][@"status"] : @"NOT_YET_RELEASED";
             if ([aentry.status isEqualToString:@"FINISHED"]||[aentry.status isEqualToString:@"CANCELLED"]) {
                 aentry.status = @"finished airing";
@@ -69,7 +69,7 @@
             [tmparray addObject:[aentry NSDictionaryRepresentation]];
         }
     }
-    return @{@"anime" : tmparray, @"statistics" : @{@"days" : @([Utility calculatedays:tmparray])}};
+    return @{@"anime" : tmparray, @"statistics" : @{@"days" : @([HUtility calculatedays:tmparray])}};
 }
 
 + (id)AniListtoAtarashiiMangaList:(id)data {
@@ -153,7 +153,7 @@
     }
     aobject.synposis = allowed ? title[@"description"] != [NSNull null] ? title[@"description"] : @"No synopsis available" : @"Synopsis not available for adult titles";
     #endif
-    aobject.type = title[@"format"] != [NSNull null] ? [Utility convertAnimeType:title[@"format"]] : @"";
+    aobject.type = title[@"format"] != [NSNull null] ? [HUtility convertAnimeType:title[@"format"]] : @"";
     aobject.episodes = title[@"episodes"] && title[@"episodes"] != [NSNull null] ? ((NSNumber *)title[@"episodes"]).intValue : 0;
     aobject.start_date = title[@"startDate"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",title[@"startDate"][@"year"],title[@"startDate"][@"month"],title[@"startDate"][@"day"]] : @"";
     aobject.end_date = title[@"endDate"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",title[@"endDate"][@"year"],title[@"endDate"][@"month"],title[@"endDate"][@"day"]] : @"";
@@ -314,7 +314,7 @@
                 aobject.status = @"not yet aired";
             }
             aobject.episodes = d[@"episodes"] != [NSNull null] ? ((NSNumber *)d[@"episodes"]).intValue : 0;
-            aobject.type = d[@"format"] != [NSNull null] ? [Utility convertAnimeType:d[@"format"]] : @"";
+            aobject.type = d[@"format"] != [NSNull null] ? [HUtility convertAnimeType:d[@"format"]] : @"";
             [aobject parseSeason];
             [tmparray addObject:aobject.NSDictionaryRepresentation];
         }
@@ -368,7 +368,7 @@
         @autoreleasepool {
             AtarashiiReviewObject *nreview = [AtarashiiReviewObject new];
             nreview.mediatype = type;
-            nreview.date = [Utility dateIntervalToDateString:((NSNumber *)review[@"createdAt"]).doubleValue];
+            nreview.date = [HUtility dateIntervalToDateString:((NSNumber *)review[@"createdAt"]).doubleValue];
             nreview.rating = ((NSNumber *)review[@"score"]).intValue;
             nreview.helpful = ((NSNumber *)review[@"rating"]).intValue;
             nreview.helpful_total = ((NSNumber *)review[@"rating"]).intValue;
@@ -546,7 +546,7 @@
             if (d[@"coverImage"] != [NSNull null]) {
                 aobject.image_url = d[@"coverImage"] != [NSNull null] ? d[@"coverImage"][@"large"] : @"";
             }
-            aobject.type = d[@"format"] != [NSNull null] ? [Utility convertAnimeType:d[@"format"]] : @"";
+            aobject.type = d[@"format"] != [NSNull null] ? [HUtility convertAnimeType:d[@"format"]] : @"";
             NSMutableDictionary *finaldict = [[NSMutableDictionary alloc] initWithDictionary:aobject.NSDictionaryRepresentation];
             finaldict[@"year"] = @(year);
             finaldict[@"season"] = season;
@@ -573,7 +573,7 @@
                 aobject.image_url = d[@"coverImage"] != [NSNull null] ? d[@"coverImage"][@"large"] : @"";
             }
             aobject.episodes = d[@"episodes"] && d[@"episodes"] != [NSNull null] ? ((NSNumber *)d[@"episodes"]).intValue : 0;
-            aobject.type = d[@"format"] != [NSNull null] ? [Utility convertAnimeType:d[@"format"]] : @"";
+            aobject.type = d[@"format"] != [NSNull null] ? [HUtility convertAnimeType:d[@"format"]] : @"";
             aobject.status = @"currently airing";
             NSMutableDictionary *finaldictionary = [[NSMutableDictionary alloc] initWithDictionary:[aobject NSDictionaryRepresentation]];
             if (d[@"nextAiringEpisode"] != [NSNull null]) {

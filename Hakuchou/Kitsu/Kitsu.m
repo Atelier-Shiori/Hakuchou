@@ -10,7 +10,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import <AFNetworking/AFHTTPSessionManager+Synchronous.h>
 #import "AtarashiiAPIListFormatKitsu.h"
-#import "Utility.h"
+#import "HUtility.h"
 #import "OAuthCredManager.h"
 #import "SharedHTTPManager.h"
 
@@ -167,7 +167,7 @@
         }
     }
 #endif
-    [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/%@/?filter[text]=%@&page[limit]=20&page[offset]=%i", type == KitsuAnime ? @"anime" : @"manga", [Utility urlEncodeString:searchterm], offset] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/%@/?filter[text]=%@&page[limit]=20&page[offset]=%i", type == KitsuAnime ? @"anime" : @"manga", [HUtility urlEncodeString:searchterm], offset] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"] && responseObject[@"data"] != [NSNull null]) {
             [darray addObjectsFromArray:responseObject[@"data"]];
         }

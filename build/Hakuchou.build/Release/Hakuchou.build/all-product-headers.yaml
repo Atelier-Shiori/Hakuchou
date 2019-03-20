@@ -1,0 +1,78 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [
+    {
+      'type': 'directory',
+      'name': "/Users/koufuuchino/Documents/Hakuchou/build/Release/Hakuchou.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "AniList.h",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/Hakuchou/AniList/AniList.h"
+        },
+        {
+          'type': 'file',
+          'name': "AniListConstants.h",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/Hakuchou/Constants/AniListConstants.h"
+        },
+        {
+          'type': 'file',
+          'name': "AtarashiiAPIListFormatAniList.h",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/Hakuchou/AtarashiiFormatter/AtarashiiAPIListFormatAniList.h"
+        },
+        {
+          'type': 'file',
+          'name': "AtarashiiAPIListFormatKitsu.h",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/Hakuchou/AtarashiiFormatter/AtarashiiAPIListFormatKitsu.h"
+        },
+        {
+          'type': 'file',
+          'name': "AtarashiiDataObjects.h",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/Hakuchou/AtarashiiFormatter/AtarashiiDataObjects.h"
+        },
+        {
+          'type': 'file',
+          'name': "Hakuchou-Swift.h",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/build/Release/Hakuchou.framework/Versions/A/Headers/Hakuchou-Swift.h"
+        },
+        {
+          'type': 'file',
+          'name': "Hakuchou.h",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/Hakuchou/Hakuchou.h"
+        },
+        {
+          'type': 'file',
+          'name': "Kitsu.h",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/Hakuchou/Kitsu/Kitsu.h"
+        },
+        {
+          'type': 'file',
+          'name': "OAuthCredManager.h",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/Hakuchou/OAuthCredManager.h"
+        },
+        {
+          'type': 'file',
+          'name': "SharedHTTPManager.h",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/Hakuchou/SharedHTTPManager/SharedHTTPManager.h"
+        },
+        {
+          'type': 'file',
+          'name': "Utility.h",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/Hakuchou/Utility.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/koufuuchino/Documents/Hakuchou/build/Release/Hakuchou.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/koufuuchino/Documents/Hakuchou/build/Hakuchou.build/Release/Hakuchou.build/module.modulemap"
+        }
+      ]
+    }
+  ]
+}

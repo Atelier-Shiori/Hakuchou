@@ -13,7 +13,7 @@
 #import <AFNetworking/AFHTTPSessionManager+Synchronous.h>
 #import "OAuthCredManager.h"
 #import "SharedHTTPManager.h"
-#import "Utility.h"
+#import "HUtility.h"
 
 @interface AniList ()
     @property (strong) NSString *clientid;

@@ -6,9 +6,9 @@
 //  Copyright © 2019 MAL Updater OS X Group. All rights reserved.
 //
 
-#import "Utility.h"
+#import "HUtility.h"
 
-@implementation Utility
+@implementation HUtility
 + (NSString *)urlEncodeString:(NSString *)string {
     return [string stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.URLQueryAllowedCharacterSet];
 }
@@ -46,7 +46,7 @@
 + (NSNumber *)getLastUpdatedDateWithResponseObject:(id)responseObject withService:(int)service {
     switch (service) {
         case 2:
-            return @([Utility dateStringToDate:responseObject[@"data"][@"attributes"][@"updatedAt"]].timeIntervalSince1970);
+            return @([HUtility dateStringToDate:responseObject[@"data"][@"attributes"][@"updatedAt"]].timeIntervalSince1970);
         case 3:
             return responseObject[@"data"][@"SaveMediaListEntry"][@"updatedAt"];
         default:
@@ -62,11 +62,11 @@
 
 + (int)parseSeason:(NSString *)string {
     // Season Parsing
-    NSArray *matches = [Utility findMatches:string pattern:@"((S|s|Season )\\d+|\\d+(st|nd|rd|th) Season|\\d+)"];
+    NSArray *matches = [HUtility findMatches:string pattern:@"((S|s|Season )\\d+|\\d+(st|nd|rd|th) Season|\\d+)"];
     NSString *tmpseason;
     if (matches.count > 0) {
         tmpseason = matches[0];
-        tmpseason = [Utility searchreplace:tmpseason pattern:@"((st|nd|rd|th) Season)|Season |S|s|"];
+        tmpseason = [HUtility searchreplace:tmpseason pattern:@"((st|nd|rd|th) Season)|Season |S|s|"];
         return tmpseason.intValue;
     }
     return -1;

@@ -7,7 +7,7 @@
 //
 
 #import "AtarashiiDataObjects.h"
-#import "Utility.h"
+#import "HUtility.h"
 
 @implementation AtarashiiAnimeObject
 - (id)init {
@@ -58,7 +58,7 @@
     int tmpseason;
     for (int i = 0; i < 2; i++) {
         if (i == 0) {
-            tmpseason = [Utility parseSeason:_title];
+            tmpseason = [HUtility parseSeason:_title];
             if (tmpseason > 0) {
                 _parsedseason = tmpseason;
                 break;
@@ -69,7 +69,7 @@
             [tmparray addObjectsFromArray:_other_titles[@"japanese"]];
             for (NSString *title in tmparray) {
                 @try {
-                    tmpseason = [Utility parseSeason:title];
+                    tmpseason = [HUtility parseSeason:title];
                     if (tmpseason > 0) {
                         _parsedseason = tmpseason;
                         break;
@@ -79,7 +79,7 @@
             }
         }
         else {
-            tmpseason = [Utility parseSeason:_synposis];
+            tmpseason = [HUtility parseSeason:_synposis];
             if (tmpseason > 0) {
                 _parsedseason = tmpseason;
                 break;
