@@ -209,7 +209,7 @@
 #endif;
     [OAuth2Manager setUseHTTPBasicAuthentication:NO];
     [OAuth2Manager authenticateUsingOAuthWithURLString:@"api/v2/oauth/token"
-                                            parameters:@{@"grant_type":@"refresh_token", @"refresh_token":cred.refreshToken, @"redirect_uri", redirecturi} success:^(AFOAuthCredential *credential) {
+                                            parameters:@{@"grant_type":@"refresh_token", @"refresh_token":cred.refreshToken, @"redirect_uri": redirecturi} success:^(AFOAuthCredential *credential) {
                                                 NSLog(@"Token refreshed");
                                                 [credmanager saveCredentialForService:3 withCredential:credential];
                                                 completion(true);
@@ -230,7 +230,7 @@
 #else
     redirecturi = @"shukofukurouauth://anilistauth/";
 #endif;
-    [OAuth2Manager authenticateUsingOAuthWithURLString:@"api/v2/oauth/token" parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri", redirecturi} success:^(AFOAuthCredential *credential) {
+    [OAuth2Manager authenticateUsingOAuthWithURLString:@"api/v2/oauth/token" parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": redirecturi} success:^(AFOAuthCredential *credential) {
         [[OAuthCredManager sharedInstance] saveCredentialForService:3 withCredential:credential];
         [self getOwnAnilistid:^(int userid, NSString *username, NSString *scoreformat, NSString *avatar) {
             [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"anilist-username"];
