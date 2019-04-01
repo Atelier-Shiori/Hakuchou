@@ -155,8 +155,8 @@
     #endif
     aobject.type = title[@"format"] != [NSNull null] ? [HUtility convertAnimeType:title[@"format"]] : @"";
     aobject.episodes = title[@"episodes"] && title[@"episodes"] != [NSNull null] ? ((NSNumber *)title[@"episodes"]).intValue : 0;
-    aobject.start_date = title[@"startDate"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",title[@"startDate"][@"year"],title[@"startDate"][@"month"],title[@"startDate"][@"day"]] : @"";
-    aobject.end_date = title[@"endDate"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",title[@"endDate"][@"year"],title[@"endDate"][@"month"],title[@"endDate"][@"day"]] : @"";
+    aobject.start_date = title[@"startDate"] != [NSNull null] && title[@"startDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",title[@"startDate"][@"year"],title[@"startDate"][@"month"],title[@"startDate"][@"day"]] : @"";
+    aobject.end_date = title[@"endDate"] != [NSNull null]  && title[@"endDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",title[@"endDate"][@"year"],title[@"endDate"][@"month"],title[@"endDate"][@"day"]] : @"";
     aobject.duration = title[@"duration"] && title[@"duration"] != [NSNull null] ? ((NSNumber *)title[@"duration"]).intValue : 0;
     aobject.classification = @"";
     aobject.hashtag = title[@"hashtag"] != [NSNull null] ? title[@"hashtag"] : @"";
@@ -256,6 +256,8 @@
         tmpstatus = @"not yet published";
     }
     mobject.status = tmpstatus;
+    mobject.start_date = title[@"startDate"] != [NSNull null] && title[@"startDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",title[@"startDate"][@"year"],title[@"startDate"][@"month"],title[@"startDate"][@"day"]] : @"";
+    mobject.end_date = title[@"endDate"] != [NSNull null]  && title[@"endDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",title[@"endDate"][@"year"],title[@"endDate"][@"month"],title[@"endDate"][@"day"]] : @"";
     NSMutableArray *genres = [NSMutableArray new];
     for (NSString *genre in title[@"genres"]) {
         [genres addObject:genre];

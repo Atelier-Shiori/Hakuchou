@@ -226,6 +226,8 @@
     else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
         mobject.status = @"not yet published";
     }
+    mobject.start_date = attributes[@"startDate"];
+    mobject.end_date = attributes[@"endDate"];
     NSArray * included = data[@"included"];
     NSMutableArray *categories = [NSMutableArray new];
     for (NSDictionary *d in [included filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type == %@", @"categories"]]) {
