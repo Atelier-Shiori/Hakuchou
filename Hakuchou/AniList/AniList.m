@@ -50,6 +50,16 @@
     }];
 }
 
+- (void)retrieveOwnListWithType:(int)type completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
+    // Retrieves list
+    [self getOwnAnilistid:^(int userid, NSString *username, NSString *scoreformat, NSString *avatar) {
+        NSMutableArray *tmparray = [NSMutableArray new];
+        [self retrievelist:userid withArray:tmparray withType:type page:1 completion:completionHandler error:errorHandler];
+    } error:^(NSError *error) {
+        errorHandler(error);
+    }];
+}
+
 - (void)retrievelist:(int)userid withArray:(NSMutableArray *)tmparray withType:(int)type page:(int)page completion:(void (^)(id))completionHandler error:(void (^)(NSError *))errorHandler  {
     // Retrieve List
     [manager.requestSerializer clearAuthorizationHeader];
