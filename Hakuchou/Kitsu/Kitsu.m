@@ -674,6 +674,9 @@
     }];
 }
 - (void)getKitsuid:(NSString *)username completion:(void (^)(int userid)) completionHandler error:(void (^)(NSError * error)) errorHandler {
+    if (!username) {
+        completionHandler(-1);
+    }
     AFOAuthCredential *cred = [self getFirstAccount];
     if (cred && cred.expired) {
         [self refreshToken:^(bool success) {
