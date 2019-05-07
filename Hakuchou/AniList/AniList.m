@@ -134,10 +134,10 @@
     NSDictionary *parameters = @{@"query" : kAnilisttitlesearch, @"variables" : @{@"query" : searchterm, @"type" : type == AniListAnime ? @"ANIME" : @"MANGA"}};
     [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (type == AniListAnime) {
-            completionHandler([AtarashiiAPIListFormatAniList AniListAnimeSearchtoAtarashii:responseObject], ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextOage"]).boolValue);
+            completionHandler([AtarashiiAPIListFormatAniList AniListAnimeSearchtoAtarashii:responseObject], ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextPage"]).boolValue);
         }
         else if (type == AniListManga) {
-            completionHandler([AtarashiiAPIListFormatAniList AniListMangaSearchtoAtarashii:responseObject], ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextOage"]).boolValue);
+            completionHandler([AtarashiiAPIListFormatAniList AniListMangaSearchtoAtarashii:responseObject], ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextPage"]).boolValue);
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
