@@ -129,15 +129,15 @@
 }
 
 #pragma mark Search
-- (void)searchTitle:(NSString *)searchterm withType:(int)type completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
+- (void)searchTitle:(NSString *)searchterm withType:(int)type withCurrentPage:(int)currentpage completion:(void (^)(id responseObject, int nextoffset, bool hasnextpage)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
     NSDictionary *parameters = @{@"query" : kAnilisttitlesearch, @"variables" : @{@"query" : searchterm, @"type" : type == AniListAnime ? @"ANIME" : @"MANGA"}};
     [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (type == AniListAnime) {
-            completionHandler([AtarashiiAPIListFormatAniList AniListAnimeSearchtoAtarashii:responseObject]);
+            completionHandler([AtarashiiAPIListFormatAniList AniListAnimeSearchtoAtarashii:responseObject], ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextOage"]).boolValue);
         }
         else if (type == AniListManga) {
-            completionHandler([AtarashiiAPIListFormatAniList AniListMangaSearchtoAtarashii:responseObject]);
+            completionHandler([AtarashiiAPIListFormatAniList AniListMangaSearchtoAtarashii:responseObject], ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextOage"]).boolValue);
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
