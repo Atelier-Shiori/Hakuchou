@@ -131,13 +131,14 @@
 #pragma mark Search
 - (void)searchTitle:(NSString *)searchterm withType:(int)type withCurrentPage:(int)currentpage completion:(void (^)(id responseObject, int nextoffset, bool hasnextpage)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
-    NSDictionary *parameters = @{@"query" : kAnilisttitlesearch, @"variables" : @{@"query" : searchterm, @"type" : type == AniListAnime ? @"ANIME" : @"MANGA"}};
+    NSDictionary *parameters = @{@"query" : kAnilisttitlesearch, @"variables" : @{@"query" : searchterm, @"type" : type == AniListAnime ? @"ANIME" : @"MANGA", @"page" : @(currentpage)}};
     [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        int nextpage = ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1;
         if (type == AniListAnime) {
-            completionHandler([AtarashiiAPIListFormatAniList AniListAnimeSearchtoAtarashii:responseObject], ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextPage"]).boolValue);
+            completionHandler([AtarashiiAPIListFormatAniList AniListAnimeSearchtoAtarashii:responseObject], nextpage, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextPage"]).boolValue);
         }
         else if (type == AniListManga) {
-            completionHandler([AtarashiiAPIListFormatAniList AniListMangaSearchtoAtarashii:responseObject], ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextPage"]).boolValue);
+            completionHandler([AtarashiiAPIListFormatAniList AniListMangaSearchtoAtarashii:responseObject], nextpage, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextPage"]).boolValue);
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
