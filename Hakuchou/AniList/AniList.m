@@ -816,7 +816,7 @@
 - (NSString *)generateSearchOptions:(NSDictionary *)options {
     NSMutableString *tmpstr = [[NSMutableString alloc] initWithString:@"media(search: $query, type: $type"];
     for (NSString *key in options.allKeys) {
-        [tmpstr appendFormat:@", %@: %@", key, options[@"key"]];
+        [tmpstr appendFormat:@", %@: %@", key, options[key]];
     }
     [tmpstr appendString:@")"];
     return tmpstr;
