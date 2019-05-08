@@ -140,12 +140,12 @@
 
     
 #pragma mark Search
-- (void)searchTitle:(NSString *)searchterm withType:(int)type completion:(void (^)(id responseObject, int nextoffset, bool hasnextpage)) completionHandler error:(void (^)(NSError * error)) errorHandler {
+- (void)searchTitle:(NSString *)searchterm withType:(int)type withSearchOptions:(NSDictionary *)options completion:(void (^)(id responseObject, int nextoffset, bool hasnextpage)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     NSMutableArray *tmparray = [NSMutableArray new];
-    [self searchTitle:searchterm withType:type withDataArray:tmparray withPageOffet:0 withMaxOffset:40 completion:completionHandler error:errorHandler];
+    [self searchTitle:searchterm withType:type withDataArray:tmparray withPageOffet:0 withMaxOffset:40 withSearchOptions:options completion:completionHandler error:errorHandler];
 }
 
-- (void)searchTitle:(NSString *)searchterm withType:(int)type withDataArray:(NSMutableArray *)darray withPageOffet:(int)offset withMaxOffset:(int)maxoffset completion:(void (^)(id responseObject, int nextoffset, bool hasnextpage)) completionHandler error:(void (^)(NSError * error)) errorHandler {
+- (void)searchTitle:(NSString *)searchterm withType:(int)type withDataArray:(NSMutableArray *)darray withPageOffet:(int)offset withMaxOffset:(int)maxoffset withSearchOptions:(NSDictionary *)options completion:(void (^)(id responseObject, int nextoffset, bool hasnextpage)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
 #if defined(AppStore) // Do not provide authorization as Mac App Store rating does not allow adult content. Exclude all adult content
 #else
@@ -154,7 +154,7 @@
         if (cred && cred.expired) {
             [self refreshToken:^(bool success) {
                 if (success) {
-                    [self searchTitle:searchterm withType:type withDataArray:darray withPageOffet:offset withMaxOffset:maxoffset completion:completionHandler error:errorHandler];
+                    [self searchTitle:searchterm withType:type withDataArray:darray withPageOffet:offset withMaxOffset:maxoffset withSearchOptions:options completion:completionHandler error:errorHandler];
                 }
                 else {
                     errorHandler(nil);
@@ -167,13 +167,21 @@
         }
     }
 #endif
-    [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/%@/?filter[text]=%@&page[limit]=20&page[offset]=%i", type == KitsuAnime ? @"anime" : @"manga", [HUtility urlEncodeString:searchterm], offset] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    NSString *searchurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/%@/?filter[text]=%@&page[limit]=20&page[offset]=%i", type == KitsuAnime ? @"anime" : @"manga", [HUtility urlEncodeString:searchterm], offset];
+    if (options) {
+        NSMutableString *optionsstr = [NSMutableString new];
+        for (NSString *optionkey in options.allKeys) {
+            [optionsstr appendFormat:@"&filter[%@]=%@",optionkey, options[optionkey]];
+        }
+        searchurl = [NSString stringWithFormat:@"%@%@", searchurl, optionsstr];
+    }
+    [manager GET:searchurl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"] && responseObject[@"data"] != [NSNull null]) {
             [darray addObjectsFromArray:responseObject[@"data"]];
         }
         if (responseObject[@"links"][@"next"] && offset < maxoffset) {
             int newoffset = offset + 20;
-            [self searchTitle:searchterm withType:type withDataArray:darray withPageOffet:newoffset withMaxOffset:maxoffset completion:completionHandler error:errorHandler];
+            [self searchTitle:searchterm withType:type withDataArray:darray withPageOffet:newoffset withMaxOffset:maxoffset withSearchOptions:options completion:completionHandler error:errorHandler];
         }
         else {
             if (type == KitsuAnime) {

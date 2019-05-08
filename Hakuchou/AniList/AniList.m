@@ -129,8 +129,12 @@
 }
 
 #pragma mark Search
-- (void)searchTitle:(NSString *)searchterm withType:(int)type withCurrentPage:(int)currentpage completion:(void (^)(id responseObject, int nextoffset, bool hasnextpage)) completionHandler error:(void (^)(NSError * error)) errorHandler {
+- (void)searchTitle:(NSString *)searchterm withType:(int)type withCurrentPage:(int)currentpage withSearchOptions:(NSDictionary *)options completion:(void (^)(id responseObject, int nextoffset, bool hasnextpage)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
+    NSString *searchquery = searchterm;
+    if (options) {
+        searchquery = [searchquery stringByReplacingOccurrencesOfString:@"media(search: $query, type: $type)" withString:[self generateSearchOptions:options]];
+    }
     NSDictionary *parameters = @{@"query" : kAnilisttitlesearch, @"variables" : @{@"query" : searchterm, @"type" : type == AniListAnime ? @"ANIME" : @"MANGA", @"page" : @(currentpage)}};
     [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         int nextpage = ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1;
@@ -807,5 +811,14 @@
             [self removeAccount];
         }
     }
+}
+
+- (NSString *)generateSearchOptions:(NSDictionary *)options {
+    NSMutableString *tmpstr = [[NSMutableString alloc] initWithString:@"media(search: $query, type: $type"];
+    for (NSString *key in options.allKeys) {
+        [tmpstr appendFormat:@", %@: %@", key, options[@"key"]];
+    }
+    [tmpstr appendString:@")"];
+    return tmpstr;
 }
 @end
