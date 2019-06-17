@@ -25,9 +25,9 @@
 @synthesize manager;
     
 - (instancetype)initWithClientId:(NSString *)clientid withClientSecret:(NSString *)clientsecret {
-    if ([self init]) {
-        _clientid = clientid;
-        _clientsecret = clientsecret;
+    if (self = [self init]) {
+        self.clientid = clientid;
+        self.clientsecret = clientsecret;
     }
     return self;
 }
@@ -138,11 +138,15 @@
     NSDictionary *parameters = @{@"query" : searchquery, @"variables" : @{@"query" : searchterm, @"type" : type == AniListAnime ? @"ANIME" : @"MANGA", @"page" : @(currentpage)}};
     [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         int nextpage = ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1;
-        if (type == AniListAnime) {
-            completionHandler([AtarashiiAPIListFormatAniList AniListAnimeSearchtoAtarashii:responseObject], nextpage, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextPage"]).boolValue);
-        }
-        else if (type == AniListManga) {
-            completionHandler([AtarashiiAPIListFormatAniList AniListMangaSearchtoAtarashii:responseObject], nextpage, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextPage"]).boolValue);
+        switch (type) {
+            case AniListAnime:
+                completionHandler([AtarashiiAPIListFormatAniList AniListAnimeSearchtoAtarashii:responseObject], nextpage, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextPage"]).boolValue);
+                break;
+            case AniListManga:
+                completionHandler([AtarashiiAPIListFormatAniList AniListMangaSearchtoAtarashii:responseObject], nextpage, ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"hasNextPage"]).boolValue);
+                break;
+            default:
+                break;
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -164,11 +168,15 @@
     [manager.requestSerializer clearAuthorizationHeader];
     NSDictionary *parameters = @{@"query" : kAnilistTitleIdInformation, @"variables" : @{@"id" : @(titleid), @"type" : type == AniListAnime ? @"ANIME" : @"MANGA"}};
     [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (type == AniListAnime) {
-            completionHandler([AtarashiiAPIListFormatAniList AniListAnimeInfotoAtarashii:responseObject]);
-        }
-        else if (type == AniListManga) {
-            completionHandler([AtarashiiAPIListFormatAniList AniListMangaInfotoAtarashii:responseObject]);
+        switch (type) {
+            case AniListAnime:
+                completionHandler([AtarashiiAPIListFormatAniList AniListAnimeInfotoAtarashii:responseObject]);
+                break;
+            case AniListManga:
+                completionHandler([AtarashiiAPIListFormatAniList AniListMangaInfotoAtarashii:responseObject]);
+                break;
+            default:
+                break;
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -221,7 +229,7 @@
     redirecturi = @"hiyokoauth://anilistauth/";
 #else
     redirecturi = @"shukofukurouauth://anilistauth/";
-#endif;
+#endif
     [OAuth2Manager setUseHTTPBasicAuthentication:NO];
     [OAuth2Manager authenticateUsingOAuthWithURLString:@"api/v2/oauth/token"
                                             parameters:@{@"grant_type":@"refresh_token", @"refresh_token":cred.refreshToken, @"redirect_uri": redirecturi} success:^(AFOAuthCredential *credential) {
@@ -244,7 +252,7 @@
     redirecturi = @"hiyokoauth://anilistauth/";
 #else
     redirecturi = @"shukofukurouauth://anilistauth/";
-#endif;
+#endif
     [OAuth2Manager authenticateUsingOAuthWithURLString:@"api/v2/oauth/token" parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": redirecturi} success:^(AFOAuthCredential *credential) {
         [[OAuthCredManager sharedInstance] saveCredentialForService:3 withCredential:credential];
         [self getOwnAnilistid:^(int userid, NSString *username, NSString *scoreformat, NSString *avatar) {
@@ -662,7 +670,7 @@
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
-    NSDictionary *parameters = @{@"query" : kAnilistUsernametoUserId, @"variables" : @{@"name" : username}};
+    NSDictionary *parameters = @{@"query" : kAnilistUsernametoUserId, @"variables" : @{@"name" : username ? username : @""}};
     [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         if (responseObject[@"data"][@"User"] != [NSNull null]) {
             completionHandler(((NSNumber *)responseObject[@"data"][@"User"][@"id"]).intValue);

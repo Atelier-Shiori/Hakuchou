@@ -46,7 +46,7 @@
     return self;
 }
 
-- (AFOAuthCredential *)getFirstAccountForService:(int)service {
+- (AFOAuthCredential * _Nullable)getFirstAccountForService:(int)service {
     NSString *keychainidentifier;
     switch (service) {
         case 2:
@@ -78,7 +78,7 @@
     return nil;
 }
 
-- (AFOAuthCredential *)saveCredentialForService:(int)service withCredential:(AFOAuthCredential *)cred {
+- (AFOAuthCredential * _Nullable)saveCredentialForService:(int)service withCredential:(AFOAuthCredential *)cred {
     NSString *keychainidentifier;
     switch (service) {
         case 2:

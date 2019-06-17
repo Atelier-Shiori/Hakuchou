@@ -24,9 +24,9 @@
 @synthesize manager;
     
 - (instancetype)initWithClientId:(NSString *)clientid withClientSecret:(NSString *)clientsecret {
-    if ([self init]) {
-        _clientid = clientid;
-        _clientsecret = clientsecret;
+    if (self = [self init]) {
+        self.clientid = clientid;
+        self.clientsecret = clientsecret;
     }
     return self;
 }
@@ -79,16 +79,16 @@
     NSString *includes;
     switch (type) {
         case 0:
-        listtype = @"anime";
-        includes = @"canonicalTitle,episodeCount,episodeLength,showType,posterImage,status";
-        break;
+            listtype = @"anime";
+            includes = @"canonicalTitle,episodeCount,episodeLength,showType,posterImage,status";
+            break;
         case 1:
-        listtype = @"manga";
-        includes = @"canonicalTitle,chapterCount,volumeCount,mangaType,posterImage,status";
-        break;
+            listtype = @"manga";
+            includes = @"canonicalTitle,chapterCount,volumeCount,mangaType,posterImage,status";
+            break;
         default:
-        errorHandler(nil);
-        return;
+            errorHandler(nil);
+            return;
     }
     AFOAuthCredential *cred = [self getFirstAccount];
     if (cred && cred.expired) {
@@ -118,14 +118,14 @@
             else {
                 switch (type) {
                     case 0:
-                    completionHandler([AtarashiiAPIListFormatKitsu KitsutoAtarashiiAnimeList:tmplist withMetaData:metadata]);
-                    break;
+                        completionHandler([AtarashiiAPIListFormatKitsu KitsutoAtarashiiAnimeList:tmplist withMetaData:metadata]);
+                        break;
                     case 1:
-                    completionHandler([AtarashiiAPIListFormatKitsu KitsutoAtarashiiMangaList:tmplist withMetaData:metadata]);
-                    break;
+                        completionHandler([AtarashiiAPIListFormatKitsu KitsutoAtarashiiMangaList:tmplist withMetaData:metadata]);
+                        break;
                     default:
-                    errorHandler(nil);
-                    return;
+                        errorHandler(nil);
+                        return;
                 }
                 
             }
@@ -184,11 +184,15 @@
             [self searchTitle:searchterm withType:type withDataArray:darray withPageOffet:newoffset withMaxOffset:maxoffset withSearchOptions:options completion:completionHandler error:errorHandler];
         }
         else {
-            if (type == KitsuAnime) {
-                completionHandler([AtarashiiAPIListFormatKitsu KitsuAnimeSearchtoAtarashii:@{@"data":darray}], offset + 20, responseObject[@"links"][@"next"]);
-            }
-            else if (type == KitsuManga) {
-                completionHandler([AtarashiiAPIListFormatKitsu KitsuMangaSearchtoAtarashii:@{@"data":darray}], offset + 20, responseObject[@"links"][@"next"]);
+            switch (type) {
+                case KitsuAnime:
+                    completionHandler([AtarashiiAPIListFormatKitsu KitsuAnimeSearchtoAtarashii:@{@"data":darray}], offset + 20, responseObject[@"links"][@"next"]);
+                    break;
+                case KitsuManga:
+                    completionHandler([AtarashiiAPIListFormatKitsu KitsuMangaSearchtoAtarashii:@{@"data":darray}], offset + 20, responseObject[@"links"][@"next"]);
+                    break;
+                default:
+                    break;
             }
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -220,11 +224,15 @@
     }
 #endif
     [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/%@/%i?include=categories,mappings%@", type == KitsuAnime ? @"anime" : @"manga", titleid, type == KitsuAnime ? @",animeProductions,animeProductions.producer,mediaRelationships,mediaRelationships.destination" : @",mediaRelationships,mediaRelationships.destination"] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (type == KitsuAnime) {
-            completionHandler([AtarashiiAPIListFormatKitsu KitsuAnimeInfotoAtarashii:responseObject]);
-        }
-        else if (type == KitsuManga) {
-            completionHandler([AtarashiiAPIListFormatKitsu KitsuMangaInfotoAtarashii:responseObject]);
+        switch (type) {
+            case KitsuAnime:
+                completionHandler([AtarashiiAPIListFormatKitsu KitsuAnimeInfotoAtarashii:responseObject]);
+                break;
+            case KitsuManga:
+                completionHandler([AtarashiiAPIListFormatKitsu KitsuMangaInfotoAtarashii:responseObject]);
+                break;
+            default:
+                break;
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -261,11 +269,15 @@
     }
 #endif
     NSString *reviewurl = @"";
-    if (type == KitsuAnime) {
-        reviewurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/media-reactions/?filter[animeId]=%i&include=anime,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[anime]=episodeCount&page[limit]=20&page[offset]=%i", titleid,offset];
-    }
-    else {
-        reviewurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/media-reactions/?filter[mangaId]=%i&include=manga,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[manga]=chapterCount&page[limit]=20&page[offset]=%i", titleid, offset];
+    switch (type) {
+        case KitsuAnime:
+            reviewurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/media-reactions/?filter[animeId]=%i&include=anime,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[anime]=episodeCount&page[limit]=20&page[offset]=%i", titleid,offset];
+            break;
+        case KitsuManga:
+            reviewurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/media-reactions/?filter[mangaId]=%i&include=manga,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[manga]=chapterCount&page[limit]=20&page[offset]=%i", titleid, offset];
+            break;
+        default:
+            return;
     }
     [manager GET:reviewurl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"] && responseObject[@"data"] != [NSNull null]) {
@@ -307,11 +319,15 @@
     }
 #endif
     NSString *reviewurl = @"";
-    if (type == KitsuAnime) {
+    switch (type) {
+        case KitsuAnime:
         reviewurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/media-reactions/?filter[animeId]=%i&include=anime,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&sort=-upVotesCount&fields[anime]=episodeCount&page[limit]=20&page[offset]=%i", titleid,offset];
-    }
-    else {
-        reviewurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/media-reactions/?filter[mangaId]=%i&include=manga,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[manga]=chapterCount&sort=-upVotesCount&page[limit]=20&page[offset]=%i", titleid, offset];
+            break;
+        case KitsuManga:
+            reviewurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/media-reactions/?filter[mangaId]=%i&include=manga,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[manga]=chapterCount&sort=-upVotesCount&page[limit]=20&page[offset]=%i", titleid, offset];
+            break;
+        default:
+            return;
     }
     [manager GET:reviewurl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSArray *dataarray = @[];
@@ -751,19 +767,9 @@
     [manager GET:@"https://kitsu.io/api/edge/users?filter[self]=true&fields[users]=ratingSystem" parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (((NSArray *)responseObject[@"data"]).count > 0) {
             NSDictionary *d = [NSArray arrayWithArray:responseObject[@"data"]][0];
+            NSDictionary *ratings = @{@"simple" : @(ratingSimple), @"standard" : @(ratingStandard), @"advanced" : @(ratingAdvanced)};
             NSString *ratingtype = d[@"attributes"][@"ratingSystem"];
-            if ([ratingtype isEqualToString:@"simple"]) {
-                completionHandler(ratingSimple);
-            }
-            else if ([ratingtype isEqualToString:@"standard"]) {
-                completionHandler(ratingStandard);
-            }
-            else if ([ratingtype isEqualToString:@"advanced"]) {
-                completionHandler(ratingAdvanced);
-            }
-            else {
-                completionHandler(ratingSimple);
-            }
+            completionHandler(ratingtype ? ((NSNumber *)ratings[ratingtype]).intValue : ratingSimple);
         }
         else {
             completionHandler(ratingSimple);
@@ -834,15 +840,8 @@
             // Set Rating System
             NSString *ratingtype = d[@"attributes"][@"ratingSystem"];
             if (ratingtype) {
-                if ([ratingtype isEqualToString:@"simple"]) {
-                    [defaults setInteger:ratingSimple forKey:@"kitsu-ratingsystem"];
-                }
-                else if ([ratingtype isEqualToString:@"standard"]) {
-                    [defaults setInteger:ratingStandard forKey:@"kitsu-ratingsystem"];
-                }
-                else if ([ratingtype isEqualToString:@"advanced"]) {
-                    [defaults setInteger:ratingAdvanced forKey:@"kitsu-ratingsystem"];
-                }
+                NSDictionary *ratings = @{@"simple" : @(ratingSimple), @"standard" : @(ratingStandard), @"advanced" : @(ratingAdvanced)};
+                [defaults setInteger:((NSNumber *)ratings[ratingtype]).intValue forKey:@"kitsu-ratingsystem"];
             }
             else {
                  [defaults setInteger:ratingSimple forKey:@"kitsu-ratingsystem"];
