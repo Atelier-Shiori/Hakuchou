@@ -363,12 +363,17 @@
             else {
                 continue;
             }
-            tmparray = [libraryentriesarray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"id == %@", reaction[@"relationships"][@"libraryEntry"][@"data"][@"id"]]];
-            if (tmparray.count > 0) {
-                libraryentrydict = tmparray[0];
+            if (reaction[@"relationships"][@"libraryEntry"][@"data"][@"id"] != [NSNull null] && reaction[@"relationships"][@"libraryEntry"][@"data"][@"id"]) {
+                tmparray = [libraryentriesarray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"id == %@", reaction[@"relationships"][@"libraryEntry"][@"data"][@"id"]]];
+                if (tmparray.count > 0) {
+                    libraryentrydict = tmparray[0];
+                }
+                else {
+                    continue;
+                }
             }
             else {
-                continue;
+                libraryentrydict = @{};
             }
             if (reaction[@"relationships"][@"user"][@"data"] == [NSNull null]) {
                 continue;
