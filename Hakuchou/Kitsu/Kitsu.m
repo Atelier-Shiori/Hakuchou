@@ -332,7 +332,7 @@
     [manager GET:reviewurl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSArray *dataarray = @[];
         NSArray *includearray = @[];
-        if (responseObject[@"data"] && responseObject[@"data"] != [NSNull null]) {
+        if (responseObject[@"data"] && responseObject[@"data"] != [NSNull null] && ((NSArray *)responseObject[@"data"]).count > 0) {
             dataarray = responseObject[@"data"];
             includearray = responseObject[@"included"];
         }
