@@ -25,6 +25,7 @@ typedef NS_ENUM(unsigned int, MediaType) {
 - (AFOAuthCredential *)getFirstAccount;
 - (long)getCurrentUserID;
 - (void)saveuserinfoforcurrenttoken;
+- (bool)removeAccount;
 
 - (void)retrieveOwnListWithType:(int)type completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler;
 - (void)retrieveList:(NSString *)username listType:(int)type completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler;
