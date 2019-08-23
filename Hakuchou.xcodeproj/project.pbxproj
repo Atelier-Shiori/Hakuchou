@@ -50,12 +50,12 @@
 		592B8C892236CA56007D43F4 /* OAuthCredManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 592B8C862236CA56007D43F4 /* OAuthCredManager.m */; };
 		592B8C8A2236CA56007D43F4 /* OAuthCredManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 592B8C862236CA56007D43F4 /* OAuthCredManager.m */; };
 		592B8CAE2236E0E7007D43F4 /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 592B8CAD2236E0E7007D43F4 /* AFNetworking.framework */; };
-		59C1C41A23103A39003A4E54 /* AtarashiiAPIListFormatMAL.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C1C41823103A39003A4E54 /* AtarashiiAPIListFormatMAL.h */; };
-		59C1C41B23103A39003A4E54 /* AtarashiiAPIListFormatMAL.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C1C41823103A39003A4E54 /* AtarashiiAPIListFormatMAL.h */; };
+		59C1C41A23103A39003A4E54 /* AtarashiiAPIListFormatMAL.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C1C41823103A39003A4E54 /* AtarashiiAPIListFormatMAL.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		59C1C41B23103A39003A4E54 /* AtarashiiAPIListFormatMAL.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C1C41823103A39003A4E54 /* AtarashiiAPIListFormatMAL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		59C1C41C23103A39003A4E54 /* AtarashiiAPIListFormatMAL.m in Sources */ = {isa = PBXBuildFile; fileRef = 59C1C41923103A39003A4E54 /* AtarashiiAPIListFormatMAL.m */; };
 		59C1C41D23103A39003A4E54 /* AtarashiiAPIListFormatMAL.m in Sources */ = {isa = PBXBuildFile; fileRef = 59C1C41923103A39003A4E54 /* AtarashiiAPIListFormatMAL.m */; };
-		59C1C42123103A53003A4E54 /* MyAnimeList.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C1C41F23103A53003A4E54 /* MyAnimeList.h */; };
-		59C1C42223103A53003A4E54 /* MyAnimeList.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C1C41F23103A53003A4E54 /* MyAnimeList.h */; };
+		59C1C42123103A53003A4E54 /* MyAnimeList.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C1C41F23103A53003A4E54 /* MyAnimeList.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		59C1C42223103A53003A4E54 /* MyAnimeList.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C1C41F23103A53003A4E54 /* MyAnimeList.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		59C1C42323103A53003A4E54 /* MyAnimeList.m in Sources */ = {isa = PBXBuildFile; fileRef = 59C1C42023103A53003A4E54 /* MyAnimeList.m */; };
 		59C1C42423103A53003A4E54 /* MyAnimeList.m in Sources */ = {isa = PBXBuildFile; fileRef = 59C1C42023103A53003A4E54 /* MyAnimeList.m */; };
 		59C1C4272310464C003A4E54 /* PKCEGenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C1C4252310464C003A4E54 /* PKCEGenerator.h */; };
@@ -261,17 +261,17 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59C1C42123103A53003A4E54 /* MyAnimeList.h in Headers */,
 				59C1C4272310464C003A4E54 /* PKCEGenerator.h in Headers */,
 				590B5EC9222D81100099D056 /* AtarashiiAPIListFormatKitsu.h in Headers */,
 				592B8C7F2236C76E007D43F4 /* AniListConstants.h in Headers */,
 				590B5EAF222D81000099D056 /* Kitsu.h in Headers */,
 				590B5E7C222D783F0099D056 /* Hakuchou.h in Headers */,
-				59C1C41A23103A39003A4E54 /* AtarashiiAPIListFormatMAL.h in Headers */,
 				590B5E92222D78B50099D056 /* HUtility.h in Headers */,
 				590F75F722301EC300CDF83F /* SharedHTTPManager.h in Headers */,
 				592B8C872236CA56007D43F4 /* OAuthCredManager.h in Headers */,
+				59C1C41A23103A39003A4E54 /* AtarashiiAPIListFormatMAL.h in Headers */,
 				590B5ECB222D81100099D056 /* AtarashiiDataObjects.h in Headers */,
+				59C1C42123103A53003A4E54 /* MyAnimeList.h in Headers */,
 				590B5ECF222D81100099D056 /* AtarashiiAPIListFormatAniList.h in Headers */,
 				590B5EA9222D80F80099D056 /* AniList.h in Headers */,
 				590B5ECD222D81100099D056 /* AtarashiiAPIKitsuStaffFormat.h in Headers */,
@@ -282,14 +282,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59C1C42223103A53003A4E54 /* MyAnimeList.h in Headers */,
 				59C1C4282310464C003A4E54 /* PKCEGenerator.h in Headers */,
 				590B5ECA222D81100099D056 /* AtarashiiAPIListFormatKitsu.h in Headers */,
 				592B8C802236C76E007D43F4 /* AniListConstants.h in Headers */,
 				590B5EB0222D81000099D056 /* Kitsu.h in Headers */,
 				590B5E8B222D785F0099D056 /* Hakuchou_iOS.h in Headers */,
-				59C1C41B23103A39003A4E54 /* AtarashiiAPIListFormatMAL.h in Headers */,
 				590B5E93222D78B50099D056 /* HUtility.h in Headers */,
+				59C1C41B23103A39003A4E54 /* AtarashiiAPIListFormatMAL.h in Headers */,
+				59C1C42223103A53003A4E54 /* MyAnimeList.h in Headers */,
 				590B5ECE222D81100099D056 /* AtarashiiAPIKitsuStaffFormat.h in Headers */,
 				592B8C882236CA56007D43F4 /* OAuthCredManager.h in Headers */,
 				590F75F822301EC300CDF83F /* SharedHTTPManager.h in Headers */,
@@ -487,7 +487,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -543,7 +543,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
