@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface OAuthCredManager : NSObject
+@property (strong, nullable) AFOAuthCredential *MyAnimeListCredential;
 @property (strong, nullable) AFOAuthCredential *AniListCredential;
 @property (strong, nullable) AFOAuthCredential *KitsuCredential;
 + (instancetype)sharedInstance;
