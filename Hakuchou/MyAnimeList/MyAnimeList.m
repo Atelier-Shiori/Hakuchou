@@ -103,7 +103,7 @@
 #pragma mark List and Serach
 
 - (void)retrieveOwnListWithType:(int)type completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
-    [self retrieveList:@"@me" listType:typeArc completion:completionHandler error:errorHandler];
+    [self retrieveList:@"@me" listType:type completion:completionHandler error:errorHandler];
 }
 
 - (void)retrieveList:(NSString *)username listType:(int)type completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
