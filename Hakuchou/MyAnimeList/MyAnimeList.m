@@ -128,12 +128,11 @@
     }
     NSString * URL = @"";
     if (type == MALAnime) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/animelist", username];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/animelist?fields=status,media_type,num_episodes,my_list_status{start_date,finish_date,comments}&limit=1000&offset=%i", username, page];
     }
     else if (type == MALManga) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/mangalist", username];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,my_list_status{start_date,finish_date,comments}&limit=1000&offset=%i", username, page];
     }
-    NSDictionary *param = @{@"offset" : @(page)};
     
     [manager GET:URL parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         [listArray addObjectsFromArray:responseObject[@"data"]];
@@ -142,9 +141,8 @@
             [self retrieveList:username listType:type page:npage withArray:listArray completion:completionHandler error:errorHandler];
         }
         else {
-            completionHandler(responseObject);
+            completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALtoAtarashiiAnimeList:listArray] : [AtarashiiAPIListFormatMAL MALtoAtarashiiMangaList:listArray]);
         }
-        
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
     }];

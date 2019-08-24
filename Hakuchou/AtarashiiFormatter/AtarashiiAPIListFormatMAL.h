@@ -11,7 +11,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface AtarashiiAPIListFormatMAL : NSObject
-
++ (id)MALtoAtarashiiAnimeList:(id)data;
++ (id)MALtoAtarashiiMangaList:(id)data;
 @end
 
 NS_ASSUME_NONNULL_END
