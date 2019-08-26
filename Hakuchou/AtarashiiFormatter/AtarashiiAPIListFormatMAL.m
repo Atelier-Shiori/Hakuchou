@@ -34,7 +34,7 @@
             
             // User Entry
             NSDictionary *listStatus = attributes[@"my_list_status"];
-            aentry.watch_status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            aentry.watched_status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
             aentry.score = ((NSNumber *)listStatus[@"score"]).intValue;
             aentry.watched_episodes = ((NSNumber *)listStatus[@"num_episodes_watched"]).intValue;
             aentry.rewatching = ((NSNumber *)listStatus[@"is_rewatching"]).boolValue;
@@ -58,7 +58,7 @@
             mentry.titleid = ((NSNumber *)attributes[@"id"]).intValue;
             mentry.title = attributes[@"title"];
             mentry.image_url = attributes[@"main_picture"][@"large"] && attributes[@"main_picture"][@"large"] != [NSNull null] ? attributes[@"main_picture"][@"large"] : @"";
-            mentry.status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            mentry.status = [(NSString *)attributes[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
             if ([mentry.status isEqualToString:@"currently publishing"]) {
                 mentry.status = @"publishing";
             }
