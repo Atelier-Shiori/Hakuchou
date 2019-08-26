@@ -90,7 +90,7 @@
     aobject.titleid = ((NSNumber *)data[@"id"]).intValue;
     aobject.title = data[@"title"];
     // Create other titles
-    aobject.other_titles = @{@"synonyms" : data[@"alternative_titles"][@"synonyms"] && data[@"alternative_titles"][@"synonyms"] != [NSNull null] ? data[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : data[@"alternative_titles"][@"en"] != [NSNull null] && data[@"alternative_titles"][@"en"] ? @[data[@"alternative_titles"][@"en"]] : @[], @"japanese" : data[@"alternative_titles"][@"ja"] != [NSNull null] && data[@"alternative_titles"][@"ja"] ? @[data[@"alternative_titles"][@"ja"]] : @[] };
+    aobject.other_titles = @{@"synonyms" : data[@"alternative_titles"][@"synonyms"] && data[@"alternative_titles"][@"synonyms"] != [NSNull null] ? data[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : data[@"alternative_titles"][@"en"] != [NSNull null] && data[@"alternative_titles"][@"en"] && ((NSString *)data[@"alternative_titles"][@"en"]).length > 0 ? @[data[@"alternative_titles"][@"en"]] : @[], @"japanese" : data[@"alternative_titles"][@"ja"] != [NSNull null] && data[@"alternative_titles"][@"ja"] && ((NSString *)data[@"alternative_titles"][@"ja"]).length > 0 ? @[data[@"alternative_titles"][@"ja"]] : @[] };
     aobject.popularity_rank = data[@"popularity"] != [NSNull null] ? ((NSNumber *)data[@"popularity"]).intValue : 0;
     #if defined(AppStore)
     if (data[@"main_picture"] != [NSNull null] && data[@"main_picture"]) {
@@ -172,7 +172,7 @@
     mobject.titleid = ((NSNumber *)data[@"id"]).intValue;
     mobject.title = data[@"title"];
     // Create other titles
-    mobject.other_titles = @{@"synonyms" : data[@"alternative_titles"][@"synonyms"] && data[@"alternative_titles"][@"synonyms"] != [NSNull null] ? data[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : data[@"alternative_titles"][@"en"] != [NSNull null] && data[@"alternative_titles"][@"en"] ? @[data[@"alternative_titles"][@"en"]] : @[], @"japanese" : data[@"alternative_titles"][@"ja"] != [NSNull null] && data[@"alternative_titles"][@"ja"] ? @[data[@"alternative_titles"][@"ja"]] : @[] };
+    mobject.other_titles = @{@"synonyms" : data[@"alternative_titles"][@"synonyms"] && data[@"alternative_titles"][@"synonyms"] != [NSNull null] ? data[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : data[@"alternative_titles"][@"en"] != [NSNull null] && data[@"alternative_titles"][@"en"] && ((NSString *)data[@"alternative_titles"][@"en"]).length > 0 ? @[data[@"alternative_titles"][@"en"]] : @[], @"japanese" : data[@"alternative_titles"][@"ja"] != [NSNull null] && data[@"alternative_titles"][@"ja"] && ((NSString *)data[@"alternative_titles"][@"ja"]).length > 0 ? @[data[@"alternative_titles"][@"ja"]] : @[] };
     mobject.popularity_rank = data[@"popularity"] != [NSNull null] ? ((NSNumber *)data[@"popularity"]).intValue : 0;
     #if defined(AppStore)
     if (data[@"main_picture"] != [NSNull null] && data[@"main_picture"]]) {
@@ -239,7 +239,7 @@
             aobject.titleid = ((NSNumber *)titleData[@"id"]).intValue;
             aobject.title = titleData[@"title"];
             // Create other titles
-            aobject.other_titles = @{@"synonyms" : titleData[@"alternative_titles"][@"synonyms"] && titleData[@"alternative_titles"][@"synonyms"] != [NSNull null] ? titleData[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : titleData[@"alternative_titles"][@"en"] != [NSNull null] && titleData[@"alternative_titles"][@"en"] ? @[titleData[@"alternative_titles"][@"en"]] : @[], @"japanese" : titleData[@"alternative_titles"][@"ja"] != [NSNull null] && titleData[@"alternative_titles"][@"ja"] ? @[titleData[@"alternative_titles"][@"ja"]] : @[] };
+            aobject.other_titles = @{@"synonyms" : titleData[@"alternative_titles"][@"synonyms"] && titleData[@"alternative_titles"][@"synonyms"] != [NSNull null] ? titleData[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : titleData[@"alternative_titles"][@"en"] != [NSNull null] && titleData[@"alternative_titles"][@"en"] && ((NSString *)titleData[@"alternative_titles"][@"en"]).length > 0 ? @[titleData[@"alternative_titles"][@"en"]] : @[], @"japanese" : titleData[@"alternative_titles"][@"ja"] != [NSNull null] && titleData[@"alternative_titles"][@"ja"] && ((NSString *)titleData[@"alternative_titles"][@"ja"]).length > 0 ? @[titleData[@"alternative_titles"][@"ja"]] : @[] };
             if (titleData[@"main_picture"] != [NSNull null]) {
                  aobject.image_url = titleData[@"main_picture"][@"large"] && titleData[@"main_picture"] != [NSNull null] && titleData[@"main_picture"][@"large"] ?  titleData[@"main_picture"][@"large"] : @"";
             }
@@ -279,7 +279,7 @@
             mobject.titleid = ((NSNumber *)titleData[@"id"]).intValue;
             mobject.title = titleData[@"title"];
             // Create other titles
-            mobject.other_titles = @{@"synonyms" : titleData[@"alternative_titles"][@"synonyms"] && titleData[@"alternative_titles"][@"synonyms"] != [NSNull null] ? titleData[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : titleData[@"alternative_titles"][@"en"] != [NSNull null] && titleData[@"alternative_titles"][@"en"] ? @[titleData[@"alternative_titles"][@"en"]] : @[], @"japanese" : titleData[@"alternative_titles"][@"ja"] != [NSNull null] && titleData[@"alternative_titles"][@"ja"] ? @[titleData[@"alternative_titles"][@"ja"]] : @[] };
+            mobject.other_titles = @{@"synonyms" : titleData[@"alternative_titles"][@"synonyms"] && titleData[@"alternative_titles"][@"synonyms"] != [NSNull null] ? titleData[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : titleData[@"alternative_titles"][@"en"] != [NSNull null] && titleData[@"alternative_titles"][@"en"]  && ((NSString *)titleData[@"alternative_titles"][@"en"]).length > 0 ? @[titleData[@"alternative_titles"][@"en"]] : @[], @"japanese" : titleData[@"alternative_titles"][@"ja"] != [NSNull null] && titleData[@"alternative_titles"][@"ja"] && ((NSString *)titleData[@"alternative_titles"][@"ja"]).length > 0 ? @[titleData[@"alternative_titles"][@"ja"]] : @[] };
             if (titleData[@"main_picture"] != [NSNull null]) {
                  mobject.image_url = titleData[@"main_picture"][@"large"] && titleData[@"main_picture"] != [NSNull null] && titleData[@"main_picture"][@"large"] ?  titleData[@"main_picture"][@"large"] : @"";
             }
