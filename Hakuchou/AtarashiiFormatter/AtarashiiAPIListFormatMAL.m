@@ -35,6 +35,9 @@
             // User Entry
             NSDictionary *listStatus = attributes[@"my_list_status"];
             aentry.watched_status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            if ([aentry.watched_status isEqualToString:@"on hold"]) {
+                aentry.watched_status = @"on-hold";
+            }
             aentry.score = ((NSNumber *)listStatus[@"score"]).intValue;
             aentry.watched_episodes = ((NSNumber *)listStatus[@"num_episodes_watched"]).intValue;
             aentry.rewatching = ((NSNumber *)listStatus[@"is_rewatching"]).boolValue;
@@ -71,6 +74,11 @@
             // User Entry
             NSDictionary *listStatus = attributes[@"my_list_status"];
             mentry.read_status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            if ([mentry.read_status isEqualToString:@"on hold"]) {
+                m            if ([aentry.watched_status isEqualToString:@"on hold"]) {
+                    aentry.watched_status = @"on-hold";
+                }entry.read_status = @"on-hold";
+            }
             mentry.score = ((NSNumber *)listStatus[@"score"]).intValue;
             mentry.chapters = ((NSNumber *)listStatus[@"num_chapters_read"]).intValue;
             mentry.volumes_read = ((NSNumber *)listStatus[@"num_volumes_read"]).intValue;
