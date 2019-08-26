@@ -73,6 +73,7 @@
                                             }
                                                failure:^(NSError *error) {
                                                    completion(false);
+                NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
                                                }];
 }
 
@@ -91,19 +92,10 @@
              completionHandler(@{@"success":@(true)});
         } error:^(NSError *error) {
         }];
-        /*
-        [self getOwnAnilistid:^(int userid, NSString *username, NSString *scoreformat, NSString *avatar) {
-            [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"anilist-username"];
-            [[NSUserDefaults standardUserDefaults] setInteger:userid forKey:@"anilist-userid"];
-            [[NSUserDefaults standardUserDefaults] setValue:scoreformat forKey:@"anilist-scoreformat"];
-            [[NSUserDefaults standardUserDefaults] setValue:avatar forKey:@"anilist-avatar"];
-            completionHandler(@{@"success":@(true)});
-        } error:^(NSError *error) {
-            
-        }];*/
     }
                                                failure:^(NSError *error) {
                                                    errorHandler(error);
+                NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
                                                }];
 }
 
