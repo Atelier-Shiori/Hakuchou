@@ -183,8 +183,7 @@
             hasNextPage = true;
             nextOffset = nextOffset + 25;
         }
-        // TODO: Data Format Normalization
-        completionHandler(responseObject, nextOffset, hasNextPage);
+        completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALAnimeSearchtoAtarashii:responseObject] ? [AtarashiiAPIListFormatMAL MALAnimeSearchtoAtarashii:responseObject], nextOffset, hasNextPage);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
     }];
@@ -252,8 +251,7 @@
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
     [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
-        // TODO: Data Format Normalization
-        completionHandler(responseObject);
+        completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALAnimeInfotoAtarashii:responseObject] ? [AtarashiiAPIListFormatMAL MALMangaInfotoAtarashii:responseObject]);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
     }];
