@@ -400,7 +400,7 @@
         return;
     }
     NSMutableDictionary *parameters = [NSMutableDictionary new];
-    [parameters addEntriesFromDictionary:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_chapters_read":@(chapter), @"num_volumes_read":@(volume)}];
+    [parameters addEntriesFromDictionary:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_chapters_read":@(chapter), @"num_volumes_read":@(volume)}];
     if (efields) {
         [parameters addEntriesFromDictionary:efields];
     }
