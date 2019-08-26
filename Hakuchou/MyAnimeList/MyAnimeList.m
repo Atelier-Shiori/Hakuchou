@@ -36,7 +36,7 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        manager = [SharedHTTPManager httpmanager];
+        manager = [SharedHTTPManager jsonmanager];
     }
     return self;
 }
