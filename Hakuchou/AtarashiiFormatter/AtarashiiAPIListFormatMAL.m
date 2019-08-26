@@ -24,17 +24,17 @@
             aentry.status = [(NSString *)attributes[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
             NSString *strType = attributes[@"media_type"];
             if ([strType isEqualToString:@"tv"]||[strType isEqualToString:@"ova"]||[strType isEqualToString:@"ona"]) {
-                strType = [strType capitalizedString];
+                strType = [strType uppercaseString];
             }
             else {
-                strType = [strType uppercaseString];
+                strType = [strType capitalizedString];
             }
             aentry.type = strType;
             aentry.episodes = ((NSNumber *)attributes[@"num_episodes"]).intValue;
             
             // User Entry
             NSDictionary *listStatus = attributes[@"my_list_status"];
-            aentry.status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            aentry.watch_status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
             aentry.score = ((NSNumber *)listStatus[@"score"]).intValue;
             aentry.watched_episodes = ((NSNumber *)listStatus[@"num_episodes_watched"]).intValue;
             aentry.rewatching = ((NSNumber *)listStatus[@"is_rewatching"]).boolValue;
@@ -58,7 +58,10 @@
             mentry.titleid = ((NSNumber *)attributes[@"id"]).intValue;
             mentry.title = attributes[@"title"];
             mentry.image_url = attributes[@"main_picture"][@"large"] && attributes[@"main_picture"][@"large"] != [NSNull null] ? attributes[@"main_picture"][@"large"] : @"";
-            mentry.status = [(NSString *)attributes[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            mentry.status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            if ([mentry.status isEqualToString:@"currently publishing"]) {
+                mentry.status = @"publishing";
+            }
             NSString *strType = attributes[@"media_type"] != [NSNull null] ? [self convertMangaType:attributes[@"media_type"]] : @"";
             strType = [strType uppercaseString];
             mentry.type = strType;
@@ -67,10 +70,7 @@
             
             // User Entry
             NSDictionary *listStatus = attributes[@"my_list_status"];
-            mentry.status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
-            if ([mentry.status isEqualToString:@"currently publishing"]) {
-                mentry.status = @"publishing";
-            }
+            mentry.read_status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
             mentry.score = ((NSNumber *)listStatus[@"score"]).intValue;
             mentry.chapters = ((NSNumber *)listStatus[@"num_chapters_read"]).intValue;
             mentry.volumes_read = ((NSNumber *)listStatus[@"num_volumes_read"]).intValue;
@@ -106,10 +106,10 @@
     #endif
     NSString *strType = data[@"media_type"];
     if ([strType isEqualToString:@"tv"]||[strType isEqualToString:@"ova"]||[strType isEqualToString:@"ona"]) {
-        strType = [strType capitalizedString];
+        strType = [strType uppercaseString];
     }
     else {
-        strType = [strType uppercaseString];
+        strType = [strType capitalizedString];
     }
     aobject.type = strType;
     aobject.episodes = data[@"num_episodes"] && data[@"num_episodes"] != [NSNull null] ? ((NSNumber *)data[@"num_episodes"]).intValue : 0;
@@ -246,10 +246,10 @@
             aobject.episodes = d[@"num_episodes"] != [NSNull null] ? ((NSNumber *)d[@"num_episodes"]).intValue : 0;
             NSString *strType = d[@"media_type"];
             if ([strType isEqualToString:@"tv"]||[strType isEqualToString:@"ova"]||[strType isEqualToString:@"ona"]) {
-                strType = [strType capitalizedString];
+                strType = [strType uppercaseString];
             }
             else {
-                strType = [strType uppercaseString];
+                strType = [strType capitalizedString];
             }
             aobject.type = strType;
             [aobject parseSeason];
