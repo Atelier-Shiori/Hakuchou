@@ -152,6 +152,7 @@
         }
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
+        NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
     }];
 }
 
@@ -193,6 +194,7 @@
         completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALAnimeSearchtoAtarashii:responseObject] : [AtarashiiAPIListFormatMAL MALMangaSearchtoAtarashii:responseObject], nextOffset, hasNextPage);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
+        NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
     }];
 }
 /*
@@ -319,6 +321,7 @@
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
+        NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
     }];
 
 }
@@ -347,6 +350,7 @@
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
+        NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
     }];
 }
 
@@ -379,6 +383,7 @@
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         completionHandler(error);
+        NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
     }];
 }
 
@@ -411,6 +416,7 @@
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
+        NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
     }];
 }
 
@@ -448,6 +454,7 @@
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
+        NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
     }];
 }
 
