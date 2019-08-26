@@ -258,7 +258,7 @@
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
     [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
-        completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALAnimeInfotoAtarashii:responseObject] ? [AtarashiiAPIListFormatMAL MALMangaInfotoAtarashii:responseObject]);
+        completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALAnimeInfotoAtarashii:responseObject] : [AtarashiiAPIListFormatMAL MALMangaInfotoAtarashii:responseObject]);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
     }];
@@ -566,7 +566,6 @@
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     [manager GET:@"https://api.myanimelist.net/v2/users/@me?fields=avatar" parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(((NSNumber *)responseObject[@"id"]).intValue, responseObject[@"name"], responseObject[@"picture"] != [NSNull null] && responseObject[@"picture"] ? responseObject[@"picture"] : @"");
-        }
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
     }];
