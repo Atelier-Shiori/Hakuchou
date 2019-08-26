@@ -175,7 +175,7 @@
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
     NSString *searchURL = type == MALAnime ? @"https://api.myanimelist.net/v2/anime" : @"https://api.myanimelist.net/v2/manga";
-    NSDictionary *parameters = @{@"q" : searchterm, @"limit" : @(25), @"offset" : @(currentpage)};
+    NSDictionary *parameters = @{@"q" : searchterm, @"limit" : @(25), @"offset" : @(currentpage), @"fields" : type == MALAnime ? @"num_episodes,status,media_type,nsfw" : @"num_chapters,num_volumes,status,media_type,nsfw"};
     [manager GET:searchURL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         bool hasNextPage = false;
         int nextOffset = currentpage;
@@ -227,11 +227,11 @@
 - (void)retrieveTitleInfo:(int)titleid withType:(int)type completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler{
     NSString *url = @"";
     if (type == MALAnime) {
-        url = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/anime/%i",titleid];
+        url = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/anime/%i?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics",titleid];
         
     }
     else if (type == MALManga) {
-        url = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga/%i",titleid];
+        url = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga/%i?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_volumes,num_chapters,authors{first_name,last_name},pictures,background,related_anime,related_manga,recommendations,serialization{name}",titleid];
     }
     else {
         return;
@@ -567,12 +567,12 @@
     }
     NSError *error;
     
-    id responseObject = [smanager syncGET:@"https://api.myanimelist.net/v2/users/@me" parameters:nil task:NULL error:&error];
+    id responseObject = [smanager syncGET:@"https://api.myanimelist.net/v2/users/@me?fields=avatar" parameters:nil task:NULL error:&error];
     if (!error) {
         NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
         [defaults setValue:responseObject[@"id"] forKey:@"mal-userid"];
         [defaults setValue:responseObject[@"name"] forKey:@"mal-username"];
-        //[defaults setValue:d[@"avatar"] != [NSNull null] && d[@"avatar"][@"large"] ? d[@"avatar"][@"large"] : @"" forKey:@"anilist-avatar"];
+        [defaults setValue:responseObject[@"picture"] != [NSNull null] && responseObject[@"picture"] ? responseObject[@"picture"] : @"" forKey:@"mal-avatar"];
     }
     else {
         if ([[error.userInfo valueForKey:@"NSLocalizedDescription"] isEqualToString:@"Request failed: unauthorized (401)"] || [[error.userInfo valueForKey:@"NSLocalizedDescription"] isEqualToString:@"Request failed: forbidden (403)"]) {

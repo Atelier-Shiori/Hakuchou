@@ -13,6 +13,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface AtarashiiAPIListFormatMAL : NSObject
 + (id)MALtoAtarashiiAnimeList:(id)data;
 + (id)MALtoAtarashiiMangaList:(id)data;
++ (NSDictionary *)MALAnimeInfotoAtarashii:(NSDictionary *)data;
++ (NSDictionary *)MALMangaInfotoAtarashii:(NSDictionary *)data;
++ (NSArray *)MALAnimeSearchtoAtarashii:(NSDictionary *)data;
++ (NSArray *)AniListMangaSearchtoAtarashii:(NSDictionary *)data;
 @end
 
 NS_ASSUME_NONNULL_END
