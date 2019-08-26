@@ -84,6 +84,13 @@
     [OAuth2Manager authenticateUsingOAuthWithURLString:@"v1/oauth2/token"
                                             parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": _redirectURL, @"code_verifier" : _verifier} success:^(AFOAuthCredential *credential) {
         [[OAuthCredManager sharedInstance] saveCredentialForService:1 withCredential:credential];
+        [self getOwnMALid:^(int userid, NSString *username, NSString *avatar) {
+            [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"mal-username"];
+            [[NSUserDefaults standardUserDefaults] setInteger:userid forKey:@"mal-userid"];
+            [[NSUserDefaults standardUserDefaults] setValue:avatar forKey:@"mal-avatar"];
+             completionHandler(@{@"success":@(true)});
+        } error:^(NSError *error) {
+        }];
         /*
         [self getOwnAnilistid:^(int userid, NSString *username, NSString *scoreformat, NSString *avatar) {
             [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"anilist-username"];
@@ -183,7 +190,7 @@
             hasNextPage = true;
             nextOffset = nextOffset + 25;
         }
-        completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALAnimeSearchtoAtarashii:responseObject] ? [AtarashiiAPIListFormatMAL MALAnimeSearchtoAtarashii:responseObject], nextOffset, hasNextPage);
+        completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALAnimeSearchtoAtarashii:responseObject] : [AtarashiiAPIListFormatMAL MALAnimeSearchtoAtarashii:responseObject], nextOffset, hasNextPage);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
     }];
@@ -543,6 +550,26 @@
 
 - (long)getCurrentUserID {
     return [NSUserDefaults.standardUserDefaults integerForKey:@"mal-userid"];
+}
+
+- (void)getOwnMALid:(void (^)(int userid, NSString *username, NSString *avatar)) completionHandler error:(void (^)(NSError * error)) errorHandler {
+    AFOAuthCredential *cred = [self getFirstAccount];
+    if (cred && cred.expired) {
+        [self refreshToken:^(bool success) {
+            if (success) {
+                [self getOwnMALid:completionHandler error:errorHandler];
+            }
+        }];
+        return;
+    }
+    [manager.requestSerializer clearAuthorizationHeader];
+    [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
+    [manager GET:@"https://api.myanimelist.net/v2/users/@me?fields=avatar" parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+        completionHandler(((NSNumber *)responseObject[@"id"]).intValue, responseObject[@"name"], responseObject[@"picture"] != [NSNull null] && responseObject[@"picture"] ? responseObject[@"picture"] : @"");
+        }
+    } failure:^(NSURLSessionTask *operation, NSError *error) {
+        errorHandler(error);
+    }];
 }
 
 - (void)saveuserinfoforcurrenttoken {
