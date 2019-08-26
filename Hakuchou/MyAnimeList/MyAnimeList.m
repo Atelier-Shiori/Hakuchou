@@ -135,10 +135,10 @@
     }
     NSString * URL = @"";
     if (type == MALAnime) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/animelist?fields=status,media_type,num_episodes,my_list_status%7Bstart_date,finish_date,comments%7D&limit=1000&offset=%i", username, page];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/animelist?fields=status,media_type,num_episodes,my_list_status%%7Bstart_date,finish_date,comments%%7D&limit=1000&offset=%i", username, page];
     }
     else if (type == MALManga) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,my_list_status%7Bstart_date,finish_date,comments%7D&limit=1000&offset=%i", username, page];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,my_list_status%%7Bstart_date,finish_date,comments%%7D&limit=1000&offset=%i", username, page];
     }
     
     [manager GET:URL parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
@@ -237,7 +237,7 @@
         
     }
     else if (type == MALManga) {
-        url = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga/%i?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_volumes,num_chapters,authors%7Bfirst_name,last_name%7D,pictures,background,related_anime,related_manga,recommendations,serialization{name}",titleid];
+        url = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga/%i?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_volumes,num_chapters,authors%%7Bfirst_name,last_name%%7D,pictures,background,related_anime,related_manga,recommendations,serialization{name}",titleid];
     }
     else {
         return;
