@@ -190,7 +190,7 @@
             hasNextPage = true;
             nextOffset = nextOffset + 25;
         }
-        completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALAnimeSearchtoAtarashii:responseObject] : [AtarashiiAPIListFormatMAL MALAnimeSearchtoAtarashii:responseObject], nextOffset, hasNextPage);
+        completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALAnimeSearchtoAtarashii:responseObject] : [AtarashiiAPIListFormatMAL MALMangaSearchtoAtarashii:responseObject], nextOffset, hasNextPage);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
     }];

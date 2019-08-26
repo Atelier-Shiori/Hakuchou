@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDictionary *)MALAnimeInfotoAtarashii:(NSDictionary *)data;
 + (NSDictionary *)MALMangaInfotoAtarashii:(NSDictionary *)data;
 + (NSArray *)MALAnimeSearchtoAtarashii:(NSDictionary *)data;
-+ (NSArray *)AniListMangaSearchtoAtarashii:(NSDictionary *)data;
++ (NSArray *)MALMangaSearchtoAtarashii:(NSDictionary *)data;
 @end
 
 NS_ASSUME_NONNULL_END

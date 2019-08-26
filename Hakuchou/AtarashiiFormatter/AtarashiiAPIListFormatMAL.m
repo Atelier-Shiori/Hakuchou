@@ -98,7 +98,7 @@
     }
     aobject.synposis = [(NSString *)data[@"nsfw"] isEqualToString:@"white"] ? data[@"synopsis"] != [NSNull null] ? data[@"synopsis"] : @"No synopsis available" : @"Synopsis not available for adult titles";
     #else
-    bool allowed = ([NSUserDefaults.standardUserDefaults boolForKey:@"nsfw"] || [(NSString *)data[@"nsfw"] isEqualToString:@"white"]);
+    bool allowed = ([NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] || [(NSString *)data[@"nsfw"] isEqualToString:@"white"]);
     if (data[@"main_picture"] != [NSNull null]&& data[@"main_picture"]) {
         aobject.image_url = data[@"main_picture"][@"large"] && data[@"main_picture"] != [NSNull null] && data[@"main_picture"][@"large"] && allowed ?  data[@"main_picture"][@"large"] : @"";
     }
@@ -225,26 +225,27 @@
     NSMutableArray *tmparray = [NSMutableArray new];
     for (NSDictionary *d in dataarray) {
         @autoreleasepool {
+            NSDictionary *titleData = d[@"node"];
 #if defined(AppStore)
-            if ([(NSString *)d[@"nsfw"] isEqualToString:@"white"]) {
+            if ([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"]) {
                 continue;
             }
 #else
-            if ([(NSString *)d[@"nsfw"] isEqualToString:@"white"] && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+            if ([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
                 continue;
             }
 #endif
             AtarashiiAnimeObject *aobject = [AtarashiiAnimeObject new];
-            aobject.titleid = ((NSNumber *)d[@"id"]).intValue;
-            aobject.title = d[@"title"];
+            aobject.titleid = ((NSNumber *)titleData[@"id"]).intValue;
+            aobject.title = titleData[@"title"];
             // Create other titles
-            aobject.other_titles = @{@"synonyms" : d[@"alternative_titles"][@"synonyms"] && d[@"alternative_titles"][@"synonyms"] != [NSNull null] ? d[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : d[@"alternative_titles"][@"en"] != [NSNull null] && d[@"alternative_titles"][@"en"] ? @[d[@"alternative_titles"][@"en"]] : @[], @"japanese" : d[@"alternative_titles"][@"ja"] != [NSNull null] && d[@"alternative_titles"][@"ja"] ? @[d[@"alternative_titles"][@"ja"]] : @[] };
-            if (d[@"main_picture"] != [NSNull null]) {
-                 aobject.image_url = d[@"main_picture"][@"large"] && d[@"main_picture"] != [NSNull null] && d[@"main_picture"][@"large"] ?  d[@"main_picture"][@"large"] : @"";
+            aobject.other_titles = @{@"synonyms" : titleData[@"alternative_titles"][@"synonyms"] && titleData[@"alternative_titles"][@"synonyms"] != [NSNull null] ? titleData[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : titleData[@"alternative_titles"][@"en"] != [NSNull null] && titleData[@"alternative_titles"][@"en"] ? @[titleData[@"alternative_titles"][@"en"]] : @[], @"japanese" : titleData[@"alternative_titles"][@"ja"] != [NSNull null] && titleData[@"alternative_titles"][@"ja"] ? @[titleData[@"alternative_titles"][@"ja"]] : @[] };
+            if (titleData[@"main_picture"] != [NSNull null]) {
+                 aobject.image_url = titleData[@"main_picture"][@"large"] && titleData[@"main_picture"] != [NSNull null] && titleData[@"main_picture"][@"large"] ?  d[@"main_picture"][@"large"] : @"";
             }
-            aobject.status = [(NSString *)data[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
-            aobject.episodes = d[@"num_episodes"] != [NSNull null] ? ((NSNumber *)d[@"num_episodes"]).intValue : 0;
-            NSString *strType = d[@"media_type"];
+            aobject.status = [(NSString *)titleData[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            aobject.episodes = titleData[@"num_episodes"] != [NSNull null] ? ((NSNumber *)titleData[@"num_episodes"]).intValue : 0;
+            NSString *strType = titleData[@"media_type"];
             if ([strType isEqualToString:@"tv"]||[strType isEqualToString:@"ova"]||[strType isEqualToString:@"ona"]) {
                 strType = [strType uppercaseString];
             }
@@ -259,35 +260,36 @@
     return tmparray;
 }
 
-+ (NSArray *)AniListMangaSearchtoAtarashii:(NSDictionary *)data {
++ (NSArray *)MALMangaSearchtoAtarashii:(NSDictionary *)data {
     NSArray *dataarray = data[@"data"];
     NSMutableArray *tmparray = [NSMutableArray new];
     for (NSDictionary *d in dataarray) {
         @autoreleasepool {
+            NSDictionary *titleData = d[@"node"];
 #if defined(AppStore)
-            if ([(NSString *)d[@"nsfw"] isEqualToString:@"white"]) {
+            if ([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"]) {
                 continue;
             }
 #else
-            if ([(NSString *)d[@"nsfw"] isEqualToString:@"white"] && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+            if ([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
                 continue;
             }
 #endif
             AtarashiiMangaObject *mobject = [AtarashiiMangaObject new];
-            mobject.titleid = ((NSNumber *)d[@"id"]).intValue;
-            mobject.title = d[@"title"];
+            mobject.titleid = ((NSNumber *)titleData[@"id"]).intValue;
+            mobject.title = titleData[@"title"];
             // Create other titles
-            mobject.other_titles = @{@"synonyms" : d[@"alternative_titles"][@"synonyms"] && d[@"alternative_titles"][@"synonyms"] != [NSNull null] ? d[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : d[@"alternative_titles"][@"en"] != [NSNull null] && d[@"alternative_titles"][@"en"] ? @[d[@"alternative_titles"][@"en"]] : @[], @"japanese" : d[@"alternative_titles"][@"ja"] != [NSNull null] && d[@"alternative_titles"][@"ja"] ? @[d[@"alternative_titles"][@"ja"]] : @[] };
-            if (d[@"main_picture"] != [NSNull null]) {
-                 mobject.image_url = d[@"main_picture"][@"large"] && d[@"main_picture"] != [NSNull null] && d[@"main_picture"][@"large"] ?  d[@"main_picture"][@"large"] : @"";
+            mobject.other_titles = @{@"synonyms" : titleData[@"alternative_titles"][@"synonyms"] && titleData[@"alternative_titles"][@"synonyms"] != [NSNull null] ? titleData[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : titleData[@"alternative_titles"][@"en"] != [NSNull null] && titleData[@"alternative_titles"][@"en"] ? @[titleData[@"alternative_titles"][@"en"]] : @[], @"japanese" : titleData[@"alternative_titles"][@"ja"] != [NSNull null] && titleData[@"alternative_titles"][@"ja"] ? @[titleData[@"alternative_titles"][@"ja"]] : @[] };
+            if (titleData[@"main_picture"] != [NSNull null]) {
+                 mobject.image_url = titleData[@"main_picture"][@"large"] && titleData[@"main_picture"] != [NSNull null] && titleData[@"main_picture"][@"large"] ?  titleData[@"main_picture"][@"large"] : @"";
             }
-            mobject.status = [(NSString *)d[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            mobject.status = [(NSString *)titleData[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
             if ([mobject.status isEqualToString:@"currently publishing"]) {
                 mobject.status = @"publishing";
             }
-            mobject.chapters = d[@"num_chapters"] != [NSNull null] ? ((NSNumber *)d[@"num_chapters"]).intValue : 0;
-            mobject.volumes = d[@"num_volumes"] != [NSNull null] ? ((NSNumber *)d[@"num_volumes"]).intValue : 0;
-            mobject.type = d[@"media_type"] != [NSNull null] ? [self convertMangaType:d[@"media_type"]] : @"";
+            mobject.chapters = titleData[@"num_chapters"] != [NSNull null] ? ((NSNumber *)titleData[@"num_chapters"]).intValue : 0;
+            mobject.volumes = titleData[@"num_volumes"] != [NSNull null] ? ((NSNumber *)titleData[@"num_volumes"]).intValue : 0;
+            mobject.type = titleData[@"media_type"] != [NSNull null] ? [self convertMangaType:titleData[@"media_type"]] : @"";
             [tmparray addObject:mobject.NSDictionaryRepresentation];
         }
     }
