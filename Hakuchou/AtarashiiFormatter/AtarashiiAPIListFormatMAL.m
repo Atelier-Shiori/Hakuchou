@@ -241,7 +241,7 @@
             // Create other titles
             aobject.other_titles = @{@"synonyms" : titleData[@"alternative_titles"][@"synonyms"] && titleData[@"alternative_titles"][@"synonyms"] != [NSNull null] ? titleData[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : titleData[@"alternative_titles"][@"en"] != [NSNull null] && titleData[@"alternative_titles"][@"en"] ? @[titleData[@"alternative_titles"][@"en"]] : @[], @"japanese" : titleData[@"alternative_titles"][@"ja"] != [NSNull null] && titleData[@"alternative_titles"][@"ja"] ? @[titleData[@"alternative_titles"][@"ja"]] : @[] };
             if (titleData[@"main_picture"] != [NSNull null]) {
-                 aobject.image_url = titleData[@"main_picture"][@"large"] && titleData[@"main_picture"] != [NSNull null] && titleData[@"main_picture"][@"large"] ?  d[@"main_picture"][@"large"] : @"";
+                 aobject.image_url = titleData[@"main_picture"][@"large"] && titleData[@"main_picture"] != [NSNull null] && titleData[@"main_picture"][@"large"] ?  titleData[@"main_picture"][@"large"] : @"";
             }
             aobject.status = [(NSString *)titleData[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
             aobject.episodes = titleData[@"num_episodes"] != [NSNull null] ? ((NSNumber *)titleData[@"num_episodes"]).intValue : 0;
