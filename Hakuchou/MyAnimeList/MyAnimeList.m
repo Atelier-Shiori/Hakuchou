@@ -231,7 +231,7 @@
         
     }
     else if (type == MALManga) {
-        url = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga/%i?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_volumes,num_chapters,authors%%7Bfirst_name,last_name%%7D,pictures,background,related_anime,related_manga,recommendations,serialization{name}",titleid];
+        url = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga/%i?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_volumes,num_chapters,authors%%7Bfirst_name,last_name%%7D,pictures,background,related_anime,related_manga,recommendations,serialization%%7Bname%%7D",titleid];
     }
     else {
         return;
