@@ -78,7 +78,7 @@
                 mentry.read_status = @"on-hold";
             }
             mentry.score = ((NSNumber *)listStatus[@"score"]).intValue;
-            mentry.chapters = ((NSNumber *)listStatus[@"num_chapters_read"]).intValue;
+            mentry.chapters_read = ((NSNumber *)listStatus[@"num_chapters_read"]).intValue;
             mentry.volumes_read = ((NSNumber *)listStatus[@"num_volumes_read"]).intValue;
             mentry.rereading = ((NSNumber *)listStatus[@"is_rereading"]).boolValue;
             mentry.reading_start = listStatus[@"start_date"] ? listStatus[@"start_date"] : @"";
