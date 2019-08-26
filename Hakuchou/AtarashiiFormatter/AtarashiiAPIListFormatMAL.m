@@ -75,9 +75,7 @@
             NSDictionary *listStatus = attributes[@"my_list_status"];
             mentry.read_status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
             if ([mentry.read_status isEqualToString:@"on hold"]) {
-                m            if ([aentry.watched_status isEqualToString:@"on hold"]) {
-                    aentry.watched_status = @"on-hold";
-                }entry.read_status = @"on-hold";
+                mentry.read_status = @"on-hold";
             }
             mentry.score = ((NSNumber *)listStatus[@"score"]).intValue;
             mentry.chapters = ((NSNumber *)listStatus[@"num_chapters_read"]).intValue;
