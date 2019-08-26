@@ -374,7 +374,7 @@
     [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/v2/anime/%i/my_list_status", titleid] parameters:parameters success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
-        completionHandler(error);
+        errorHandler(error);
         NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
     }];
 }
