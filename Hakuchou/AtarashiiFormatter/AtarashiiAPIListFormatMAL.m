@@ -227,11 +227,11 @@
         @autoreleasepool {
             NSDictionary *titleData = d[@"node"];
 #if defined(AppStore)
-            if ([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"]) {
+            if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"]) {
                 continue;
             }
 #else
-            if ([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+            if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
                 continue;
             }
 #endif
@@ -267,11 +267,11 @@
         @autoreleasepool {
             NSDictionary *titleData = d[@"node"];
 #if defined(AppStore)
-            if ([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"]) {
+            if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"]) {
                 continue;
             }
 #else
-            if ([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+            if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
                 continue;
             }
 #endif
