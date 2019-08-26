@@ -60,7 +60,7 @@
 
 - (void)refreshToken:(void (^)(bool success))completion {
     OAuthCredManager *credmanager = [OAuthCredManager sharedInstance];
-    AFOAuthCredential *cred = [credmanager getFirstAccountForService:3];
+    AFOAuthCredential *cred = [credmanager getFirstAccountForService:1];
     AFOAuth2Manager *OAuth2Manager = [[AFOAuth2Manager alloc] initWithBaseURL:[NSURL URLWithString:@"https://myanimelist.net/"]
                                                                      clientID:_clientid
                                                                        secret:@""];
@@ -68,7 +68,7 @@
     [OAuth2Manager authenticateUsingOAuthWithURLString:@"v1/oauth2/token"
                                             parameters:@{@"grant_type":@"refresh_token", @"refresh_token":cred.refreshToken, @"redirect_uri": _redirectURL} success:^(AFOAuthCredential *credential) {
                                                 NSLog(@"Token refreshed");
-                                                [credmanager saveCredentialForService:3 withCredential:credential];
+                                                [credmanager saveCredentialForService:1 withCredential:credential];
                                                 completion(true);
                                             }
                                                failure:^(NSError *error) {
