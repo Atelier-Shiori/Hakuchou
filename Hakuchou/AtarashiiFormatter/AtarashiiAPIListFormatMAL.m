@@ -302,6 +302,39 @@
     return tmparray;
 }
 
++ (NSArray *)normalizeSeasonData:(NSArray *)seasonData withSeason:(NSString *)season withYear:(int)year {
+    NSMutableArray *tmparray = [NSMutableArray new];
+    for (NSDictionary *d in seasonData) {
+        @autoreleasepool {
+            NSDictionary *titleData = d[@"node"];
+            if (![(NSString *)entry[@"nsfw"] isEqualToString:@"white"]) {
+                continue;
+            }
+            AtarashiiAnimeObject *aobject = [AtarashiiAnimeObject new];
+            aobject.titleid = ((NSNumber *)titleData[@"id"]).intValue;
+            aobject.title = titleData[@"title"];
+            aobject.other_titles =  @{@"synonyms" : titleData[@"alternative_titles"][@"synonyms"] && titleData[@"alternative_titles"][@"synonyms"] != [NSNull null] ? titleData[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : titleData[@"alternative_titles"][@"en"] != [NSNull null] && titleData[@"alternative_titles"][@"en"]  && ((NSString *)titleData[@"alternative_titles"][@"en"]).length > 0 ? @[titleData[@"alternative_titles"][@"en"]] : @[], @"japanese" : titleData[@"alternative_titles"][@"ja"] != [NSNull null] && titleData[@"alternative_titles"][@"ja"] && ((NSString *)titleData[@"alternative_titles"][@"ja"]).length > 0 ? @[titleData[@"alternative_titles"][@"ja"]] : @[] };
+            if (titleData[@"main_picture"] != [NSNull null]) {
+                 aobject.image_url = titleData[@"main_picture"][@"large"] && titleData[@"main_picture"] != [NSNull null] && titleData[@"main_picture"][@"large"] ?  titleData[@"main_picture"][@"large"] : @"";
+            }
+            NSString *strType = titleData[@"media_type"];
+            if ([strType isEqualToString:@"tv"]||[strType isEqualToString:@"ova"]||[strType isEqualToString:@"ona"]) {
+                strType = [strType uppercaseString];
+            }
+            else {
+                strType = [strType capitalizedString];
+            }
+            aobject.type = strType;
+            NSMutableDictionary *finaldict = [[NSMutableDictionary alloc] initWithDictionary:aobject.NSDictionaryRepresentation];
+            finaldict[@"year"] = @(year);
+            finaldict[@"season"] = season;
+            finaldict[@"service"] = @(1);
+            [tmparray addObject:finaldict.copy];
+        }
+    }
+    return tmparray.copy;
+}
+
 + (NSString *)convertMangaType:(NSString *)type {
     NSString *tmpstr = type.lowercaseString;
     tmpstr = [tmpstr stringByReplacingOccurrencesOfString:@"_" withString:@" "];

@@ -309,7 +309,7 @@
         errorHandler(nil);
         return;
     }
-    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/v2/anime/%i/my_list_status", titleid] parameters:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_episodes_watched":@(episode)} success:^(NSURLSessionTask *task, id responseObject) {
+    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/v2/anime/%i/my_list_status", titleid] parameters:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_watched_episodes"/*@"num_episodes_watched"*/:@(episode)} success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -367,7 +367,7 @@
         return;
     }
     NSMutableDictionary *parameters = [NSMutableDictionary new];
-    [parameters addEntriesFromDictionary:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_episodes_watched":@(episode)}];
+    [parameters addEntriesFromDictionary:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_watched_episodes"/*@"num_episodes_watched"*/:@(episode)}];
     if (efields) {
         [parameters addEntriesFromDictionary:efields];
     }
