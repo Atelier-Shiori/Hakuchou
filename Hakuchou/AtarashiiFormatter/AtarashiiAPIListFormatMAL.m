@@ -307,7 +307,7 @@
     for (NSDictionary *d in seasonData) {
         @autoreleasepool {
             NSDictionary *titleData = d[@"node"];
-            if (![(NSString *)entry[@"nsfw"] isEqualToString:@"white"]) {
+            if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"]) {
                 continue;
             }
             AtarashiiAnimeObject *aobject = [AtarashiiAnimeObject new];
