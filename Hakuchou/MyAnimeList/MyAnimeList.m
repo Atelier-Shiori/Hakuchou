@@ -127,10 +127,10 @@
     }
     NSString * URL = @"";
     if (type == MALAnime) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/animelist?fields=status,media_type,num_episodes,my_list_status%%7Bstart_date,finish_date,comments%%7D&limit=1000&offset=%i", username, page];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/animelist?fields=status,media_type,num_episodes,my_list_status%%7Bstart_date,finish_date,comments,num_times_reread%%7D&limit=1000&offset=%i", username, page];
     }
     else if (type == MALManga) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,my_list_status%%7Bstart_date,finish_date,comments%%7D&limit=1000&offset=%i", username, page];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,my_list_status%%7Bstart_date,finish_date,comments,num_times_rewatched%%7D&limit=1000&offset=%i", username, page];
     }
     
     [manager GET:URL parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
