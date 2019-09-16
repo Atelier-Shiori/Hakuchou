@@ -27,7 +27,7 @@
 @implementation MyAnimeList
 @synthesize manager;
 
-NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3/";
+NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
 
 - (instancetype)initWithClientId:(NSString *)clientid withRedirectURL:(NSString *)redirectURL {
     if (self = [self init]) {
@@ -275,15 +275,15 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3/";
         return;
     }
     [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
-        [_tmparray addObjectsFromArray:responseObject[@"reviews"]];
+        [self.tmparray addObjectsFromArray:responseObject[@"reviews"]];
         if (((NSArray *)responseObject[@"reviews"]).count > 0) {
             int tmppage = page+1;
             [NSThread sleepForTimeInterval:1];
             [self retrieveReviewsForTitle:titleid withType:type withPage:tmppage completion:completionHandler error:errorHandler];
         }
         else {
-            completionHandler(_tmparray.mutableCopy);
-            _tmparray = nil;
+            completionHandler(self.tmparray.mutableCopy);
+            self.tmparray = nil;
         }
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
