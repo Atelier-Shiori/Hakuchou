@@ -20,11 +20,14 @@
     @property (strong) NSString *redirectURL;
     @property (strong) AFHTTPSessionManager *manager;
     @property (strong) NSString *verifier;
+    @property (strong) NSMutableArray *tmparray;
 @end
 
 
 @implementation MyAnimeList
 @synthesize manager;
+
+NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3/";
 
 - (instancetype)initWithClientId:(NSString *)clientid withRedirectURL:(NSString *)redirectURL {
     if (self = [self init]) {
@@ -257,25 +260,34 @@
         errorHandler(error);
     }];
 }
-- (void)retrieveReviewsForTitle:(int)titleid withType:(int)type completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler{
-            /*
+- (void)retrieveReviewsForTitle:(int)titleid withType:(int)type withPage:(int)page completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     NSString *url = @"";
+    if (!_tmparray) {
+        _tmparray = [NSMutableArray new];
+    }
     if (type == MALAnime) {
-        url = [NSString stringWithFormat:@"%@/2.1/anime/reviews/%i",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"],titleid];
-        
+        url = [NSString stringWithFormat:@"%@/anime/%i/reviews/%i",kJikanAPIURL,titleid,page];
     }
     else if (type == MALManga) {
-        url = [NSString stringWithFormat:@"%@/2.1/manga/reviews/%i",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"],titleid];
+        url = [NSString stringWithFormat:@"%@/anime/%i/reviews/%i",kJikanAPIURL,titleid,page];
     }
     else {
         return;
     }
     [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
-        completionHandler(responseObject);
+        [_tmparray addObjectsFromArray:responseObject[@"reviews"]];
+        if (((NSArray *)responseObject[@"reviews"]).count > 0) {
+            int tmppage = page+1;
+            [NSThread sleepForTimeInterval:1];
+            [self retrieveReviewsForTitle:titleid withType:type withPage:tmppage completion:completionHandler error:errorHandler];
+        }
+        else {
+            completionHandler(_tmparray.mutableCopy);
+            _tmparray = nil;
+        }
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
-    }];*/
-
+    }];
 }
 
 /*- (void)retriveUpdateHistory:(NSString *)username completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler{
