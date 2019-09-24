@@ -1,5 +1,5 @@
 # Hakuchou
-Hakuchou (白鳥) is a macOS/iOS framework that allows easy access to core API functionality to AniList and Kitsu. Data is formatted to Atarashii-API data objects to maintain compatibility.
+Hakuchou (白鳥) is a macOS/iOS framework that allows easy access to core API functionality to AniList, Kitsu, and MyAnimeList. Data is formatted to Atarashii-API data objects to maintain compatibility.
 
 # Dependencies
 * AFNetworking
