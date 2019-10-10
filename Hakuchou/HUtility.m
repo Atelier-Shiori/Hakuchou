@@ -60,6 +60,12 @@
     return [formatter dateFromString:datestring];
 }
 
++ (NSDate *)isodateStringToDate:(NSString *)datestring {
+    NSDateFormatter *formatter = [NSDateFormatter new];
+    formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+    return [formatter dateFromString:datestring];
+}
+
 + (int)parseSeason:(NSString *)string {
     // Season Parsing
     NSArray *matches = [HUtility findMatches:string pattern:@"((S|s|Season )\\d+|\\d+(st|nd|rd|th) Season|\\d+)"];

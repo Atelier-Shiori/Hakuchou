@@ -45,7 +45,7 @@
             aentry.watching_start = listStatus[@"start_date"] ? listStatus[@"start_date"] : @"";
             aentry.watching_end = listStatus[@"finish_date"] ? listStatus[@"finish_date"] : @"";
             aentry.personal_comments = listStatus[@"comments"];
-            aentry.lastupdated = [[HUtility dateStringToDate:listStatus[@"updated_at"]] timeIntervalSince1970];
+            aentry.lastupdated = [[HUtility isodateStringToDate:listStatus[@"updated_at"]] timeIntervalSince1970];
             [tmparray addObject:aentry.NSDictionaryRepresentation];
         }
     }
@@ -86,7 +86,7 @@
             mentry.reading_start = listStatus[@"start_date"] ? listStatus[@"start_date"] : @"";
             mentry.reading_end = listStatus[@"finish_date"] ? listStatus[@"finish_date"] : @"";
             mentry.personal_comments = listStatus[@"comments"];
-            mentry.lastupdated = [[HUtility dateStringToDate:listStatus[@"updated_at"]] timeIntervalSince1970];
+            mentry.lastupdated = [[HUtility isodateStringToDate:listStatus[@"updated_at"]] timeIntervalSince1970];
             [tmparray addObject:mentry.NSDictionaryRepresentation];
         }
     }
