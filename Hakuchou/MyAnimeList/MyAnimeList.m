@@ -101,6 +101,16 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
                 NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
                                                }];
 }
+#pragma mark Profiles
+- (void)retrieveProfile:(NSString *)username completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
+    [manager.requestSerializer clearAuthorizationHeader];
+    [manager GET:[NSString stringWithFormat:@"%@/user/%@/profile",kJikanAPIURL,username] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        completionHandler([AtarashiiAPIListFormatMAL MalUsertoAtarashii:responseObject]);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        errorHandler(error);
+    }];
+    
+}
 
 #pragma mark List and Serach
 

@@ -415,7 +415,7 @@
             NSDictionary *userdata = userinfo[@"data"][0];
             user.avatar_url = userdata[@"attributes"][@"avatar"] != [NSNull null] && userdata[@"attributes"][@"avatar"] ? userdata[@"attributes"][@"avatar"][@"original"] : [NSNull null];
             user.gender = userdata[@"attributes"][@"gender"] != [NSNull null] ? userdata[@"attributes"][@"gender"] : @"Unknown";
-            user.birthday =  userdata[@"attributes"][@"birthday"] != [NSNull null] ?  userdata[@"attributes"][@"gender"] : [NSNull null];
+            user.birthday =  userdata[@"attributes"][@"birthday"] != [NSNull null] ?  userdata[@"attributes"][@"birthday"] : [NSNull null];
             user.location =  userdata[@"attributes"][@"location"] != [NSNull null] ?  userdata[@"attributes"][@"location"] : [NSNull null];
             user.website =  userdata[@"attributes"][@"website"] != [NSNull null] ?  userdata[@"attributes"][@"website"] : [NSNull null];
             user.join_date =  [(NSString *)userdata[@"attributes"][@"createdAt"] substringToIndex:10];
