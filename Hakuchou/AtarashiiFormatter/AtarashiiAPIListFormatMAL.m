@@ -338,14 +338,13 @@
 }
 
 + (NSDictionary *)MalUsertoAtarashii:(NSDictionary *)userdata {
-        AtarashiiUserObject *user = [AtarashiiUserObject new];
-        user.avatar_url = userdata[@"image_url"] != [NSNull null] ? userdata[@"image_url"] : [NSNull null];
-        user.gender = userdata[@"gender"] != [NSNull null] ? userdata[@"gender"] : @"Unknown";
-        user.birthday =  userdata[@"birthday"] != [NSNull null] ?  userdata[@"birthday"] : [NSNull null];
-        user.location =  userdata[@"location"] != [NSNull null] ?  userdata[@"location"] : [NSNull null];
-        user.website =  [NSNull null];
-        user.join_date =  userdata[@"joined"]:
-        return [user.NSDictionaryRepresentation copy];
+    AtarashiiUserObject *user = [AtarashiiUserObject new];
+    user.avatar_url = userdata[@"image_url"] != [NSNull null] ? userdata[@"image_url"] : [NSNull null];
+    user.gender = userdata[@"gender"] != [NSNull null] ? userdata[@"gender"] : @"Unknown";
+    user.birthday =  userdata[@"birthday"] != [NSNull null] ?  userdata[@"birthday"] : [NSNull null];
+    user.location =  userdata[@"location"] != [NSNull null] ?  userdata[@"location"] : [NSNull null];
+    user.join_date =  userdata[@"joined"];
+    return [user.NSDictionaryRepresentation copy];
 }
 
 + (NSString *)convertMangaType:(NSString *)type {
