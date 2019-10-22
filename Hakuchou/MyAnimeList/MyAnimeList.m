@@ -285,7 +285,7 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
         return;
     }
     [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
-        [self.tmparray addObjectsFromArray:responseObject[@"reviews"]];
+        [self.tmparray addObjectsFromArray:[AtarashiiAPIListFormatMAL MALReviewstoAtarashii:responseObject[@"reviews"] withType:type]];
         if (((NSArray *)responseObject[@"reviews"]).count > 0) {
             int tmppage = page+1;
             [NSThread sleepForTimeInterval:1];

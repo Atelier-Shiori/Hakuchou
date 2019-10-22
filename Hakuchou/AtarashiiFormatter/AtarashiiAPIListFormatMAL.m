@@ -347,6 +347,31 @@
     return [user.NSDictionaryRepresentation copy];
 }
 
++ (NSArray *)MALReviewstoAtarashii:(NSArray *)data withType:(int)type {
+    NSMutableArray *tmparray = [NSMutableArray new];
+    for (NSDictionary *review in data) {
+        @autoreleasepool {
+            AtarashiiReviewObject *reviewobj = [AtarashiiReviewObject new];
+            reviewobj.mediatype = type;
+            reviewobj.date = review[@"data"];
+            reviewobj.helpful = ((NSNumber *)review[@"helpful_count"]).intValue;
+            reviewobj.helpful_total = ((NSNumber *)review[@"helpful_count"]).intValue;
+            reviewobj.review = review[@"content"];
+            reviewobj.actual_username = review[@"reviewer"][@"username"];
+            reviewobj.avatar_url = review[@"reviewer"][@"image_url"] && review[@"reviewer"][@"image_url"] != [NSNull null] ? review[@"reviewer"][@"image_url"] : @"";
+            reviewobj.rating = ((NSNumber *)review[@"reviewer"][@"scores"][@"overall"]).intValue;
+            if (type == 0) {
+                reviewobj.watched_episodes = ((NSNumber *)review[@"reviewer"][@"episodes_seen"]).intValue;
+            }
+            else {
+                reviewobj.read_chapters = ((NSNumber *)review[@"reviewer"][@"chapters_read"]).intValue;
+            }
+            [tmparray addObject:reviewobj.NSDictionaryRepresentation];
+        }
+    }
+    return tmparray.copy;
+}
+
 + (NSString *)convertMangaType:(NSString *)type {
     NSString *tmpstr = type.lowercaseString;
     tmpstr = [tmpstr stringByReplacingOccurrencesOfString:@"_" withString:@" "];
