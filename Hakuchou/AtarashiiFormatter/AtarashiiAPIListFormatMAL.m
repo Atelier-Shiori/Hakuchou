@@ -358,6 +358,7 @@
             reviewobj.helpful_total = ((NSNumber *)review[@"helpful_count"]).intValue;
             reviewobj.review = review[@"content"];
             reviewobj.actual_username = review[@"reviewer"][@"username"];
+            reviewobj.username = review[@"reviewer"][@"username"];
             reviewobj.avatar_url = review[@"reviewer"][@"image_url"] && review[@"reviewer"][@"image_url"] != [NSNull null] ? review[@"reviewer"][@"image_url"] : @"";
             reviewobj.rating = ((NSNumber *)review[@"reviewer"][@"scores"][@"overall"]).intValue;
             if (type == 0) {
