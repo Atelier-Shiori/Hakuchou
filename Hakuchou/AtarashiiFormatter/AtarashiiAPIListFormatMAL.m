@@ -353,7 +353,7 @@
         @autoreleasepool {
             AtarashiiReviewObject *reviewobj = [AtarashiiReviewObject new];
             reviewobj.mediatype = type;
-            reviewobj.date = review[@"data"];
+            reviewobj.date = review[@"date"];
             reviewobj.helpful = ((NSNumber *)review[@"helpful_count"]).intValue;
             reviewobj.helpful_total = ((NSNumber *)review[@"helpful_count"]).intValue;
             reviewobj.review = review[@"content"];
