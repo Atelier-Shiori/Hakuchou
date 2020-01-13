@@ -31,13 +31,18 @@
                         }
                         lentry.type = [HUtility convertAnimeType:metadata[@"attributes"][@"showType"]];
                         NSString *tmpstatus = metadata[@"attributes"][@"status"];
-                        if ([tmpstatus isEqualToString:@"finished"]) {
-                            lentry.status = @"finished airing";
+                        if (metadata[@"attributes"][@"status"] != [NSNull null]) {
+                            if ([tmpstatus isEqualToString:@"finished"]) {
+                                lentry.status = @"finished airing";
+                            }
+                            else if ([tmpstatus isEqualToString:@"current"]) {
+                                lentry.status = @"currently airing";
+                            }
+                            else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
+                                lentry.status = @"not yet aired";
+                            }
                         }
-                        else if ([tmpstatus isEqualToString:@"current"]) {
-                            lentry.status = @"currently airing";
-                        }
-                        else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
+                        else {
                             lentry.status = @"not yet aired";
                         }
                         lentry.entryid = ((NSNumber *)entry[@"id"]).intValue;
@@ -89,13 +94,18 @@
                     }
                     lentry.type = ((NSString *)metadata[@"attributes"][@"mangaType"]).capitalizedString;
                     NSString *tmpstatus = metadata[@"attributes"][@"status"];
-                    if ([tmpstatus isEqualToString:@"finished"]) {
-                        lentry.status = tmpstatus;
+                    if (metadata[@"attributes"][@"status"] != [NSNull null]) {
+                        if ([tmpstatus isEqualToString:@"finished"]) {
+                            lentry.status = tmpstatus;
+                        }
+                        else if ([tmpstatus isEqualToString:@"current"]) {
+                            lentry.status = @"publishing";
+                        }
+                        else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
+                            lentry.status = @"not yet published";
+                        }
                     }
-                    else if ([tmpstatus isEqualToString:@"current"]) {
-                        lentry.status = @"publishing";
-                    }
-                    else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
+                    else {
                         lentry.status = @"not yet published";
                     }
                     lentry.entryid = ((NSNumber *)entry[@"id"]).intValue;
@@ -157,13 +167,18 @@
     aobject.members_count = attributes[@"userCount"] != [NSNull null] ? ((NSNumber *)attributes[@"userCount"]).intValue : 0;
     aobject.favorited_count = attributes[@"favoritesCount"] != [NSNull null] ? ((NSNumber *)attributes[@"favoritesCount"]).intValue : 0;
     NSString *tmpstatus = attributes[@"status"];
-    if ([tmpstatus isEqualToString:@"finished"]) {
-        aobject.status = @"finished airing";
+    if (attributes[@"status"] != [NSNull null]) {
+        if ([tmpstatus isEqualToString:@"finished"]) {
+            aobject.status = @"finished airing";
+        }
+        else if ([tmpstatus isEqualToString:@"current"]) {
+            aobject.status = @"currently airing";
+        }
+        else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
+            aobject.status = @"not yet aired";
+        }
     }
-    else if ([tmpstatus isEqualToString:@"current"]) {
-        aobject.status = @"currently airing";
-    }
-    else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
+    else {
         aobject.status = @"not yet aired";
     }
     NSArray * included = data[@"included"];
@@ -217,13 +232,18 @@
     mobject.favorited_count = attributes[@"favoritesCount"] != [NSNull null] ? ((NSNumber *)attributes[@"favoritesCount"]).intValue : 0;
     mobject.synposis = attributes[@"synopsis"];
     NSString *tmpstatus = attributes[@"status"];
-    if ([tmpstatus isEqualToString:@"finished"]) {
-        mobject.status = tmpstatus;
+    if (attributes[@"status"] != [NSNull null]) {
+        if ([tmpstatus isEqualToString:@"finished"]) {
+            mobject.status = tmpstatus;
+        }
+        else if ([tmpstatus isEqualToString:@"current"]) {
+            mobject.status = @"publishing";
+        }
+        else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
+            mobject.status = @"not yet published";
+        }
     }
-    else if ([tmpstatus isEqualToString:@"current"]) {
-        mobject.status = @"publishing";
-    }
-    else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
+    else {
         mobject.status = @"not yet published";
     }
     mobject.start_date = attributes[@"startDate"];
@@ -263,13 +283,18 @@
                 aobject.image_url = d[@"attributes"][@"posterImage"][@"large"] && d[@"attributes"][@"posterImage"][@"large"] != [NSNull null] ? d[@"attributes"][@"posterImage"][@"large"] : @"";
             }
             NSString *tmpstatus = d[@"attributes"][@"status"];
-            if ([tmpstatus isEqualToString:@"finished"]) {
-                aobject.status = @"finished airing";
+            if (d[@"attributes"][@"status"] != [NSNull null]) {
+                if ([tmpstatus isEqualToString:@"finished"]) {
+                    aobject.status = @"finished airing";
+                }
+                else if ([tmpstatus isEqualToString:@"current"]) {
+                    aobject.status = @"currently airing";
+                }
+                else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
+                    aobject.status = @"not yet aired";
+                }
             }
-            else if ([tmpstatus isEqualToString:@"current"]) {
-                aobject.status = @"currently airing";
-            }
-            else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
+            else {
                 aobject.status = @"not yet aired";
             }
             [aobject parseSeason];
@@ -284,27 +309,32 @@
     NSMutableArray *tmparray = [NSMutableArray new];
         for (NSDictionary *d in dataarray) {
             @autoreleasepool {
-            AtarashiiMangaObject *mobject = [AtarashiiMangaObject new];
-            mobject.titleid = ((NSNumber *)d[@"id"]).intValue;
-            mobject.title = d[@"attributes"][@"canonicalTitle"];
-            mobject.other_titles = @{@"synonyms" : (d[@"attributes"][@"abbreviatedTitles"] && d[@"attributes"][@"abbreviatedTitles"]  != [NSNull null]) ? d[@"attributes"][@"abbreviatedTitles"] : @[], @"english" : d[@"attributes"][@"titles"][@"en"] && d[@"attributes"][@"titles"][@"en"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en"]] : d[@"attributes"][@"titles"][@"en_jp"] && d[@"attributes"][@"titles"][@"en_jp"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en_jp"]] : @[], @"japanese" : d[@"attributes"][@"titles"][@"ja_jp"] && d[@"attributes"][@"titles"][@"ja_jp"] != [NSNull null] ?  @[d[@"attributes"][@"titles"][@"ja_jp"]] : @[] };
-            mobject.chapters = d[@"attributes"][@"chapterCount"] != [NSNull null] ? ((NSNumber *)d[@"attributes"][@"chapterCount"]).intValue : 0;
-            mobject.volumes = d[@"attributes"][@"volumeCount"] != [NSNull null] ? ((NSNumber *)d[@"attributes"][@"volumeCount"]).intValue : 0;
-            mobject.type = ((NSString *)d[@"attributes"][@"subtype"]).capitalizedString;
-            if (d[@"attributes"][@"posterImage"] != [NSNull null]) {
-                mobject.image_url = d[@"attributes"][@"posterImage"][@"large"] && d[@"attributes"][@"posterImage"][@"large"] != [NSNull null] ? d[@"attributes"][@"posterImage"][@"large"] : @"";
-            }
-            NSString *tmpstatus = d[@"attributes"][@"status"];
-            if ([tmpstatus isEqualToString:@"finished"]) {
-                mobject.status = tmpstatus;
-            }
-            else if ([tmpstatus isEqualToString:@"current"]) {
-                mobject.status = @"publishing";
-            }
-            else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
-                mobject.status = @"not yet published";
-            }
-            [tmparray addObject: mobject.NSDictionaryRepresentation];
+                AtarashiiMangaObject *mobject = [AtarashiiMangaObject new];
+                mobject.titleid = ((NSNumber *)d[@"id"]).intValue;
+                mobject.title = d[@"attributes"][@"canonicalTitle"];
+                mobject.other_titles = @{@"synonyms" : (d[@"attributes"][@"abbreviatedTitles"] && d[@"attributes"][@"abbreviatedTitles"]  != [NSNull null]) ? d[@"attributes"][@"abbreviatedTitles"] : @[], @"english" : d[@"attributes"][@"titles"][@"en"] && d[@"attributes"][@"titles"][@"en"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en"]] : d[@"attributes"][@"titles"][@"en_jp"] && d[@"attributes"][@"titles"][@"en_jp"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en_jp"]] : @[], @"japanese" : d[@"attributes"][@"titles"][@"ja_jp"] && d[@"attributes"][@"titles"][@"ja_jp"] != [NSNull null] ?  @[d[@"attributes"][@"titles"][@"ja_jp"]] : @[] };
+                mobject.chapters = d[@"attributes"][@"chapterCount"] != [NSNull null] ? ((NSNumber *)d[@"attributes"][@"chapterCount"]).intValue : 0;
+                mobject.volumes = d[@"attributes"][@"volumeCount"] != [NSNull null] ? ((NSNumber *)d[@"attributes"][@"volumeCount"]).intValue : 0;
+                mobject.type = ((NSString *)d[@"attributes"][@"subtype"]).capitalizedString;
+                if (d[@"attributes"][@"posterImage"] != [NSNull null]) {
+                    mobject.image_url = d[@"attributes"][@"posterImage"][@"large"] && d[@"attributes"][@"posterImage"][@"large"] != [NSNull null] ? d[@"attributes"][@"posterImage"][@"large"] : @"";
+                }
+                NSString *tmpstatus = d[@"attributes"][@"status"];
+                if (d[@"attributes"][@"status"] != [NSNull null]) {
+                    if ([tmpstatus isEqualToString:@"finished"]) {
+                        mobject.status = tmpstatus;
+                    }
+                    else if ([tmpstatus isEqualToString:@"current"]) {
+                        mobject.status = @"publishing";
+                    }
+                    else if ([tmpstatus isEqualToString:@"tba"]||[tmpstatus isEqualToString:@"unreleased"]||[tmpstatus isEqualToString:@"upcoming"]) {
+                        mobject.status = @"not yet published";
+                    }
+                }
+                else {
+                    mobject.status = @"not yet published";
+                }
+                [tmparray addObject: mobject.NSDictionaryRepresentation];
         }
     }
     return tmparray;
