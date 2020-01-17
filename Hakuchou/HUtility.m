@@ -103,4 +103,33 @@
     NSString * newString = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
     return newString;
 }
+
++ (bool)grayAreaCheck:(NSArray *)genres withTitle:(NSString *)title {
+    // Checks for Gray Area Titles that might cause the app to get rejected for Objectionable content. Needed for Kitsu and AniList
+    bool isNSFW = false;
+    NSArray *objectionableStrs = @[@"hentai", @"eechi", @"oppai", @"futanari"];
+    for (NSString *objkeywords in objectionableStrs) {
+        if ([title localizedCaseInsensitiveContainsString:objkeywords]) {
+            isNSFW = true;
+            break;
+        }
+    }
+    if (isNSFW) {
+        return isNSFW;
+    }
+    //Genre Check
+    NSArray *objectionableGenres = @[@"hentai", @"ecchi", @"nudity", @"drugs", @"gambling"];
+    for (NSString *genre in genres) {
+        for (NSString *objgenre in objectionableGenres) {
+            if ([genre localizedCaseInsensitiveContainsString:objgenre]) {
+                isNSFW = true;
+                break;
+            }
+        }
+        if (isNSFW) {
+            break;
+        }
+    }
+    return isNSFW;
+}
 @end

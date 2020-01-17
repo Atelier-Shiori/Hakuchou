@@ -141,17 +141,23 @@
     // Create other titles
     aobject.other_titles = @{@"synonyms" : title[@"synonyms"] && title[@"synonyms"] != [NSNull null] ? title[@"synonyms"] : @[]  , @"english" : title[@"title"][@"english"] != [NSNull null] && title[@"title"][@"english"] ? @[title[@"title"][@"english"]] : @[], @"japanese" : title[@"title"][@"native"] != [NSNull null] && title[@"title"][@"native"] ? @[title[@"title"][@"native"]] : @[] };
     aobject.popularity_rank = title[@"popularity"] != [NSNull null] ? ((NSNumber *)title[@"popularity"]).intValue : 0;
+    NSMutableArray *genres = [NSMutableArray new];
+    for (NSString *genre in title[@"genres"]) {
+        [genres addObject:genre];
+    }
+    aobject.genres = genres;
+    bool isGrayArea = [HUtility grayAreaCheck:aobject.genres withTitle:aobject.title];
     #if defined(AppStore)
     if (title[@"coverImage"] != [NSNull null]) {
-        aobject.image_url = title[@"coverImage"][@"large"] && title[@"coverImage"] != [NSNull null] && !((NSNumber *)title[@"isAdult"]).boolValue ? title[@"coverImage"][@"large"] : @"";
+        aobject.image_url = title[@"coverImage"][@"large"] && title[@"coverImage"] != [NSNull null] && (!((NSNumber *)title[@"isAdult"]).boolValue && !isGrayArea) ? title[@"coverImage"][@"large"] : @"";
     }
-    aobject.synposis = !((NSNumber *)title[@"isAdult"]).boolValue ? title[@"description"] != [NSNull null] ? title[@"description"] : @"No synopsis available" : @"Synopsis not available for adult titles";
+    aobject.synposis = (!((NSNumber *)title[@"isAdult"]).boolValue && !isGrayArea) ? title[@"description"] != [NSNull null] ? title[@"description"] : @"No synopsis available" : @"Synopsis not available for NSFW titles";
     #else
-    bool allowed = ([NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] || !((NSNumber *)title[@"isAdult"]).boolValue);
+    bool allowed = ([NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] || (!((NSNumber *)title[@"isAdult"]).boolValue && !isGrayArea));
     if (title[@"coverImage"] != [NSNull null]) {
         aobject.image_url = title[@"coverImage"][@"large"] && title[@"coverImage"] != [NSNull null] && title[@"coverImage"][@"large"] && allowed ?  title[@"coverImage"][@"large"] : @"";
     }
-    aobject.synposis = allowed ? title[@"description"] != [NSNull null] ? title[@"description"] : @"No synopsis available" : @"Synopsis not available for adult titles";
+    aobject.synposis = allowed ? title[@"description"] != [NSNull null] ? title[@"description"] : @"No synopsis available" : @"Synopsis not available for NSFW titles";
     #endif
     aobject.type = title[@"format"] != [NSNull null] ? [HUtility convertAnimeType:title[@"format"]] : @"";
     aobject.episodes = title[@"episodes"] && title[@"episodes"] != [NSNull null] ? ((NSNumber *)title[@"episodes"]).intValue : 0;
@@ -174,11 +180,6 @@
         tmpstatus = @"not yet aired";
     }
     aobject.status = tmpstatus;
-    NSMutableArray *genres = [NSMutableArray new];
-    for (NSString *genre in title[@"genres"]) {
-        [genres addObject:genre];
-    }
-    aobject.genres = genres;
     NSMutableArray *studiosarray = [NSMutableArray new];
     if (title[@"studios"] != [NSNull null]) {
         for (NSDictionary *studio in title[@"studios"][@"edges"]) {
@@ -229,18 +230,24 @@
     // Create other titles
     mobject.other_titles = @{@"synonyms" : title[@"synonyms"] && title[@"synonyms"] != [NSNull null] ? title[@"synonyms"] : @[] , @"english" : title[@"title"][@"english"] != [NSNull null] && title[@"title"][@"english"] ? @[title[@"title"][@"english"]] : @[], @"japanese" : title[@"title"][@"native"] != [NSNull null] && title[@"title"][@"native"] ? @[title[@"title"][@"native"]] : @[] };
     mobject.popularity_rank = title[@"popularity"] != [NSNull null] ? ((NSNumber *)title[@"popularity"]).intValue : 0;
-#if defined(AppStore)
-    if (title[@"coverImage"] != [NSNull null]) {
-        mobject.image_url = title[@"coverImage"][@"large"] && title[@"coverImage"] != [NSNull null] && !((NSNumber *)title[@"isAdult"]).boolValue ? title[@"coverImage"][@"large"] : @"";
+    NSMutableArray *genres = [NSMutableArray new];
+    for (NSString *genre in title[@"genres"]) {
+        [genres addObject:genre];
     }
-    mobject.synposis = !((NSNumber *)title[@"isAdult"]).boolValue ? title[@"description"] != [NSNull null] ? title[@"description"] : @"No synopsis available" : @"Synopsis not available for adult titles";
-#else
-    bool allowed = ([NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] || !((NSNumber *)title[@"isAdult"]).boolValue);
+    mobject.genres = genres;
+    bool isGrayArea = [HUtility grayAreaCheck:mobject.genres withTitle:mobject.title];
+    #if defined(AppStore)
+    if (title[@"coverImage"] != [NSNull null]) {
+        mobject.image_url = title[@"coverImage"][@"large"] && title[@"coverImage"] != [NSNull null] && (!((NSNumber *)title[@"isAdult"]).boolValue && !isGrayArea) ? title[@"coverImage"][@"large"] : @"";
+    }
+    mobject.synposis = (!((NSNumber *)title[@"isAdult"]).boolValue && !isGrayArea) ? title[@"description"] != [NSNull null] ? title[@"description"] : @"No synopsis available" : @"Synopsis not available for NSFW titles";
+    #else
+    bool allowed = ([NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] || (!((NSNumber *)title[@"isAdult"]).boolValue && !isGrayArea));
     if (title[@"coverImage"] != [NSNull null]) {
         mobject.image_url = title[@"coverImage"][@"large"] && title[@"coverImage"] != [NSNull null] && title[@"coverImage"][@"large"] && allowed ?  title[@"coverImage"][@"large"] : @"";
     }
-    mobject.synposis = allowed ? title[@"description"] != [NSNull null] ? title[@"description"] : @"No synopsis available" : @"Synopsis not available for adult titles";
-#endif
+    mobject.synposis = allowed ? title[@"description"] != [NSNull null] ? title[@"description"] : @"No synopsis available" : @"Synopsis not available for NSFW titles";
+    #endif
     mobject.type = title[@"format"] != [NSNull null] ? [self convertMangaType:title[@"format"]] : @"";
     mobject.chapters = title[@"chapters"] != [NSNull null] ? ((NSNumber *)title[@"chapters"]).intValue : 0;
     mobject.volumes = title[@"volumes"] != [NSNull null] ? ((NSNumber *)title[@"volumes"]).intValue : 0;
@@ -258,11 +265,6 @@
     mobject.status = tmpstatus;
     mobject.start_date = title[@"startDate"] != [NSNull null] && title[@"startDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",title[@"startDate"][@"year"],title[@"startDate"][@"month"],title[@"startDate"][@"day"]] : @"";
     mobject.end_date = title[@"endDate"] != [NSNull null]  && title[@"endDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",title[@"endDate"][@"year"],title[@"endDate"][@"month"],title[@"endDate"][@"day"]] : @"";
-    NSMutableArray *genres = [NSMutableArray new];
-    for (NSString *genre in title[@"genres"]) {
-        [genres addObject:genre];
-    }
-    mobject.genres = genres;
     if (title[@"idMal"]) {
         mobject.mappings = @{@"myanimelist/manga" : title[@"idMal"]};
     }
@@ -289,19 +291,24 @@
     NSMutableArray *tmparray = [NSMutableArray new];
     for (NSDictionary *d in dataarray) {
         @autoreleasepool {
-#if defined(AppStore)
-            if (((NSNumber *)d[@"isAdult"]).boolValue) {
-                continue;
-            }
-#else
-            if (((NSNumber *)d[@"isAdult"]).boolValue && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
-                continue;
-            }
-#endif
             AtarashiiAnimeObject *aobject = [AtarashiiAnimeObject new];
             aobject.titleid = ((NSNumber *)d[@"id"]).intValue;
             aobject.title = d[@"title"][@"romaji"];
             aobject.other_titles = @{@"synonyms" : d[@"synonyms"] && d[@"synonyms"] != [NSNull null] ? d[@"synonyms"] : @[] , @"english" : d[@"title"][@"english"] != [NSNull null] && d[@"title"][@"english"] ? @[d[@"title"][@"english"]] : @[], @"japanese" : d[@"title"][@"native"] != [NSNull null] && d[@"title"][@"native"] ? @[d[@"title"][@"native"]] : @[] };
+            NSMutableArray *genres = [NSMutableArray new];
+            for (NSString *genre in d[@"genres"]) {
+                [genres addObject:genre];
+            }
+            bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:aobject.title];
+            #if defined(AppStore)
+                        if (((NSNumber *)d[@"isAdult"]).boolValue || isGrayArea) {
+                            continue;
+                        }
+            #else
+                        if ((((NSNumber *)d[@"isAdult"]).boolValue || isGrayArea) && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+                            continue;
+                        }
+            #endif
             if (d[@"coverImage"] != [NSNull null]) {
                 aobject.image_url = d[@"coverImage"] != [NSNull null] ? d[@"coverImage"][@"large"] : @"";
             }
@@ -329,19 +336,24 @@
     NSMutableArray *tmparray = [NSMutableArray new];
     for (NSDictionary *d in dataarray) {
         @autoreleasepool {
-#if defined(AppStore)
-            if (((NSNumber *)d[@"isAdult"]).boolValue) {
-                continue;
-            }
-#else
-            if (((NSNumber *)d[@"isAdult"]).boolValue && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
-                continue;
-            }
-#endif
             AtarashiiMangaObject *mobject = [AtarashiiMangaObject new];
             mobject.titleid = ((NSNumber *)d[@"id"]).intValue;
             mobject.title = d[@"title"][@"romaji"];
             mobject.other_titles = @{@"synonyms" : d[@"synonyms"] && d[@"synonyms"] != [NSNull null] ? d[@"synonyms"] : @[]  , @"english" : d[@"title"][@"english"] != [NSNull null] && d[@"title"][@"english"] ? @[d[@"title"][@"english"]] : @[], @"japanese" : d[@"title"][@"native"] != [NSNull null] && d[@"title"][@"native"] ? @[d[@"title"][@"native"]] : @[] };
+                    NSMutableArray *genres = [NSMutableArray new];
+                    for (NSString *genre in d[@"genres"]) {
+                        [genres addObject:genre];
+                    }
+                    bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:mobject.title];
+        #if defined(AppStore)
+                    if (((NSNumber *)d[@"isAdult"]).boolValue || isGrayArea) {
+                        continue;
+                    }
+        #else
+                    if ((((NSNumber *)d[@"isAdult"]).boolValue || isGrayArea) && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+                        continue;
+                    }
+        #endif
             if (d[@"coverImage"] != [NSNull null]) {
                 mobject.image_url = d[@"coverImage"] != [NSNull null] ? d[@"coverImage"][@"large"] : @"";
             }
@@ -537,14 +549,19 @@
     NSMutableArray *tmparray = [NSMutableArray new];
     for (NSDictionary *d in seasonData) {
         @autoreleasepool {
-            if (((NSNumber *)d[@"isAdult"]).boolValue) {
-                continue;
-            }
             AtarashiiAnimeObject *aobject = [AtarashiiAnimeObject new];
             aobject.titleid = ((NSNumber *)d[@"id"]).intValue;
             aobject.titleidMal = d[@"idMal"] != [NSNull null] ? ((NSNumber *)d[@"idMal"]).intValue : 0;
             aobject.title = d[@"title"][@"romaji"];
             aobject.other_titles = @{@"synonyms" : d[@"synonyms"] && d[@"synonyms"] != [NSNull null] ? d[@"synonyms"] : @[] , @"english" : d[@"title"][@"english"] != [NSNull null] && d[@"title"][@"english"] ? @[d[@"title"][@"english"]] : @[], @"japanese" : d[@"title"][@"native"] != [NSNull null] && d[@"title"][@"native"] ? @[d[@"title"][@"native"]] : @[] };
+            NSMutableArray *genres = [NSMutableArray new];
+            for (NSString *genre in d[@"genres"]) {
+                [genres addObject:genre];
+            }
+            bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:aobject.title];
+            if (((NSNumber *)d[@"isAdult"]).boolValue || isGrayArea) {
+                continue;
+            }
             if (d[@"coverImage"] != [NSNull null]) {
                 aobject.image_url = d[@"coverImage"] != [NSNull null] ? d[@"coverImage"][@"large"] : @"";
             }
@@ -678,4 +695,6 @@
     NSDateComponents *component = [NSCalendar.currentCalendar components:NSCalendarUnitWeekday fromDate:date];
     return component.weekday;
 }
+
+
 @end
