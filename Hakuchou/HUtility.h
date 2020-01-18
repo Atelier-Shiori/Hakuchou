@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDate *)dateStringToDate:(NSString *)datestring;
 + (NSDate *)isodateStringToDate:(NSString *)datestring;
 + (int)parseSeason:(NSString *)string;
-+ (bool)grayAreaCheck:(NSArray *)genres withTitle:(NSString *)title;
++ (bool)grayAreaCheck:(NSArray *)genres withTitle:(NSString *)title withAltTitles:(NSDictionary *)alttitles;
 @end
 
 NS_ASSUME_NONNULL_END

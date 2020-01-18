@@ -100,18 +100,25 @@
     // Create other titles
     aobject.other_titles = @{@"synonyms" : data[@"alternative_titles"][@"synonyms"] && data[@"alternative_titles"][@"synonyms"] != [NSNull null] ? data[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : data[@"alternative_titles"][@"en"] != [NSNull null] && data[@"alternative_titles"][@"en"] && ((NSString *)data[@"alternative_titles"][@"en"]).length > 0 ? @[data[@"alternative_titles"][@"en"]] : @[], @"japanese" : data[@"alternative_titles"][@"ja"] != [NSNull null] && data[@"alternative_titles"][@"ja"] && ((NSString *)data[@"alternative_titles"][@"ja"]).length > 0 ? @[data[@"alternative_titles"][@"ja"]] : @[] };
     aobject.popularity_rank = data[@"popularity"] != [NSNull null] ? ((NSNumber *)data[@"popularity"]).intValue : 0;
+    NSMutableArray *genres = [NSMutableArray new];
+    for (NSDictionary *genre in data[@"genres"]) {
+        [genres addObject:genre[@"name"]];
+    }
+    aobject.genres = genres;
+    bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:aobject.title withAltTitles:aobject.other_titles];
     #if defined(AppStore)
     if (data[@"main_picture"] != [NSNull null] && data[@"main_picture"]) {
-        aobject.image_url = data[@"main_picture"][@"large"] && data[@"main_picture"] != [NSNull null] && [(NSString *)data[@"nsfw"] isEqualToString:@"white"] ? data[@"main_picture"][@"large"] : @"";
+        aobject.image_url = data[@"main_picture"][@"large"] && data[@"main_picture"] != [NSNull null] && ([(NSString *)data[@"nsfw"] isEqualToString:@"white"] && !isGrayArea) ? data[@"main_picture"][@"large"] : @"";
     }
-    aobject.synposis = [!(NSString *)data[@"nsfw"] isEqualToString:@"white"] ? data[@"synopsis"] != [NSNull null] ? data[@"synopsis"] : @"No synopsis available" : @"Synopsis not available for adult titles";
+    aobject.synposis = ([(NSString *)data[@"nsfw"] isEqualToString:@"white"] && !isGrayArea) ? data[@"synopsis"] != [NSNull null] ? data[@"synopsis"] : @"No synopsis available" : @"Synopsis not available for NSFW titles";
     #else
-    bool allowed = ([NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] || [(NSString *)data[@"nsfw"] isEqualToString:@"white"]);
+    bool allowed = ([NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] || ([(NSString *)data[@"nsfw"] isEqualToString:@"white"] && !isGrayArea));
     if (data[@"main_picture"] != [NSNull null]&& data[@"main_picture"]) {
         aobject.image_url = data[@"main_picture"][@"large"] && data[@"main_picture"] != [NSNull null] && data[@"main_picture"][@"large"] && allowed ?  data[@"main_picture"][@"large"] : @"";
     }
-    aobject.synposis = allowed ? data[@"synopsis"] != [NSNull null] ? data[@"synopsis"] : @"No synopsis available" : @"Synopsis not available for adult titles";
+    aobject.synposis = allowed ? data[@"synopsis"] != [NSNull null] ? data[@"synopsis"] : @"No synopsis available" : @"Synopsis not available for NSFW titles";
     #endif
+    aobject.isNSFW = ![(NSString *)data[@"nsfw"] isEqualToString:@"white"]|| isGrayArea;
     NSString *strType = data[@"media_type"];
     if ([strType isEqualToString:@"tv"]||[strType isEqualToString:@"ova"]||[strType isEqualToString:@"ona"]) {
         strType = [strType uppercaseString];
@@ -130,11 +137,6 @@
     aobject.source = data[@"source"] != [NSNull null] && data[@"source"] ? [(NSString *)data[@"source"] stringByReplacingOccurrencesOfString:@"_" withString:@" "].capitalizedString : @"";
     aobject.members_score = data[@"mean"] != [NSNull null] && data[@"mean"]? ((NSNumber *)data[@"mean"]).floatValue : 0;
     aobject.status = [(NSString *)data[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
-    NSMutableArray *genres = [NSMutableArray new];
-    for (NSDictionary *genre in data[@"genres"]) {
-        [genres addObject:genre[@"name"]];
-    }
-    aobject.genres = genres;
     NSMutableArray *studiosarray = [NSMutableArray new];
     if (data[@"studios"] != [NSNull null]) {
         for (NSDictionary *studio in data[@"studios"]) {
@@ -182,18 +184,25 @@
     // Create other titles
     mobject.other_titles = @{@"synonyms" : data[@"alternative_titles"][@"synonyms"] && data[@"alternative_titles"][@"synonyms"] != [NSNull null] ? data[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : data[@"alternative_titles"][@"en"] != [NSNull null] && data[@"alternative_titles"][@"en"] && ((NSString *)data[@"alternative_titles"][@"en"]).length > 0 ? @[data[@"alternative_titles"][@"en"]] : @[], @"japanese" : data[@"alternative_titles"][@"ja"] != [NSNull null] && data[@"alternative_titles"][@"ja"] && ((NSString *)data[@"alternative_titles"][@"ja"]).length > 0 ? @[data[@"alternative_titles"][@"ja"]] : @[] };
     mobject.popularity_rank = data[@"popularity"] != [NSNull null] ? ((NSNumber *)data[@"popularity"]).intValue : 0;
+    NSMutableArray *genres = [NSMutableArray new];
+    for (NSDictionary *genre in data[@"genres"]) {
+        [genres addObject:genre[@"name"]];
+    }
+    mobject.genres = genres;
+    bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:mobject.title withAltTitles:mobject.other_titles];
     #if defined(AppStore)
     if (data[@"main_picture"] != [NSNull null] && data[@"main_picture"]]) {
-        mobject.image_url = data[@"main_picture"][@"large"] && data[@"main_picture"] != [NSNull null] && [(NSString *)data[@"nsfw"] isEqualToString:@"white"] ? data[@"main_picture"][@"large"] : @"";
+        mobject.image_url = data[@"main_picture"][@"large"] && data[@"main_picture"] != [NSNull null] && ([(NSString *)data[@"nsfw"] isEqualToString:@"white"] && !isGrayArea) ? data[@"main_picture"][@"large"] : @"";
      }
-     mobject.synposis = [(NSString *)data[@"nsfw"] isEqualToString:@"white"] ? data[@"synopsis"] != [NSNull null] ? data[@"synopsis"] : @"No synopsis available" : @"Synopsis not available for adult titles";
+     mobject.synposis = ([(NSString *)data[@"nsfw"] isEqualToString:@"white"] && !isGrayArea) ? data[@"synopsis"] != [NSNull null] ? data[@"synopsis"] : @"No synopsis available" : @"Synopsis not available for NSFW titles";
     #else
-    bool allowed = ([NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] || [(NSString *)data[@"nsfw"] isEqualToString:@"white"]);
+    bool allowed = ([NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] || ([(NSString *)data[@"nsfw"] isEqualToString:@"white"] && !isGrayArea));
     if (data[@"main_picture"] != [NSNull null]) {
          mobject.image_url = data[@"main_picture"][@"large"] && data[@"main_picture"] != [NSNull null] && data[@"main_picture"][@"large"] && allowed ?  data[@"main_picture"][@"large"] : @"";
     }
-    mobject.synposis = allowed ? data[@"synopsis"] != [NSNull null] ? data[@"synopsis"] : @"No synopsis available" : @"Synopsis not available for adult titles";
+    mobject.synposis = allowed ? data[@"synopsis"] != [NSNull null] ? data[@"synopsis"] : @"No synopsis available" : @"Synopsis not available for NSFW titles";
     #endif
+    mobject.isNSFW = ![(NSString *)data[@"nsfw"] isEqualToString:@"white"]|| isGrayArea;
     mobject.type = data[@"media_type"] != [NSNull null] ? [self convertMangaType:data[@"media_type"]] : @"";
     mobject.chapters = data[@"num_chapters"] != [NSNull null] ? ((NSNumber *)data[@"num_chapters"]).intValue : 0;
     mobject.volumes = data[@"num_volumes"] != [NSNull null] ? ((NSNumber *)data[@"num_volumes"]).intValue : 0;
@@ -204,11 +213,6 @@
     }
     mobject.start_date = data[@"start_date"] != [NSNull null] && data[@"start_date"] ? data[@"start_date"] : @"";
     mobject.end_date = data[@"end_date"] != [NSNull null] && data[@"end_date"] ? data[@"end_date"] : @"";
-    NSMutableArray *genres = [NSMutableArray new];
-    for (NSDictionary *genre in data[@"genres"]) {
-        [genres addObject:genre[@"name"]];
-    }
-    mobject.genres = genres;
     /*
     NSMutableArray *animeadaptations = [NSMutableArray new];
     for (NSDictionary *adpt in [(NSArray *)data[@"relations"][@"edges"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"relationType == %@", @"ADAPTATION"]]) {
@@ -234,20 +238,25 @@
     for (NSDictionary *d in dataarray) {
         @autoreleasepool {
             NSDictionary *titleData = d[@"node"];
-#if defined(AppStore)
-            if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"]) {
-                continue;
-            }
-#else
-            if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
-                continue;
-            }
-#endif
             AtarashiiAnimeObject *aobject = [AtarashiiAnimeObject new];
             aobject.titleid = ((NSNumber *)titleData[@"id"]).intValue;
             aobject.title = titleData[@"title"];
             // Create other titles
             aobject.other_titles = @{@"synonyms" : titleData[@"alternative_titles"][@"synonyms"] && titleData[@"alternative_titles"][@"synonyms"] != [NSNull null] ? titleData[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : titleData[@"alternative_titles"][@"en"] != [NSNull null] && titleData[@"alternative_titles"][@"en"] && ((NSString *)titleData[@"alternative_titles"][@"en"]).length > 0 ? @[titleData[@"alternative_titles"][@"en"]] : @[], @"japanese" : titleData[@"alternative_titles"][@"ja"] != [NSNull null] && titleData[@"alternative_titles"][@"ja"] && ((NSString *)titleData[@"alternative_titles"][@"ja"]).length > 0 ? @[titleData[@"alternative_titles"][@"ja"]] : @[] };
+            NSMutableArray *genres = [NSMutableArray new];
+            for (NSDictionary *genre in data[@"genres"]) {
+                [genres addObject:genre[@"name"]];
+            }
+            bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:aobject.title  withAltTitles:aobject.other_titles];
+            #if defined(AppStore)
+                        if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] || isGrayArea) {
+                            continue;
+                        }
+            #else
+                        if ((![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] || isGrayArea) && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+                            continue;
+                        }
+            #endif
             if (titleData[@"main_picture"] != [NSNull null]) {
                  aobject.image_url = titleData[@"main_picture"][@"large"] && titleData[@"main_picture"] != [NSNull null] && titleData[@"main_picture"][@"large"] ?  titleData[@"main_picture"][@"large"] : @"";
             }
@@ -274,20 +283,25 @@
     for (NSDictionary *d in dataarray) {
         @autoreleasepool {
             NSDictionary *titleData = d[@"node"];
-#if defined(AppStore)
-            if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"]) {
-                continue;
-            }
-#else
-            if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
-                continue;
-            }
-#endif
             AtarashiiMangaObject *mobject = [AtarashiiMangaObject new];
             mobject.titleid = ((NSNumber *)titleData[@"id"]).intValue;
             mobject.title = titleData[@"title"];
             // Create other titles
             mobject.other_titles = @{@"synonyms" : titleData[@"alternative_titles"][@"synonyms"] && titleData[@"alternative_titles"][@"synonyms"] != [NSNull null] ? titleData[@"alternative_titles"][@"synonyms"] : @[]  , @"english" : titleData[@"alternative_titles"][@"en"] != [NSNull null] && titleData[@"alternative_titles"][@"en"]  && ((NSString *)titleData[@"alternative_titles"][@"en"]).length > 0 ? @[titleData[@"alternative_titles"][@"en"]] : @[], @"japanese" : titleData[@"alternative_titles"][@"ja"] != [NSNull null] && titleData[@"alternative_titles"][@"ja"] && ((NSString *)titleData[@"alternative_titles"][@"ja"]).length > 0 ? @[titleData[@"alternative_titles"][@"ja"]] : @[] };
+            NSMutableArray *genres = [NSMutableArray new];
+            for (NSDictionary *genre in data[@"genres"]) {
+                [genres addObject:genre[@"name"]];
+            }
+            bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:mobject.title  withAltTitles:mobject.other_titles];
+            #if defined(AppStore)
+            if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] || isGrayArea) {
+                continue;
+            }
+            #else
+            if ((![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] || isGrayArea) && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+                continue;
+            }
+            #endif
             if (titleData[@"main_picture"] != [NSNull null]) {
                  mobject.image_url = titleData[@"main_picture"][@"large"] && titleData[@"main_picture"] != [NSNull null] && titleData[@"main_picture"][@"large"] ?  titleData[@"main_picture"][@"large"] : @"";
             }
