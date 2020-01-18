@@ -105,7 +105,8 @@
         [genres addObject:genre[@"name"]];
     }
     aobject.genres = genres;
-    bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:aobject.title withAltTitles:aobject.other_titles];
+    aobject.classification = data[@"rating"] && data[@"rating"] != [NSNull null] ? [[(NSString *)data[@"rating"] stringByReplacingOccurrencesOfString:@"_" withString:@" "] capitalizedString] : @"";
+    bool isGrayArea = [HUtility grayAreaCheckByClassification:aobject.classification];
     #if defined(AppStore)
     if (data[@"main_picture"] != [NSNull null] && data[@"main_picture"]) {
         aobject.image_url = data[@"main_picture"][@"large"] && data[@"main_picture"] != [NSNull null] && ([(NSString *)data[@"nsfw"] isEqualToString:@"white"] && !isGrayArea) ? data[@"main_picture"][@"large"] : @"";
@@ -131,7 +132,6 @@
     aobject.start_date = data[@"start_date"] != [NSNull null] && data[@"start_date"] ? data[@"start_date"] : @"";
     aobject.end_date = data[@"end_date"] != [NSNull null] && data[@"end_date"] ? data[@"end_date"] : @"";
     aobject.duration = data[@"average_episode_duration"] && data[@"average_episode_duration"] != [NSNull null] ? (((NSNumber *)data[@"average_episode_duration"]).intValue/60) : 0;
-    aobject.classification = data[@"rating"] && data[@"rating"] != [NSNull null] ? [[(NSString *)data[@"rating"] stringByReplacingOccurrencesOfString:@"_" withString:@" "] capitalizedString] : @"";
     //aobject.hashtag = data[@"hashtag"] != [NSNull null] ? data[@"hashtag"] : @"";
     aobject.season = data[@"start_season"] != [NSNull null] && data[@"start_season"] ? ((NSString *)data[@"start_season"][@"season"]).capitalizedString : @"Unknown";
     aobject.source = data[@"source"] != [NSNull null] && data[@"source"] ? [(NSString *)data[@"source"] stringByReplacingOccurrencesOfString:@"_" withString:@" "].capitalizedString : @"";
@@ -247,7 +247,8 @@
             for (NSDictionary *genre in data[@"genres"]) {
                 [genres addObject:genre[@"name"]];
             }
-            bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:aobject.title  withAltTitles:aobject.other_titles];
+            aobject.classification = data[@"rating"] && data[@"rating"] != [NSNull null] ? [[(NSString *)data[@"rating"] stringByReplacingOccurrencesOfString:@"_" withString:@" "] capitalizedString] : @"";
+            bool isGrayArea = [HUtility grayAreaCheckByClassification:aobject.classification];
             #if defined(AppStore)
                         if (![(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] || isGrayArea) {
                             continue;

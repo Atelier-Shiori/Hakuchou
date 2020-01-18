@@ -91,7 +91,7 @@
 		590F75F522301EC300CDF83F /* SharedHTTPManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedHTTPManager.h; sourceTree = "<group>"; };
 		590F75F622301EC300CDF83F /* SharedHTTPManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedHTTPManager.m; sourceTree = "<group>"; };
 		592B8C7D2236C76E007D43F4 /* AniListConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AniListConstants.h; sourceTree = "<group>"; };
-		592B8C7E2236C76E007D43F4 /* AniListConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AniListConstants.m; sourceTree = "<group>"; };
+		592B8C7E2236C76E007D43F4 /* AniListConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AniListConstants.m; sourceTree = "<group>"; tabWidth = 3; };
 		592B8C852236CA56007D43F4 /* OAuthCredManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthCredManager.h; sourceTree = "<group>"; };
 		592B8C862236CA56007D43F4 /* OAuthCredManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAuthCredManager.m; sourceTree = "<group>"; };
 		592B8CAD2236E0E7007D43F4 /* AFNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AFNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };

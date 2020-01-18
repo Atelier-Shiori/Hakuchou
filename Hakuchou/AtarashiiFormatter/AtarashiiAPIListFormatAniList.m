@@ -146,7 +146,7 @@
         [genres addObject:genre];
     }
     aobject.genres = genres;
-    bool isGrayArea = [HUtility grayAreaCheck:aobject.genres withTitle:aobject.title withAltTitles:aobject.other_titles];
+    bool isGrayArea = [HUtility grayAreaCheck:aobject.genres withTitle:aobject.title withAltTitles:aobject.other_titles] && [HUtility grayAreaCheckByTags:title[@"tags"]];
     #if defined(AppStore)
     if (title[@"coverImage"] != [NSNull null]) {
         aobject.image_url = title[@"coverImage"][@"large"] && title[@"coverImage"] != [NSNull null] && (!((NSNumber *)title[@"isAdult"]).boolValue && !isGrayArea) ? title[@"coverImage"][@"large"] : @"";
@@ -236,7 +236,7 @@
         [genres addObject:genre];
     }
     mobject.genres = genres;
-    bool isGrayArea = [HUtility grayAreaCheck:mobject.genres withTitle:mobject.title withAltTitles:mobject.other_titles];
+    bool isGrayArea = [HUtility grayAreaCheck:mobject.genres withTitle:mobject.title withAltTitles:mobject.other_titles] || [HUtility grayAreaCheckByTags:title[@"tags"]];
     #if defined(AppStore)
     if (title[@"coverImage"] != [NSNull null]) {
         mobject.image_url = title[@"coverImage"][@"large"] && title[@"coverImage"] != [NSNull null] && (!((NSNumber *)title[@"isAdult"]).boolValue && !isGrayArea) ? title[@"coverImage"][@"large"] : @"";
@@ -301,7 +301,8 @@
             for (NSString *genre in d[@"genres"]) {
                 [genres addObject:genre];
             }
-            bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:aobject.title withAltTitles:aobject.other_titles];
+            NSArray *tags = d[@"tags"];
+            bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:aobject.title withAltTitles:aobject.other_titles] && [HUtility grayAreaCheckByTags:tags];
             #if defined(AppStore)
                         if (((NSNumber *)d[@"isAdult"]).boolValue || isGrayArea) {
                             continue;
@@ -342,11 +343,12 @@
             mobject.titleid = ((NSNumber *)d[@"id"]).intValue;
             mobject.title = d[@"title"][@"romaji"];
             mobject.other_titles = @{@"synonyms" : d[@"synonyms"] && d[@"synonyms"] != [NSNull null] ? d[@"synonyms"] : @[]  , @"english" : d[@"title"][@"english"] != [NSNull null] && d[@"title"][@"english"] ? @[d[@"title"][@"english"]] : @[], @"japanese" : d[@"title"][@"native"] != [NSNull null] && d[@"title"][@"native"] ? @[d[@"title"][@"native"]] : @[] };
-                    NSMutableArray *genres = [NSMutableArray new];
-                    for (NSString *genre in d[@"genres"]) {
-                        [genres addObject:genre];
-                    }
-                    bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:mobject.title withAltTitles:mobject.other_titles];
+            NSMutableArray *genres = [NSMutableArray new];
+            for (NSString *genre in d[@"genres"]) {
+                [genres addObject:genre];
+            }
+            NSArray *tags = d[@"tags"];
+            bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:mobject.title withAltTitles:mobject.other_titles] || [HUtility grayAreaCheckByTags:tags];
         #if defined(AppStore)
                     if (((NSNumber *)d[@"isAdult"]).boolValue || isGrayArea) {
                         continue;
@@ -560,7 +562,8 @@
             for (NSString *genre in d[@"genres"]) {
                 [genres addObject:genre];
             }
-            bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:aobject.title withAltTitles:aobject.other_titles];
+            NSArray *tags = d[@"tags"];
+            bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:aobject.title withAltTitles:aobject.other_titles] && [HUtility grayAreaCheckByTags:tags];
             if (((NSNumber *)d[@"isAdult"]).boolValue || isGrayArea) {
                 continue;
             }

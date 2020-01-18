@@ -157,7 +157,8 @@
         [categories addObject:d[@"attributes"][@"title"]];
     }
     aobject.genres = categories;
-    bool isGrayArea = [HUtility grayAreaCheck:aobject.genres withTitle:aobject.title withAltTitles:aobject.other_titles];
+    aobject.classification = attributes[@"ageRating"] != [NSNull null] ? [NSString stringWithFormat:@"%@ - %@", attributes[@"ageRating"], attributes[@"ageRatingGuide"]] : @"Unknown";
+    bool isGrayArea = [HUtility grayAreaCheck:aobject.genres withTitle:aobject.title withAltTitles:aobject.other_titles] || [HUtility grayAreaCheckByClassification:aobject.classification];
     aobject.isNSFW = isGrayArea;
     aobject.rank = attributes[@"ratingRank"] != [NSNull null] ? ((NSNumber *)attributes[@"ratingRank"]).intValue : 0;
     aobject.popularity_rank = attributes[@"popularityRank"] != [NSNull null] ? ((NSNumber *)attributes[@"popularityRank"]).intValue : 0;
@@ -169,7 +170,6 @@
     aobject.start_date = attributes[@"startDate"];
     aobject.end_date = attributes[@"endDate"];
     aobject.duration = attributes[@"episodeLength"] != [NSNull null] ? ((NSNumber *)attributes[@"episodeLength"]).intValue : 0;
-    aobject.classification = attributes[@"ageRating"] != [NSNull null] ? [NSString stringWithFormat:@"%@ - %@", attributes[@"ageRating"], attributes[@"ageRatingGuide"]] : @"Unknown";
     aobject.synposis =  !isGrayArea || [NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] ? attributes[@"synopsis"] : @"Synopsis not available for NSFW titles";
     aobject.members_score = attributes[@"averageRating"] != [NSNull null] ? ((NSNumber *)attributes[@"averageRating"]).floatValue : 0;
     aobject.members_count = attributes[@"userCount"] != [NSNull null] ? ((NSNumber *)attributes[@"userCount"]).intValue : 0;
@@ -281,7 +281,8 @@
             aobject.titleid = ((NSNumber *)d[@"id"]).intValue;
             aobject.title = d[@"attributes"][@"canonicalTitle"];
             aobject.other_titles =  @{@"synonyms" : (d[@"attributes"][@"abbreviatedTitles"] && d[@"attributes"][@"abbreviatedTitles"]  != [NSNull null]) ? d[@"attributes"][@"abbreviatedTitles"] : @[], @"english" : d[@"attributes"][@"titles"][@"en"] && d[@"attributes"][@"titles"][@"en"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en"]] : d[@"attributes"][@"titles"][@"en_jp"] && d[@"attributes"][@"titles"][@"en_jp"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en_jp"]] : @[], @"japanese" : d[@"attributes"][@"titles"][@"ja_jp"] && d[@"attributes"][@"titles"][@"ja_jp"] != [NSNull null] ?  @[d[@"attributes"][@"titles"][@"ja_jp"]] : @[] };
-            bool isGrayArea = [HUtility grayAreaCheck:@[] withTitle:aobject.title withAltTitles:aobject.other_titles];
+            aobject.classification = d[@"attributes"][@"ageRating"] != [NSNull null] ? [NSString stringWithFormat:@"%@ - %@", d[@"attributes"][@"ageRating"], d[@"attributes"][@"ageRatingGuide"]] : @"Unknown";
+            bool isGrayArea = [HUtility grayAreaCheck:@[] withTitle:aobject.title withAltTitles:aobject.other_titles] || [HUtility grayAreaCheckByClassification:aobject.classification];;
             if (isGrayArea && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
                 continue;
             }
