@@ -188,7 +188,7 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
     NSString *searchURL = type == MALAnime ? @"https://api.myanimelist.net/v2/anime" : @"https://api.myanimelist.net/v2/manga";
-    NSDictionary *parameters = @{@"q" : searchterm, @"limit" : @(25), @"offset" : @(currentpage), @"fields" : type == MALAnime ? @"alternative_titles,num_episodes,status,media_type,nsfw,rating" : @"alternative_titles,num_chapters,num_volumes,status,media_type"};
+    NSDictionary *parameters = @{@"q" : searchterm, @"limit" : @(25), @"offset" : @(currentpage), @"fields" : type == MALAnime ? @"alternative_titles,num_episodes,status,media_type,nsfw,rating" : @"alternative_titles,num_chapters,num_volumes,status,media_type,nsfw"};
     [manager GET:searchURL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         bool hasNextPage = false;
         int nextOffset = currentpage;
