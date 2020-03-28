@@ -145,6 +145,9 @@
     for (NSString *titlekey in alttitles.allKeys) {
         for (NSString *objtitle in alttitles[titlekey]) {
             for (NSString *objkeywords in objectionableStrs) {
+                if ([objkeywords isKindOfClass:[NSNull class]]) {
+                    continue;
+                }
                 if ([objtitle localizedCaseInsensitiveContainsString:objkeywords]) {
                     isNSFW = true;
                     break;
