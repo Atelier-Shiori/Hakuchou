@@ -101,6 +101,30 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
                 NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
                                                }];
 }
+- (void)reauthAccountWithPin:(NSString *)pin completion:(void (^)(id responseObject))completionHandler error:(void (^)(NSError * error)) errorHandler {
+    AFOAuth2Manager *OAuth2Manager =
+    [[AFOAuth2Manager alloc] initWithBaseURL:[NSURL URLWithString:@"https://myanimelist.net/"]
+                                    clientID:_clientid
+                                      secret:@""];
+    [OAuth2Manager authenticateUsingOAuthWithURLString:@"v1/oauth2/token"
+                                            parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": _redirectURL, @"code_verifier" : _verifier} success:^(AFOAuthCredential *credential) {
+        [self getMALidWithCredential:credential completion:^(int userid, NSString *username, NSString *avatar) {
+            if ([NSUserDefaults.standardUserDefaults integerForKey:@"mal-userid"] == userid) {
+                [[OAuthCredManager sharedInstance] saveCredentialForService:1 withCredential:credential];
+                completionHandler(@{@"success":@(true)});
+            }
+            else {
+                completionHandler(@{@"success":@(false)});
+            }
+        } error:^(NSError *error) {
+            completionHandler(@{@"success":@(false)});
+        }];
+    }
+                                               failure:^(NSError *error) {
+                                                   errorHandler(error);
+                NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
+                                               }];
+}
 #pragma mark Profiles
 - (void)retrieveProfile:(NSString *)username completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
@@ -591,6 +615,17 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
         errorHandler(error);
     }];
 }
+
+- (void)getMALidWithCredential:(AFOAuthCredential *)cred completion:(void (^)(int userid, NSString *username, NSString *avatar)) completionHandler error:(void (^)(NSError * error)) errorHandler {
+    [manager.requestSerializer clearAuthorizationHeader];
+    [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
+    [manager GET:@"https://api.myanimelist.net/v2/users/@me?fields=avatar" parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+        completionHandler(((NSNumber *)responseObject[@"id"]).intValue, responseObject[@"name"], responseObject[@"picture"] != [NSNull null] && responseObject[@"picture"] ? responseObject[@"picture"] : @"");
+    } failure:^(NSURLSessionTask *operation, NSError *error) {
+        errorHandler(error);
+    }];
+}
+
 
 - (void)saveuserinfoforcurrenttoken {
     // Retrieves missing user information and populates it before showing the UI.

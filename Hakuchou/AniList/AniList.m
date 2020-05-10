@@ -270,6 +270,35 @@
                                                }];
 }
 
+- (void)reauthAccountWithPin:(NSString *)pin completion:(void (^)(id responseObject))completionHandler error:(void (^)(NSError * error)) errorHandler {
+    AFOAuth2Manager *OAuth2Manager =
+    [[AFOAuth2Manager alloc] initWithBaseURL:[NSURL URLWithString:@"https://anilist.co/"]
+                                    clientID:_clientid
+                                      secret:_clientsecret];
+    NSString *redirecturi;
+#if TARGET_OS_IOS
+    redirecturi = @"hiyokoauth://anilistauth/";
+#else
+    redirecturi = @"shukofukurouauth://anilistauth/";
+#endif
+    [OAuth2Manager authenticateUsingOAuthWithURLString:@"api/v2/oauth/token" parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": redirecturi} success:^(AFOAuthCredential *credential) {
+        [self getOwnAnilistidWithCredential:credential completion:^(int userid, NSString *username, NSString *scoreformat, NSString *avatar) {
+            if ([NSUserDefaults.standardUserDefaults integerForKey:@"anilist-userid"] == userid) {
+                [[OAuthCredManager sharedInstance] saveCredentialForService:3 withCredential:credential];
+                completionHandler(@{@"success":@(true)});
+            }
+            else {
+                completionHandler(@{@"success":@(false)});
+            }
+        } error:^(NSError *error) {
+            completionHandler(@{@"success":@(false)});
+        }];
+    }
+                                               failure:^(NSError *error) {
+                                                   errorHandler(error);
+                                               }];
+}
+
 #pragma mark Profiles
 - (void)retrieveProfile:(NSString *)username completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     AFOAuthCredential *cred = [self getFirstAccount];
@@ -635,6 +664,22 @@
         }];
         return;
     }
+    [manager.requestSerializer clearAuthorizationHeader];
+    [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
+    [manager POST:@"https://graphql.anilist.co" parameters:@{@"query" : kAnilistCurrentUsernametoUserId, @"variables" : @{}} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+        if (responseObject[@"data"][@"Viewer"] != [NSNull null]) {
+            NSDictionary *d = responseObject[@"data"][@"Viewer"];
+            completionHandler(((NSNumber *)d[@"id"]).intValue,d[@"name"], d[@"mediaListOptions"][@"scoreFormat"], d[@"avatar"] != [NSNull null] && d[@"avatar"][@"large"] ? d[@"avatar"][@"large"] : @"");
+        }
+        else {
+            completionHandler(-1,@"",@"",@"");
+        }
+    } failure:^(NSURLSessionTask *operation, NSError *error) {
+        errorHandler(error);
+    }];
+}
+
+- (void)getOwnAnilistidWithCredential:(AFOAuthCredential*)cred completion:(void (^)(int userid, NSString *username, NSString *scoreformat, NSString *avatar)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     [manager POST:@"https://graphql.anilist.co" parameters:@{@"query" : kAnilistCurrentUsernametoUserId, @"variables" : @{}} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
