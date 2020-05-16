@@ -105,10 +105,10 @@
 }
 
 + (bool)grayAreaCheckByClassification:(NSString *)classification {
-    if ([classification isEqualToString:@"R+"] || [classification isEqualToString:@"Rx"]) {
+    if ([classification isEqualToString:@"Rx"]) {
         return true;
     }
-    if ([classification containsString:@"Mild Nudity"] || [classification containsString:@"Hentai"]) {
+    if ([classification containsString:@"Hentai"]) {
         return true;
     }
     return false;
@@ -118,7 +118,7 @@
     int tagcount = 0;
     for (NSDictionary *tag in tags) {
         tagcount++;
-        if ([(NSString *)tag[@"name"] isEqualToString:@"Nudity"] && (((NSNumber *)tag[@"rank"]).intValue >= 60 || tagcount <= 5)) {
+        if ([(NSString *)tag[@"name"] isEqualToString:@"Nudity"] && (((NSNumber *)tag[@"rank"]).intValue >= 80 || tagcount <= 5)) {
             return true;
         }
         if ([(NSString *)tag[@"name"] isEqualToString:@"Masturbating"] && ((NSNumber *)tag[@"rank"]).intValue >= 50) {
@@ -131,7 +131,7 @@
 + (bool)grayAreaCheck:(NSArray *)genres withTitle:(NSString *)title withAltTitles:(NSDictionary *)alttitles {
     // Checks for Gray Area Titles that might cause the app to get rejected for Objectionable content. Needed for Kitsu and AniList
     bool isNSFW = false;
-    NSArray *objectionableStrs = @[@"hentai", @"ecchi", @"oppai", @"futanari", @"エッチ", @"変態", @"へんたい", @"ヘンタイ", @"えっち", @"おっぱい"];
+    NSArray *objectionableStrs = @[@"hentai", @"futanari", @"変態", @"へんたい", @"ヘンタイ"];
     for (NSString *objkeywords in objectionableStrs) {
         if ([title localizedCaseInsensitiveContainsString:objkeywords]) {
             isNSFW = true;
@@ -165,7 +165,7 @@
         return isNSFW;
     }
     //Genre Check
-    NSArray *objectionableGenres = @[@"Hentai", @"Ecchi"];
+    NSArray *objectionableGenres = @[@"Hentai"];
     for (NSString *genre in genres) {
         for (NSString *objgenre in objectionableGenres) {
             if ([genre localizedCaseInsensitiveContainsString:objgenre]) {
