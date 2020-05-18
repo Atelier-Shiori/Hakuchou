@@ -119,7 +119,7 @@
     }
     aobject.synposis = allowed ? data[@"synopsis"] != [NSNull null] ? data[@"synopsis"] : @"No synopsis available" : @"Synopsis not available for NSFW titles";
     #endif
-    aobject.isNSFW = ![(NSString *)data[@"nsfw"] isEqualToString:@"white"]|| isGrayArea;
+    aobject.isNSFW = (![(NSString *)data[@"nsfw"] isEqualToString:@"white"]|| ![(NSString *)data[@"nsfw"] isEqualToString:@"gray"])|| isGrayArea;
     NSString *strType = data[@"media_type"];
     if ([strType isEqualToString:@"tv"]||[strType isEqualToString:@"ova"]||[strType isEqualToString:@"ona"]) {
         strType = [strType uppercaseString];
@@ -202,7 +202,7 @@
     }
     mobject.synposis = allowed ? data[@"synopsis"] != [NSNull null] ? data[@"synopsis"] : @"No synopsis available" : @"Synopsis not available for NSFW titles";
     #endif
-    mobject.isNSFW = !([(NSString *)data[@"nsfw"] isEqualToString:@"white"] || [(NSString *)data[@"nsfw"] isEqualToString:@"gray"]) || isGrayArea;
+    mobject.isNSFW = (![(NSString *)data[@"nsfw"] isEqualToString:@"white"]|| ![(NSString *)data[@"nsfw"] isEqualToString:@"gray"])|| isGrayArea;
     mobject.type = data[@"media_type"] != [NSNull null] ? [self convertMangaType:data[@"media_type"]] : @"";
     mobject.chapters = data[@"num_chapters"] != [NSNull null] ? ((NSNumber *)data[@"num_chapters"]).intValue : 0;
     mobject.volumes = data[@"num_volumes"] != [NSNull null] ? ((NSNumber *)data[@"num_volumes"]).intValue : 0;
