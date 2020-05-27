@@ -247,14 +247,14 @@
             for (NSDictionary *genre in data[@"genres"]) {
                 [genres addObject:genre[@"name"]];
             }
-            aobject.classification = data[@"rating"] && data[@"rating"] != [NSNull null] ? [[(NSString *)data[@"rating"] stringByReplacingOccurrencesOfString:@"_" withString:@" "] capitalizedString] : @"";
+            aobject.classification = titleData[@"rating"] && titleData[@"rating"] != [NSNull null] ? [[(NSString *)data[@"rating"] stringByReplacingOccurrencesOfString:@"_" withString:@" "] capitalizedString] : @"";
             bool isGrayArea = [HUtility grayAreaCheckByClassification:aobject.classification];
             #if defined(AppStore)
-                        if (!([(NSString *)data[@"nsfw"] isEqualToString:@"white"] || [(NSString *)data[@"nsfw"] isEqualToString:@"gray"]) || isGrayArea) {
+                        if (!([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] || [(NSString *)titleData[@"nsfw"] isEqualToString:@"gray"]) || isGrayArea) {
                             continue;
                         }
             #else
-                        if ((!([(NSString *)data[@"nsfw"] isEqualToString:@"white"] || [(NSString *)data[@"nsfw"] isEqualToString:@"gray"]) || isGrayArea) && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+                        if ((!([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] || [(NSString *)titleData[@"nsfw"] isEqualToString:@"gray"]) || isGrayArea) && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
                             continue;
                         }
             #endif
@@ -295,11 +295,11 @@
             }
             bool isGrayArea = [HUtility grayAreaCheck:genres withTitle:mobject.title  withAltTitles:mobject.other_titles];
             #if defined(AppStore)
-            if (!([(NSString *)data[@"nsfw"] isEqualToString:@"white"] || [(NSString *)data[@"nsfw"] isEqualToString:@"gray"]) || isGrayArea) {
+            if (!([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] || [(NSString *)titleData[@"nsfw"] isEqualToString:@"gray"]) || isGrayArea) {
                 continue;
             }
             #else
-            if ((!([(NSString *)data[@"nsfw"] isEqualToString:@"white"] || [(NSString *)data[@"nsfw"] isEqualToString:@"gray"]) || isGrayArea) && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+            if ((!([(NSString *)titleData[@"nsfw"] isEqualToString:@"white"] || [(NSString *)titleData[@"nsfw"] isEqualToString:@"gray"]) || isGrayArea) && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
                 continue;
             }
             #endif
