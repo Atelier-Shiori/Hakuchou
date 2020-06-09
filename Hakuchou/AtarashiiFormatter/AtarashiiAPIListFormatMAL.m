@@ -22,6 +22,7 @@
             aentry.title = attributes[@"title"];
             aentry.image_url = attributes[@"main_picture"][@"large"] && attributes[@"main_picture"][@"large"] != [NSNull null] ? attributes[@"main_picture"][@"large"] : @"";
             aentry.status = [(NSString *)attributes[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            aentry.episode_length = attributes[@"average_episode_duration"] ? ((NSNumber *)attributes[@"average_episode_duration"]).intValue/60 : 0;
             NSString *strType = attributes[@"media_type"];
             if ([strType isEqualToString:@"tv"]||[strType isEqualToString:@"ova"]||[strType isEqualToString:@"ona"]) {
                 strType = [strType uppercaseString];
@@ -44,7 +45,7 @@
             aentry.rewatch_count = ((NSNumber *)listStatus[@"num_times_rewatched"]).intValue;
             aentry.watching_start = listStatus[@"start_date"] ? listStatus[@"start_date"] : @"";
             aentry.watching_end = listStatus[@"finish_date"] ? listStatus[@"finish_date"] : @"";
-            aentry.personal_comments = listStatus[@"comments"];
+            aentry.personal_comments = listStatus[@"comments"] ? listStatus[@"comments"] : @"";
             aentry.lastupdated = [[HUtility isodateStringToDate:listStatus[@"updated_at"]] timeIntervalSince1970];
             [tmparray addObject:aentry.NSDictionaryRepresentation];
         }
@@ -85,7 +86,7 @@
             mentry.reread_count = ((NSNumber *)listStatus[@"num_times_reread"]).intValue;
             mentry.reading_start = listStatus[@"start_date"] ? listStatus[@"start_date"] : @"";
             mentry.reading_end = listStatus[@"finish_date"] ? listStatus[@"finish_date"] : @"";
-            mentry.personal_comments = listStatus[@"comments"];
+            mentry.personal_comments = listStatus[@"comments"] ? listStatus[@"comments"] : @"";
             mentry.lastupdated = [[HUtility isodateStringToDate:listStatus[@"updated_at"]] timeIntervalSince1970];
             [tmparray addObject:mentry.NSDictionaryRepresentation];
         }

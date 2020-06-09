@@ -164,10 +164,10 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
     }
     NSString * URL = @"";
     if (type == MALAnime) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/animelist?fields=status,media_type,num_episodes,my_list_status%%7Bstart_date,finish_date,comments,num_times_reread%%7D&limit=1000&offset=%i", username, page];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/animelist?fields=status,media_type,num_episodes,my_list_status,start_date,finish_date,comments,num_times_rewatched,average_episode_duration%%7D&limit=1000&offset=%i", username, page];
     }
     else if (type == MALManga) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,my_list_status%%7Bstart_date,finish_date,comments,num_times_rewatched%%7D&limit=1000&offset=%i", username, page];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,my_list_status,start_date,finish_date,comments,num_times_reread%%7D&limit=1000&offset=%i", username, page];
     }
     
     [manager GET:URL parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
@@ -212,7 +212,7 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
     NSString *searchURL = type == MALAnime ? @"https://api.myanimelist.net/v2/anime" : @"https://api.myanimelist.net/v2/manga";
-    NSDictionary *parameters = @{@"q" : searchterm, @"limit" : @(25), @"offset" : @(currentpage), @"fields" : type == MALAnime ? @"alternative_titles,num_episodes,status,media_type,nsfw,rating" : @"alternative_titles,num_chapters,num_volumes,status,media_type,nsfw"};
+    NSDictionary *parameters = @{@"q" : searchterm, @"limit" : @(25), @"offset" : @(currentpage), @"fields" : type == MALAnime ? @"alternative_titles,num_episodes,status,media_type,nsfw,rating,average_episode_duration" : @"alternative_titles,num_chapters,num_volumes,status,media_type,nsfw"};
     [manager GET:searchURL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         bool hasNextPage = false;
         int nextOffset = currentpage;
