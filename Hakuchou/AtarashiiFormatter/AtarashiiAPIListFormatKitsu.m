@@ -151,18 +151,26 @@
     aobject.title = attributes[@"canonicalTitle"];
     // Create other titles
     aobject.other_titles = @{@"synonyms" : (attributes[@"abbreviatedTitles"] && attributes[@"abbreviatedTitles"]  != [NSNull null]) ? attributes[@"abbreviatedTitles"] : @[], @"english" : attributes[@"titles"][@"en"] && attributes[@"titles"][@"en"] != [NSNull null] ? @[attributes[@"titles"][@"en"]] : attributes[@"titles"][@"en_jp"] && attributes[@"titles"][@"en_jp"] != [NSNull null] ? @[attributes[@"titles"][@"en_jp"]] : @[], @"japanese" : attributes[@"titles"][@"ja_jp"] && attributes[@"titles"][@"ja_jp"] != [NSNull null] ?  @[attributes[@"titles"][@"ja_jp"]] : @[] };
+    NSArray * included = data[@"included"];
+    NSMutableArray *categories = [NSMutableArray new];
+    for (NSDictionary *d in [included filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type == %@", @"categories"]]) {
+        [categories addObject:d[@"attributes"][@"title"]];
+    }
+    aobject.genres = categories;
+    aobject.classification = attributes[@"ageRating"] != [NSNull null] ? [NSString stringWithFormat:@"%@ - %@", attributes[@"ageRating"], attributes[@"ageRatingGuide"]] : @"Unknown";
+    bool isGrayArea = [HUtility grayAreaCheck:aobject.genres withTitle:aobject.title withAltTitles:aobject.other_titles] || [HUtility grayAreaCheckByClassification:aobject.classification];
+    aobject.isNSFW = isGrayArea;
     aobject.rank = attributes[@"ratingRank"] != [NSNull null] ? ((NSNumber *)attributes[@"ratingRank"]).intValue : 0;
     aobject.popularity_rank = attributes[@"popularityRank"] != [NSNull null] ? ((NSNumber *)attributes[@"popularityRank"]).intValue : 0;
     if (attributes[@"posterImage"] != [NSNull null]) {
-        aobject.image_url = attributes[@"posterImage"][@"large"] && attributes[@"posterimage"][@"large"] != [NSNull null] ? attributes[@"posterImage"][@"large"] : @"";
+        aobject.image_url = attributes[@"posterImage"][@"large"] && attributes[@"posterimage"][@"large"] != [NSNull null] && (!isGrayArea || [NSUserDefaults.standardUserDefaults boolForKey:@"showadult"])  ? attributes[@"posterImage"][@"large"] : @"";
     }
     aobject.type = [HUtility convertAnimeType:attributes[@"subtype"]];
     aobject.episodes = attributes[@"episodeCount"] != [NSNull null] ? ((NSNumber *)attributes[@"episodeCount"]).intValue : 0;
     aobject.start_date = attributes[@"startDate"];
     aobject.end_date = attributes[@"endDate"];
     aobject.duration = attributes[@"episodeLength"] != [NSNull null] ? ((NSNumber *)attributes[@"episodeLength"]).intValue : 0;
-    aobject.classification = attributes[@"ageRating"] != [NSNull null] ? [NSString stringWithFormat:@"%@ - %@", attributes[@"ageRating"], attributes[@"ageRatingGuide"]] : @"Unknown";
-    aobject.synposis = attributes[@"synopsis"];
+    aobject.synposis =  !isGrayArea || [NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] ? attributes[@"synopsis"] : @"Synopsis not available for NSFW titles";
     aobject.members_score = attributes[@"averageRating"] != [NSNull null] ? ((NSNumber *)attributes[@"averageRating"]).floatValue : 0;
     aobject.members_count = attributes[@"userCount"] != [NSNull null] ? ((NSNumber *)attributes[@"userCount"]).intValue : 0;
     aobject.favorited_count = attributes[@"favoritesCount"] != [NSNull null] ? ((NSNumber *)attributes[@"favoritesCount"]).intValue : 0;
@@ -181,12 +189,6 @@
     else {
         aobject.status = @"not yet aired";
     }
-    NSArray * included = data[@"included"];
-    NSMutableArray *categories = [NSMutableArray new];
-    for (NSDictionary *d in [included filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type == %@", @"categories"]]) {
-        [categories addObject:d[@"attributes"][@"title"]];
-    }
-    aobject.genres = categories;
     NSMutableArray *producers = [NSMutableArray new];
     for (NSDictionary *d in [included filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type == %@", @"producers"]]) {
         [producers addObject:d[@"attributes"][@"name"]];
@@ -219,10 +221,18 @@
     mobject.title = attributes[@"canonicalTitle"];
     // Create other titles
     mobject.other_titles = @{@"synonyms" : (attributes[@"abbreviatedTitles"] && attributes[@"abbreviatedTitles"]  != [NSNull null]) ? attributes[@"abbreviatedTitles"] : @[], @"english" : attributes[@"titles"][@"en"] && attributes[@"titles"][@"en"] != [NSNull null] ? @[attributes[@"titles"][@"en"]] : attributes[@"titles"][@"en_jp"] && attributes[@"titles"][@"en_jp"] != [NSNull null] ? @[attributes[@"titles"][@"en_jp"]] : @[], @"japanese" : attributes[@"titles"][@"ja_jp"] && attributes[@"titles"][@"ja_jp"] != [NSNull null] ?  @[attributes[@"titles"][@"ja_jp"]] : @[] };
+    NSArray * included = data[@"included"];
+    NSMutableArray *categories = [NSMutableArray new];
+    for (NSDictionary *d in [included filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type == %@", @"categories"]]) {
+        [categories addObject:d[@"attributes"][@"title"]];
+    }
+    mobject.genres = categories;
+    bool isGrayArea = [HUtility grayAreaCheck:mobject.genres withTitle:mobject.title withAltTitles:mobject.other_titles];
+    mobject.isNSFW = isGrayArea;
     mobject.rank = attributes[@"ratingRank"] != [NSNull null] ? ((NSNumber *)attributes[@"ratingRank"]).intValue : 0;
     mobject.popularity_rank = attributes[@"popularityRank"] != [NSNull null] ? ((NSNumber *)attributes[@"popularityRank"]).intValue : 0;
     if (attributes[@"posterImage"] != [NSNull null]) {
-        mobject.image_url = attributes[@"posterImage"][@"large"] && attributes[@"posterImage"][@"large"] != [NSNull null] ? attributes[@"posterImage"][@"large"] : @"";
+        mobject.image_url = attributes[@"posterImage"][@"large"] && attributes[@"posterimage"][@"large"] != [NSNull null] && (!isGrayArea || [NSUserDefaults.standardUserDefaults boolForKey:@"showadult"])  ? attributes[@"posterImage"][@"large"] : @"";
     }
     mobject.type = ((NSString *)attributes[@"subtype"]).capitalizedString;
     mobject.chapters = attributes[@"chapterCount"] != [NSNull null] ? ((NSNumber *)attributes[@"chapterCount"]).intValue : 0;
@@ -230,7 +240,7 @@
     mobject.members_score = attributes[@"averageRating"] != [NSNull null] ? ((NSNumber *)attributes[@"averageRating"]).floatValue : 0;
     mobject.members_count = attributes[@"userCount"] != [NSNull null] ? ((NSNumber *)attributes[@"userCount"]).intValue : 0;
     mobject.favorited_count = attributes[@"favoritesCount"] != [NSNull null] ? ((NSNumber *)attributes[@"favoritesCount"]).intValue : 0;
-    mobject.synposis = attributes[@"synopsis"];
+    mobject.synposis = !isGrayArea || [NSUserDefaults.standardUserDefaults boolForKey:@"showadult"] ? attributes[@"synopsis"] : @"Synopsis not available for NSFW titles";
     NSString *tmpstatus = attributes[@"status"];
     if (attributes[@"status"] != [NSNull null]) {
         if ([tmpstatus isEqualToString:@"finished"]) {
@@ -248,12 +258,6 @@
     }
     mobject.start_date = attributes[@"startDate"];
     mobject.end_date = attributes[@"endDate"];
-    NSArray * included = data[@"included"];
-    NSMutableArray *categories = [NSMutableArray new];
-    for (NSDictionary *d in [included filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type == %@", @"categories"]]) {
-        [categories addObject:d[@"attributes"][@"title"]];
-    }
-    mobject.genres = categories;
     NSMutableDictionary *mappings = [NSMutableDictionary new];
     for (NSDictionary *d in [included filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"type == %@", @"mappings"]]) {
         mappings[d[@"attributes"][@"externalSite"]] = d[@"attributes"][@"externalId"];
@@ -277,6 +281,11 @@
             aobject.titleid = ((NSNumber *)d[@"id"]).intValue;
             aobject.title = d[@"attributes"][@"canonicalTitle"];
             aobject.other_titles =  @{@"synonyms" : (d[@"attributes"][@"abbreviatedTitles"] && d[@"attributes"][@"abbreviatedTitles"]  != [NSNull null]) ? d[@"attributes"][@"abbreviatedTitles"] : @[], @"english" : d[@"attributes"][@"titles"][@"en"] && d[@"attributes"][@"titles"][@"en"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en"]] : d[@"attributes"][@"titles"][@"en_jp"] && d[@"attributes"][@"titles"][@"en_jp"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en_jp"]] : @[], @"japanese" : d[@"attributes"][@"titles"][@"ja_jp"] && d[@"attributes"][@"titles"][@"ja_jp"] != [NSNull null] ?  @[d[@"attributes"][@"titles"][@"ja_jp"]] : @[] };
+            aobject.classification = d[@"attributes"][@"ageRating"] != [NSNull null] ? [NSString stringWithFormat:@"%@ - %@", d[@"attributes"][@"ageRating"], d[@"attributes"][@"ageRatingGuide"]] : @"Unknown";
+            bool isGrayArea = [HUtility grayAreaCheck:@[] withTitle:aobject.title withAltTitles:aobject.other_titles] || [HUtility grayAreaCheckByClassification:aobject.classification];;
+            if (isGrayArea && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+                continue;
+            }
             aobject.episodes = d[@"attributes"][@"episodeCount"] != [NSNull null] ? ((NSNumber *)d[@"attributes"][@"episodeCount"]).intValue : 0;
             aobject.type = [HUtility convertAnimeType:d[@"attributes"][@"subtype"]];
             if (d[@"attributes"][@"posterImage"] != [NSNull null]) {
@@ -313,6 +322,10 @@
                 mobject.titleid = ((NSNumber *)d[@"id"]).intValue;
                 mobject.title = d[@"attributes"][@"canonicalTitle"];
                 mobject.other_titles = @{@"synonyms" : (d[@"attributes"][@"abbreviatedTitles"] && d[@"attributes"][@"abbreviatedTitles"]  != [NSNull null]) ? d[@"attributes"][@"abbreviatedTitles"] : @[], @"english" : d[@"attributes"][@"titles"][@"en"] && d[@"attributes"][@"titles"][@"en"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en"]] : d[@"attributes"][@"titles"][@"en_jp"] && d[@"attributes"][@"titles"][@"en_jp"] != [NSNull null] ? @[d[@"attributes"][@"titles"][@"en_jp"]] : @[], @"japanese" : d[@"attributes"][@"titles"][@"ja_jp"] && d[@"attributes"][@"titles"][@"ja_jp"] != [NSNull null] ?  @[d[@"attributes"][@"titles"][@"ja_jp"]] : @[] };
+                bool isGrayArea = [HUtility grayAreaCheck:@[] withTitle:mobject.title withAltTitles:mobject.other_titles];
+                if (isGrayArea && ![NSUserDefaults.standardUserDefaults boolForKey:@"showadult"]) {
+                    continue;
+                }
                 mobject.chapters = d[@"attributes"][@"chapterCount"] != [NSNull null] ? ((NSNumber *)d[@"attributes"][@"chapterCount"]).intValue : 0;
                 mobject.volumes = d[@"attributes"][@"volumeCount"] != [NSNull null] ? ((NSNumber *)d[@"attributes"][@"volumeCount"]).intValue : 0;
                 mobject.type = ((NSString *)d[@"attributes"][@"subtype"]).capitalizedString;

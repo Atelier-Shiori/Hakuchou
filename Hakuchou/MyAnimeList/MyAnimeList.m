@@ -28,6 +28,7 @@
 @synthesize manager;
 
 NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
+NSString *const malAPIversion = @"v3";
 
 - (instancetype)initWithClientId:(NSString *)clientid withRedirectURL:(NSString *)redirectURL {
     if (self = [self init]) {
@@ -50,7 +51,7 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
 
 - (NSURL *)retrieveAuthorizeURL {
     _verifier = [PKCEGenerator generateCodeChallenge:[PKCEGenerator createVerifierString]];
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id=%@&redirect_uri=%@&code_challenge=%@&code_challenge_method=plain", _clientid, [HUtility urlEncodeString:_redirectURL], _verifier]];
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://myanimelist.net/%@/oauth2/authorize?response_type=code&client_id=%@&redirect_uri=%@&code_challenge=%@&code_challenge_method=plain", malAPIversion ,_clientid, [HUtility urlEncodeString:_redirectURL], _verifier]];
 }
 
 - (bool)tokenexpired {
@@ -101,6 +102,30 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
                 NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
                                                }];
 }
+- (void)reauthAccountWithPin:(NSString *)pin completion:(void (^)(id responseObject))completionHandler error:(void (^)(NSError * error)) errorHandler {
+    AFOAuth2Manager *OAuth2Manager =
+    [[AFOAuth2Manager alloc] initWithBaseURL:[NSURL URLWithString:@"https://myanimelist.net/"]
+                                    clientID:_clientid
+                                      secret:@""];
+    [OAuth2Manager authenticateUsingOAuthWithURLString:@"v1/oauth2/token"
+                                            parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": _redirectURL, @"code_verifier" : _verifier} success:^(AFOAuthCredential *credential) {
+        [self getMALidWithCredential:credential completion:^(int userid, NSString *username, NSString *avatar) {
+            if ([NSUserDefaults.standardUserDefaults integerForKey:@"mal-userid"] == userid) {
+                [[OAuthCredManager sharedInstance] saveCredentialForService:1 withCredential:credential];
+                completionHandler(@{@"success":@(true)});
+            }
+            else {
+                completionHandler(@{@"success":@(false)});
+            }
+        } error:^(NSError *error) {
+            completionHandler(@{@"success":@(false)});
+        }];
+    }
+                                               failure:^(NSError *error) {
+                                                   errorHandler(error);
+                NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
+                                               }];
+}
 #pragma mark Profiles
 - (void)retrieveProfile:(NSString *)username completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
@@ -140,10 +165,10 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
     }
     NSString * URL = @"";
     if (type == MALAnime) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/animelist?fields=status,media_type,num_episodes,my_list_status%%7Bstart_date,finish_date,comments,num_times_reread%%7D&limit=1000&offset=%i", username, page];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/%@/animelist?fields=status,media_type,num_episodes,my_list_status,start_date,end_date,comments,num_times_rewatched,average_episode_duration%%7D&limit=1000&offset=%i", malAPIversion,username, page];
     }
     else if (type == MALManga) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,my_list_status%%7Bstart_date,finish_date,comments,num_times_rewatched%%7D&limit=1000&offset=%i", username, page];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,my_list_status,start_date,end_date,comments,num_times_reread%%7D&limit=1000&offset=%i", malAPIversion,username, page];
     }
     
     [manager GET:URL parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
@@ -187,11 +212,14 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
-    NSString *searchURL = type == MALAnime ? @"https://api.myanimelist.net/v2/anime" : @"https://api.myanimelist.net/v2/manga";
-    NSDictionary *parameters = @{@"q" : searchterm, @"limit" : @(25), @"offset" : @(currentpage), @"fields" : type == MALAnime ? @"num_episodes,status,media_type,nsfw" : @"num_chapters,num_volumes,status,media_type,nsfw"};
+    NSString *searchURL = type == MALAnime ? [NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime",malAPIversion] : [NSString stringWithFormat:@"https://api.myanimelist.net/%@/manga",malAPIversion];
+    NSDictionary *parameters = @{@"q" : searchterm, @"limit" : @(25), @"offset" : @(currentpage), @"fields" : type == MALAnime ? @"alternative_titles,num_episodes,status,media_type,nsfw,rating,average_episode_duration" : @"alternative_titles,num_chapters,num_volumes,status,media_type,nsfw"};
     [manager GET:searchURL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         bool hasNextPage = false;
         int nextOffset = currentpage;
+        NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSLog(@"%@", searchURL);
+        NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
         if (responseObject[@"paging"][@"next"]) {
             hasNextPage = true;
             nextOffset = nextOffset + 25;
@@ -240,11 +268,11 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
 - (void)retrieveTitleInfo:(int)titleid withType:(int)type completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler{
     NSString *url = @"";
     if (type == MALAnime) {
-        url = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/anime/%i?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics",titleid];
+        url = [NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime/%i?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics", malAPIversion,titleid];
         
     }
     else if (type == MALManga) {
-        url = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga/%i?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_volumes,num_chapters,authors%%7Bfirst_name,last_name%%7D,pictures,background,related_anime,related_manga,recommendations,serialization%%7Bname%%7D",titleid];
+        url = [NSString stringWithFormat:@"https://api.myanimelist.net/%@/manga/%i?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_volumes,num_chapters,authors%%7Bfirst_name,last_name%%7D,pictures,background,related_anime,related_manga,recommendations,serialization%%7Bname%%7D",malAPIversion,titleid];
     }
     else {
         return;
@@ -331,7 +359,7 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
         errorHandler(nil);
         return;
     }
-    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/v2/anime/%i/my_list_status", titleid] parameters:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_watched_episodes"/*@"num_episodes_watched"*/:@(episode)} success:^(NSURLSessionTask *task, id responseObject) {
+    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime/%i/my_list_status", malAPIversion, titleid] parameters:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_watched_episodes"/*@"num_episodes_watched"*/:@(episode)} success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -360,7 +388,7 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
         errorHandler(nil);
         return;
     }
-    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga/%i/my_list_status", titleid] parameters:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_chapters_read":@(chapter), @"num_volumes_read":@(volume)} success:^(NSURLSessionTask *task, id responseObject) {
+    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/manga/%i/my_list_status",malAPIversion, titleid] parameters:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_chapters_read":@(chapter), @"num_volumes_read":@(volume)} success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -393,7 +421,7 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
     if (efields) {
         [parameters addEntriesFromDictionary:efields];
     }
-    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/v2/anime/%i/my_list_status", titleid] parameters:parameters success:^(NSURLSessionTask *task, id responseObject) {
+    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime/%i/my_list_status", malAPIversion, titleid] parameters:parameters success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -426,7 +454,7 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
     if (efields) {
         [parameters addEntriesFromDictionary:efields];
     }
-    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga/%i/my_list_status", titleid] parameters:parameters success:^(NSURLSessionTask *task, id responseObject) {
+    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/manga/%i/my_list_status", malAPIversion, titleid] parameters:parameters success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -456,10 +484,10 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
     }
     NSString *deleteURL;
     if (type == MALAnime) {
-        deleteURL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/anime/%i/my_list_status", titleid];
+        deleteURL = [NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime/%i/my_list_status", malAPIversion, titleid];
     }
     else if (type == MALManga) {
-        deleteURL = [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga/%i/my_list_status", titleid];
+        deleteURL = [NSString stringWithFormat:@"https://api.myanimelist.net/%@/manga/%i/my_list_status", malAPIversion, titleid];
     }
     else {
         return;
@@ -585,12 +613,23 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
     }
     [manager.requestSerializer clearAuthorizationHeader];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
-    [manager GET:@"https://api.myanimelist.net/v2/users/@me?fields=avatar" parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/@me?fields=avatar", malAPIversion] parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(((NSNumber *)responseObject[@"id"]).intValue, responseObject[@"name"], responseObject[@"picture"] != [NSNull null] && responseObject[@"picture"] ? responseObject[@"picture"] : @"");
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
     }];
 }
+
+- (void)getMALidWithCredential:(AFOAuthCredential *)cred completion:(void (^)(int userid, NSString *username, NSString *avatar)) completionHandler error:(void (^)(NSError * error)) errorHandler {
+    [manager.requestSerializer clearAuthorizationHeader];
+    [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
+    [manager GET:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/@me?fields=avatar",malAPIversion] parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+        completionHandler(((NSNumber *)responseObject[@"id"]).intValue, responseObject[@"name"], responseObject[@"picture"] != [NSNull null] && responseObject[@"picture"] ? responseObject[@"picture"] : @"");
+    } failure:^(NSURLSessionTask *operation, NSError *error) {
+        errorHandler(error);
+    }];
+}
+
 
 - (void)saveuserinfoforcurrenttoken {
     // Retrieves missing user information and populates it before showing the UI.
@@ -612,7 +651,7 @@ NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
     }
     NSError *error;
     
-    id responseObject = [smanager syncGET:@"https://api.myanimelist.net/v2/users/@me?fields=avatar" parameters:nil task:NULL error:&error];
+    id responseObject = [smanager syncGET:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/@me?fields=avatar",malAPIversion] parameters:nil task:NULL error:&error];
     if (!error) {
         NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
         [defaults setValue:responseObject[@"id"] forKey:@"mal-userid"];

@@ -103,4 +103,80 @@
     NSString * newString = [regex stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, [string length]) withTemplate:@""];
     return newString;
 }
+
++ (bool)grayAreaCheckByClassification:(NSString *)classification {
+    if ([classification isEqualToString:@"Rx"]) {
+        return true;
+    }
+    if ([classification containsString:@"Hentai"]) {
+        return true;
+    }
+    return false;
+}
+
++ (bool)grayAreaCheckByTags:(NSArray *)tags {
+    int tagcount = 0;
+    for (NSDictionary *tag in tags) {
+        tagcount++;
+        if ([(NSString *)tag[@"name"] isEqualToString:@"Nudity"] && (((NSNumber *)tag[@"rank"]).intValue >= 80 || tagcount <= 5)) {
+            return true;
+        }
+        if ([(NSString *)tag[@"name"] isEqualToString:@"Masturbating"] && ((NSNumber *)tag[@"rank"]).intValue >= 50) {
+            return true;
+        }
+    }
+    return false;
+}
+
++ (bool)grayAreaCheck:(NSArray *)genres withTitle:(NSString *)title withAltTitles:(NSDictionary *)alttitles {
+    // Checks for Gray Area Titles that might cause the app to get rejected for Objectionable content. Needed for Kitsu and AniList
+    bool isNSFW = false;
+    NSArray *objectionableStrs = @[@"hentai", @"futanari", @"変態", @"へんたい", @"ヘンタイ"];
+    for (NSString *objkeywords in objectionableStrs) {
+        if ([title localizedCaseInsensitiveContainsString:objkeywords]) {
+            isNSFW = true;
+            break;
+        }
+    }
+    if (isNSFW) {
+        return isNSFW;
+    }
+    // Alt Title Check
+    for (NSString *titlekey in alttitles.allKeys) {
+        for (NSString *objtitle in alttitles[titlekey]) {
+            for (NSString *objkeywords in objectionableStrs) {
+                if ([objkeywords isKindOfClass:[NSNull class]]) {
+                    continue;
+                }
+                if ([objtitle localizedCaseInsensitiveContainsString:objkeywords]) {
+                    isNSFW = true;
+                    break;
+                }
+            }
+            if (isNSFW) {
+                break;
+            }
+        }
+        if (isNSFW) {
+            break;
+        }
+    }
+    if (isNSFW) {
+        return isNSFW;
+    }
+    //Genre Check
+    NSArray *objectionableGenres = @[@"Hentai"];
+    for (NSString *genre in genres) {
+        for (NSString *objgenre in objectionableGenres) {
+            if ([genre localizedCaseInsensitiveContainsString:objgenre]) {
+                isNSFW = true;
+                break;
+            }
+        }
+        if (isNSFW) {
+            break;
+        }
+    }
+    return isNSFW;
+}
 @end
