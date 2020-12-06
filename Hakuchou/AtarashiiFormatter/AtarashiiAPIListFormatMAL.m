@@ -34,7 +34,7 @@
             aentry.episodes = ((NSNumber *)attributes[@"num_episodes"]).intValue;
             
             // User Entry
-            NSDictionary *listStatus = attributes[@"my_list_status"];
+            NSDictionary *listStatus = entry[@"list_status"];
             aentry.watched_status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
             if ([aentry.watched_status isEqualToString:@"on hold"]) {
                 aentry.watched_status = @"on-hold";
@@ -44,7 +44,7 @@
             aentry.rewatching = ((NSNumber *)listStatus[@"is_rewatching"]).boolValue;
             aentry.rewatch_count = ((NSNumber *)listStatus[@"num_times_rewatched"]).intValue;
             aentry.watching_start = listStatus[@"start_date"] ? listStatus[@"start_date"] : @"";
-            aentry.watching_end = listStatus[@"end_date"] ? listStatus[@"end_date"] : @"";
+            aentry.watching_end = listStatus[@"finish_date"] ? listStatus[@"finish_date"] : @"";
             aentry.personal_comments = listStatus[@"comments"] ? listStatus[@"comments"] : @"";
             aentry.lastupdated = [[HUtility isodateStringToDate:listStatus[@"updated_at"]] timeIntervalSince1970];
             [tmparray addObject:aentry.NSDictionaryRepresentation];
@@ -74,7 +74,7 @@
             mentry.volumes = ((NSNumber *)attributes[@"num_volumes"]).intValue;
             
             // User Entry
-            NSDictionary *listStatus = attributes[@"my_list_status"];
+            NSDictionary *listStatus = entry[@"list_status"];
             mentry.read_status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
             if ([mentry.read_status isEqualToString:@"on hold"]) {
                 mentry.read_status = @"on-hold";
@@ -85,7 +85,7 @@
             mentry.rereading = ((NSNumber *)listStatus[@"is_rereading"]).boolValue;
             mentry.reread_count = ((NSNumber *)listStatus[@"num_times_reread"]).intValue;
             mentry.reading_start = listStatus[@"start_date"] ? listStatus[@"start_date"] : @"";
-            mentry.reading_end = listStatus[@"end_date"] ? listStatus[@"end_date"] : @"";
+            mentry.reading_end = listStatus[@"finish_date"] ? listStatus[@"finish_date"] : @"";
             mentry.personal_comments = listStatus[@"comments"] ? listStatus[@"comments"] : @"";
             mentry.lastupdated = [[HUtility isodateStringToDate:listStatus[@"updated_at"]] timeIntervalSince1970];
             [tmparray addObject:mentry.NSDictionaryRepresentation];
