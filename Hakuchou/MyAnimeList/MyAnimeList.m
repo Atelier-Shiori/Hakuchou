@@ -51,7 +51,7 @@ NSString *const malAPIversion = @"v3";
 
 - (NSURL *)retrieveAuthorizeURL {
     _verifier = [PKCEGenerator generateCodeChallenge:[PKCEGenerator createVerifierString]];
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://myanimelist.net/%@/oauth2/authorize?response_type=code&client_id=%@&redirect_uri=%@&code_challenge=%@&code_challenge_method=plain", malAPIversion ,_clientid, [HUtility urlEncodeString:_redirectURL], _verifier]];
+    return [NSURL URLWithString:[NSString stringWithFormat:@"https://myanimelist.net/v1/oauth2/authorize?response_type=code&client_id=%@&redirect_uri=%@&code_challenge=%@&code_challenge_method=plain",_clientid, [HUtility urlEncodeString:_redirectURL], _verifier]];
 }
 
 - (bool)tokenexpired {
