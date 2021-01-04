@@ -77,7 +77,7 @@ NSString *const malAPIversion = @"v3";
                                             }
                                                failure:^(NSError *error) {
                                                    completion(false);
-                NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
+        NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
                                                }];
 }
 
@@ -123,7 +123,7 @@ NSString *const malAPIversion = @"v3";
     }
                                                failure:^(NSError *error) {
                                                    errorHandler(error);
-                NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
+        NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
                                                }];
 }
 #pragma mark Profiles
@@ -133,6 +133,9 @@ NSString *const malAPIversion = @"v3";
         completionHandler([AtarashiiAPIListFormatMAL MalUsertoAtarashii:responseObject]);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
+        NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
+        NSString* errResponse = [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding];
+        NSLog(@"Error Response: %@",errResponse);
     }];
     
 }
@@ -183,6 +186,9 @@ NSString *const malAPIversion = @"v3";
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
         NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
+        NSString* errResponse = [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding];
+        NSLog(@"Error Response: %@",errResponse);
+        NSLog(@"URL:%@", operation.originalRequest.URL);
     }];
 }
 
@@ -212,13 +218,14 @@ NSString *const malAPIversion = @"v3";
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
-    NSString *searchURL = type == MALAnime ? [NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime",malAPIversion] : [NSString stringWithFormat:@"https://api.myanimelist.net/%@/manga",malAPIversion];
+    NSString *searchURL = type == MALAnime ? [NSString stringWithFormat:@"https://api.myanimelist.net/v2/anime"] : [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga"];
     NSDictionary *parameters = @{@"q" : searchterm, @"limit" : @(25), @"offset" : @(currentpage), @"fields" : type == MALAnime ? @"alternative_titles,num_episodes,status,media_type,nsfw,rating,average_episode_duration" : @"alternative_titles,num_chapters,num_volumes,status,media_type,nsfw"};
     [manager GET:searchURL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         bool hasNextPage = false;
         int nextOffset = currentpage;
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
         NSLog(@"%@", searchURL);
+        NSLog(@"%@",responseObject);
         NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
         if (responseObject[@"paging"][@"next"]) {
             hasNextPage = true;
@@ -228,6 +235,8 @@ NSString *const malAPIversion = @"v3";
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
         NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
+        NSString* errResponse = [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding];
+        NSLog(@"Error Response: %@",errResponse);
     }];
 }
 /*
@@ -426,6 +435,9 @@ NSString *const malAPIversion = @"v3";
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
         NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
+        NSString* errResponse = [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding];
+        NSLog(@"Error Response: %@",errResponse);
+        NSLog(@"URL:%@", operation.originalRequest.URL);
     }];
 }
 
@@ -459,6 +471,9 @@ NSString *const malAPIversion = @"v3";
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
         NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
+        NSString* errResponse = [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding];
+        NSLog(@"Error Response: %@",errResponse);
+        NSLog(@"URL:%@", operation.originalRequest.URL);
     }];
 }
 
@@ -497,6 +512,9 @@ NSString *const malAPIversion = @"v3";
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
         NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
+        NSString* errResponse = [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding];
+        NSLog(@"Error Response: %@",errResponse);
+        NSLog(@"URL:%@", operation.originalRequest.URL);
     }];
 }
 
@@ -573,7 +591,10 @@ NSString *const malAPIversion = @"v3";
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
-        NSLog(@"%@",error.localizedDescription);
+        NSLog(@"Error: %@ Response: %@", error.localizedDescription, [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding]);
+        NSString* errResponse = [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding];
+        NSLog(@"Error Response: %@",errResponse);
+        NSLog(@"URL:%@", operation.originalRequest.URL);
     }];
 }
 
