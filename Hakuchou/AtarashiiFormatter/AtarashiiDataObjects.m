@@ -89,7 +89,47 @@
     }
 }
 
+- (void)checkNil {
+    if (!self.image_url) {
+        self.image_url = @"";
+    }
+    if (!self.type) {
+        self.type = @"";
+    }
+    if (!self.status) {
+        self.status = @"";
+    }
+    if (!self.start_date) {
+        self.start_date = @"";
+    }
+    if (!self.end_date) {
+        self.end_date = @"";
+    }
+    if (!self.synposis) {
+        self.synposis = @"";
+    }
+    if (!self.background) {
+        self.background = @"";
+    }
+    if (!self.source) {
+        self.source = @"";
+    }
+    if (!self.hashtag) {
+        self.hashtag = @"";
+    }
+    if (!self.broadcast) {
+        self.broadcast = @"";
+    }
+    if (!self.source) {
+        self.source = @"";
+    }
+    if (!self.classification) {
+        self.classification = @"";
+    }
+}
+
 - (NSDictionary *)NSDictionaryRepresentation {
+    [self checkNil];
     return @{ @"id" : @(_titleid), @"idMal" : @(_titleidMal), @"title" : _title.copy, @"other_titles" : _other_titles.copy, @"rank" : @(_rank), @"popularity_rank" : @(_popularity_rank), @"image_url" : _image_url.copy, @"type" : _type.copy, @"episodes" : @(_episodes), @"status" : _status.copy, @"start_date" : _start_date.copy, @"end_date" : _end_date.copy, @"broadcast" : _broadcast.copy, @"duration" : @(_duration), @"classification" : _classification ? _classification.copy : @"", @"hashtag" : _hashtag.copy, @"source" : _source.copy, @"season" : _season.copy, @"members_score" : @(_members_score), @"members_count" : @(_members_count), @"favorited_count" : @(_favorited_count), @"synopsis" : _synposis.copy, @"background" : _background.copy, @"producers" : _producers.copy, @"genres" : _genres.copy, @"manga_adaptations" : _manga_adaptations.copy, @"prequels" : _prequels.copy, @"sequels" : _sequels.copy, @"side_stories" : _side_stories.copy, @"parent_story" : _parent_story.copy, @"character_anime" : _character_anime.copy, @"spin_offs" : _spin_offs.copy, @"opening_theme" : _opening_theme.copy, @"ending_theme" : _ending_theme.copy, @"recommendations" : _recommendations.copy, @"mappings" : _mappings.copy, @"parsed_season" : @(_parsedseason), @"isNSFW" : @(self.isNSFW) };
 }
 @end
@@ -125,7 +165,29 @@
     return self;
 }
 
+- (void)checkNil {
+    if (!self.image_url) {
+        self.image_url = @"";
+    }
+    if (!self.type) {
+        self.type = @"";
+    }
+    if (!self.status) {
+        self.status = @"";
+    }
+    if (!self.start_date) {
+        self.start_date = @"";
+    }
+    if (!self.end_date) {
+        self.end_date = @"";
+    }
+    if (!self.synposis) {
+        self.synposis = @"";
+    }
+}
+
 - (NSDictionary *)NSDictionaryRepresentation {
+    [self checkNil];
     return @{ @"id" : @(_titleid), @"idMal" : @(_titleidMal), @"title" : _title.copy, @"other_titles" : _other_titles.copy, @"rank" : @(_rank), @"popularity_rank" : @(_popularity_rank), @"image_url" : _image_url.copy, @"type" : _type.copy, @"chapters" : @(_chapters), @"volumes": @(_volumes), @"status" : _status.copy, @"start_date" : _start_date, @"end_date" : _end_date, @"members_score" : @(_members_score), @"members_count" : @(_members_count), @"favorited_count" : @(_favorited_count), @"synopsis" : _synposis.copy, @"genres" : _genres.copy, @"anime_adaptations" : _anime_adaptations.copy, @"related_manga" : _related_manga.copy, @"alternate_versions" : _alternative_versions.copy, @"mappings" : _mappings.copy, @"isNSFW" : @(self.isNSFW)};
 }
 @end
@@ -156,7 +218,32 @@
     return self;
 }
 
+- (void)checkNil {
+    if (!self.image_url) {
+        self.image_url = @"";
+    }
+    if (!self.type) {
+        self.type = @"";
+    }
+    if (!self.status) {
+        self.status = @"";
+    }
+    if (!self.watching_start) {
+        self.watching_start = @"";
+    }
+    if (!self.watching_end) {
+        self.watching_end = @"";
+    }
+    if (!self.personal_comments) {
+        self.personal_comments = @"";
+    }
+    if (!self.custom_lists) {
+        self.custom_lists = @"";
+    }
+}
+
 - (NSDictionary *)NSDictionaryRepresentation {
+    [self checkNil];
     return @{ @"id" : @(_titleid), @"entryid" : @(_entryid), @"title" : _title.copy, @"episodes" : @(_episodes), @"duration" : @(_episode_length), @"image_url": _image_url.copy, @"type" : _type.copy, @"status" : _status.copy, @"watched_status" : _watched_status.copy, @"watched_episodes" : @(_watched_episodes), @"score" : @(_score), @"score_type" : @(_score_type), @"watching_start" : _watching_start.copy, @"watching_end" : _watching_end.copy, @"rewatching" : @(_rewatching), @"rewatch_count" : @(_rewatch_count), @"personal_comments" : _personal_comments.copy, @"private": @(_private_entry), @"custom_lists" : _custom_lists, @"last_updated" : @(_lastupdated)};
 }
 @end
@@ -188,7 +275,32 @@
     return self;
 }
 
+- (void)checkNil {
+    if (!self.image_url) {
+        self.image_url = @"";
+    }
+    if (!self.type) {
+        self.type = @"";
+    }
+    if (!self.status) {
+        self.status = @"";
+    }
+    if (!self.reading_start) {
+        self.reading_start = @"";
+    }
+    if (!self.reading_end) {
+        self.reading_end = @"";
+    }
+    if (!self.personal_comments) {
+        self.personal_comments = @"";
+    }
+    if (!self.custom_lists) {
+        self.custom_lists = @"";
+    }
+}
+
 - (NSDictionary *)NSDictionaryRepresentation {
+    [self checkNil];
     return @{ @"id" : @(_titleid), @"entryid" : @(_entryid), @"title" : _title.copy, @"chapters" : @(_chapters), @"volumes" : @(_volumes), @"image_url": _image_url.copy, @"type" : _type.copy, @"status" : _status.copy, @"read_status" : _read_status.copy, @"chapters_read" : @(_chapters_read), @"volumes_read" : @(_volumes_read), @"score" : @(_score), @"score_type" : @(_score_type), @"reading_start" : _reading_start.copy, @"reading_end" : _reading_end.copy, @"rereading" : @(_rereading), @"reread_count" : @(_reread_count), @"personal_comments" : _personal_comments.copy, @"private": @(_private_entry), @"custom_lists" : _custom_lists, @"last_updated" : @(_lastupdated)};
 }
 @end

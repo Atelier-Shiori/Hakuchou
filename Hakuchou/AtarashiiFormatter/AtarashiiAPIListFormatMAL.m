@@ -35,7 +35,7 @@
             
             // User Entry
             NSDictionary *listStatus = entry[@"list_status"];
-            aentry.watched_status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            aentry.watched_status = listStatus[@"status"] ? [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "] : @"";
             if ([aentry.watched_status isEqualToString:@"on hold"]) {
                 aentry.watched_status = @"on-hold";
             }
@@ -75,7 +75,7 @@
             
             // User Entry
             NSDictionary *listStatus = entry[@"list_status"];
-            mentry.read_status = [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "];
+            mentry.read_status = listStatus[@"status"] ? [(NSString *)listStatus[@"status"] stringByReplacingOccurrencesOfString:@"_" withString:@" "] : @"";
             if ([mentry.read_status isEqualToString:@"on hold"]) {
                 mentry.read_status = @"on-hold";
             }
