@@ -34,7 +34,10 @@
     
 - (instancetype)init {
     if (self = [super init]) {
-        manager = [SharedHTTPManager jsonmanager];
+        manager = [AFHTTPSessionManager manager];
+        manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+        manager.responseSerializer = [AFJSONResponseSerializer serializer];
+        ((AFJSONResponseSerializer *)manager.responseSerializer).acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"application/vnd.api+json", @"text/javascript", @"text/html", @"text/plain", nil];
     }
     return self;
 }

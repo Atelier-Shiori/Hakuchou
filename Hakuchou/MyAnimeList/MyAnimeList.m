@@ -40,11 +40,13 @@ NSString *const malAPIversion = @"v3";
 
 - (instancetype)init {
     if (self = [super init]) {
-        manager = [SharedHTTPManager jsonmanager];
+        manager = [AFHTTPSessionManager manager];
+        manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+        manager.responseSerializer = [AFJSONResponseSerializer serializer];
+        ((AFJSONResponseSerializer *)manager.responseSerializer).acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"application/vnd.api+json", @"text/javascript", @"text/html", @"text/plain", nil];
     }
     return self;
 }
-
 #pragma mark MyAnimeList Functions
 
 #pragma mark OAuth Tokens
@@ -163,15 +165,16 @@ NSString *const malAPIversion = @"v3";
         }];
         return;
     }
+    [manager.requestSerializer clearAuthorizationHeader];
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
     NSString * URL = @"";
     if (type == MALAnime) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/%@/animelist?fields=status,media_type,num_episodes,list_status%%7Bstart_date,finish_date,comments,num_times_rewatched%%7D,start_date,finish_date,average_episode_duration&limit=1000&offset=%i", malAPIversion,username, page];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/%@/animelist?fields=status,media_type,num_episodes,list_status%%7Bstart_date,finish_date,comments,num_times_rewatched%%7D,start_date,finish_date,average_episode_duration&limit=1000&offset=%i&nsfw=1", malAPIversion,username, page];
     }
     else if (type == MALManga) {
-        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,list_status%%7Bstart_date,finish_date,comments,num_times_reread%%7D,start_date,end_date,comments,num_times_reread%%7D&limit=1000&offset=%i", malAPIversion,username, page];
+        URL = [NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,list_status%%7Bstart_date,finish_date,comments,num_times_reread%%7D,start_date,end_date,comments,num_times_reread%%7D&limit=1000&offset=%i&nsfw=1", malAPIversion,username, page];
     }
     
     [manager GET:URL parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
@@ -215,6 +218,7 @@ NSString *const malAPIversion = @"v3";
         }];
         return;
     }
+    [manager.requestSerializer clearAuthorizationHeader];
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
@@ -298,6 +302,7 @@ NSString *const malAPIversion = @"v3";
         }];
         return;
     }
+    [manager.requestSerializer clearAuthorizationHeader];
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
@@ -321,6 +326,7 @@ NSString *const malAPIversion = @"v3";
     else {
         return;
     }
+    [manager.requestSerializer clearAuthorizationHeader];
     [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         [self.tmparray addObjectsFromArray:[AtarashiiAPIListFormatMAL MALReviewstoAtarashii:responseObject[@"reviews"] withType:type]];
         if (((NSArray *)responseObject[@"reviews"]).count > 0) {
@@ -361,6 +367,7 @@ NSString *const malAPIversion = @"v3";
         }];
         return;
     }
+    [manager.requestSerializer clearAuthorizationHeader];
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
@@ -390,6 +397,7 @@ NSString *const malAPIversion = @"v3";
         }];
         return;
     }
+    [manager.requestSerializer clearAuthorizationHeader];
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
@@ -418,6 +426,7 @@ NSString *const malAPIversion = @"v3";
         }];
         return;
     }
+    [manager.requestSerializer clearAuthorizationHeader];
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
@@ -454,6 +463,7 @@ NSString *const malAPIversion = @"v3";
         }];
         return;
     }
+    [manager.requestSerializer clearAuthorizationHeader];
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
@@ -490,6 +500,7 @@ NSString *const malAPIversion = @"v3";
         }];
         return;
     }
+    [manager.requestSerializer clearAuthorizationHeader];
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
@@ -586,7 +597,7 @@ NSString *const malAPIversion = @"v3";
 #pragma mark People Methods
 
 - (void)retrieveStaff:(int)titleid completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
-    NSString *url = [NSString stringWithFormat:@"%@/2.1/anime/cast/%i",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"],titleid];
+    /*NSString *url = [NSString stringWithFormat:@"%@/2.1/anime/cast/%i",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"],titleid];
     [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -595,16 +606,16 @@ NSString *const malAPIversion = @"v3";
         NSString* errResponse = [[NSString alloc] initWithData:(NSData *)error.userInfo[AFNetworkingOperationFailingURLResponseDataErrorKey] encoding:NSUTF8StringEncoding];
         NSLog(@"Error Response: %@",errResponse);
         NSLog(@"URL:%@", operation.originalRequest.URL);
-    }];
+    }];*/
 }
 
 - (void)retrievePersonDetails:(int)personid completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler{
-    NSString *url = [NSString stringWithFormat:@"%@/2.1/people/%i",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"],personid];
+    /*NSString *url = [NSString stringWithFormat:@"%@/2.1/people/%i",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"],personid];
     [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
-    }];
+    }];*/
 }
 
 #pragma mark -
