@@ -683,7 +683,7 @@ NSString *const malAPIversion = @"v3";
     }
     NSError *error;
     
-    id responseObject = [smanager syncGET:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/@me?fields=avatar",malAPIversion] parameters:nil task:NULL error:&error];
+    id responseObject = [smanager syncGET:[NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/@me?fields=avatar"] parameters:nil task:NULL error:&error];
     if (!error) {
         NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
         [defaults setValue:responseObject[@"id"] forKey:@"mal-userid"];
@@ -693,7 +693,7 @@ NSString *const malAPIversion = @"v3";
     else {
         if ([[error.userInfo valueForKey:@"NSLocalizedDescription"] isEqualToString:@"Request failed: unauthorized (401)"] || [[error.userInfo valueForKey:@"NSLocalizedDescription"] isEqualToString:@"Request failed: forbidden (403)"]) {
             // Remove Account
-            [self removeAccount];
+            self.userInfoFailure(true);
         }
     }
 }

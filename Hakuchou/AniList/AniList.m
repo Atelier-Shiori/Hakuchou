@@ -863,8 +863,7 @@
     }
     else {
         if ([[error.userInfo valueForKey:@"NSLocalizedDescription"] isEqualToString:@"Request failed: unauthorized (401)"] || [[error.userInfo valueForKey:@"NSLocalizedDescription"] isEqualToString:@"Request failed: forbidden (403)"]) {
-            // Remove Account
-            [self removeAccount];
+            self.userInfoFailure(true);
         }
     }
 }
