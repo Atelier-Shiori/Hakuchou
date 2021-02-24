@@ -820,8 +820,9 @@
         return;
     }
     AFHTTPSessionManager *smanager = [SharedHTTPManager syncmanager];
+    [smanager.requestSerializer clearAuthorizationHeader];
     if (cred) {
-        [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
+        [smanager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
     NSError *error;
     id responseObject = [smanager syncGET:@"https://kitsu.io/api/edge/users?filter[self]=true&fields[users]=name,slug,avatar,ratingSystem" parameters:@{} task:NULL error:&error];

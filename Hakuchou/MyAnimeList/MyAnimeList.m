@@ -675,8 +675,9 @@ NSString *const malAPIversion = @"v3";
         return;
     }
     AFHTTPSessionManager *smanager = [SharedHTTPManager syncmanager];
+    [smanager.requestSerializer clearAuthorizationHeader];
     if (cred) {
-        [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
+        [smanager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
     else {
         return;
