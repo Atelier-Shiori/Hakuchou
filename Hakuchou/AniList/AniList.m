@@ -245,6 +245,7 @@
         [filteredLinks addObjectsFromArray:[links filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"site ==[c] %@",sitename]]];
     }
     finaldict[@"links"] = filteredLinks;
+    finaldict[@"id"] = mediadata[@"id"];
     return finaldict;
 }
 
