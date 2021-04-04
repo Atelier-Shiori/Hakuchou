@@ -212,6 +212,42 @@
     }];
 }
 
+#pragma mark Stream Links
+- (void)retrieveStreamLinksForId:(int)animetitleid completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
+    [manager.requestSerializer clearAuthorizationHeader];
+    NSDictionary *parameters = @{@"query" : kAniListStreamingLinks, @"variables" : @{@"id" : @(animetitleid)}};
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (responseObject[@"data"]) {
+            NSDictionary *finalDict = [self convertStreamingLinks:responseObject];
+            if ([(NSArray *)finalDict[@"links"] count] > 0) {
+                completionHandler(finalDict);
+            }
+            else {
+                errorHandler(nil);
+            }
+        }
+        else {
+            errorHandler(nil);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        errorHandler(error);
+    }];
+}
+
+- (NSDictionary *)convertStreamingLinks:(NSDictionary *)data {
+    NSMutableDictionary *finaldict = [NSMutableDictionary new];
+    NSDictionary *mediadata = data[@"data"][@"Media"];
+    finaldict[@"title"] = mediadata[@"title"][@"romaji"];
+    NSArray *links = mediadata[@"externalLinks"];
+    NSMutableArray *filteredLinks = [NSMutableArray new];
+    NSArray *sites = @[@"Crunchyroll", @"VRV", @"Hulu", @"AnimeLab", @"Funimation", @"Amazon", @"Tubi TV", @"Adult Swim", @"Hidive", @"Netflix"];
+    for (NSString *sitename in sites) {
+        [filteredLinks addObjectsFromArray:[links filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"site ==[c] %@",sitename]]];
+    }
+    finaldict[@"links"] = filteredLinks;
+    return finaldict;
+}
+
 #pragma mark OAuth Tokens
 - (bool)tokenexpired {
     AFOAuthCredential *cred = [self getFirstAccount];
