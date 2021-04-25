@@ -69,6 +69,13 @@
                         lentry.personal_comments = entry[@"attributes"][@"notes"];
                         lentry.private_entry = ((NSNumber *) entry[@"attributes"][@"private"]).boolValue;
                         lentry.lastupdated = [HUtility dateStringToDate:entry[@"attributes"][@"updatedAt"]].timeIntervalSince1970;
+                        if (entry[@"attributes"][@"startDate"]) {
+                            NSDictionary *aireddata = [HUtility dateStringToAiringSeasonAndYear:entry[@"attributes"][@"startDate"]];
+                            lentry.aired_season = aireddata[@"aired_season"];
+                            lentry.aired_year = ((NSNumber *)aireddata[@"aired_year"]).intValue;
+                        }
+                        lentry.aired_start = entry[@"attributes"][@"startDate"] ? entry[@"attributes"][@"startDate"] : @"";
+                        lentry.aired_finish = entry[@"attributes"][@"endDate"] ? entry[@"attributes"][@"endDate"] : @"";
                         [tmpanimelist addObject: lentry.NSDictionaryRepresentation];
                     }
                 }

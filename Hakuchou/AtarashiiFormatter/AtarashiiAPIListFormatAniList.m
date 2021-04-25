@@ -66,6 +66,13 @@
             aentry.watching_end = entry[@"watching_end"][@"year"] != [NSNull null] && entry[@"watching_end"][@"month"] != [NSNull null] && entry[@"watching_end"][@"day"] != [NSNull null] ? [self convertDate:entry[@"watching_end"]] : @"";
             aentry.custom_lists = entry[@"customLists"] != [NSNull null] ? [self generateCustomListStringWithArray:entry[@"customLists"]] : @"";
             aentry.lastupdated = ((NSNumber *)entry[@"updatedAt"]).longValue;
+            if (entry[@"startDate"] != [NSNull null] && entry[@"startDate"][@"year"] != [NSNull null]) {
+                NSDictionary *aireddata = [HUtility aniListdateStringToAiringSeasonAndYear:entry[@"startDate"]];
+                aentry.aired_season = aireddata[@"aired_season"];
+                aentry.aired_year = ((NSNumber *)aireddata[@"aired_year"]).intValue;
+            }
+            aentry.aired_start = entry[@"startDate"] != [NSNull null] && entry[@"startDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",entry[@"startDate"][@"year"],entry[@"startDate"][@"month"],entry[@"startDate"][@"day"]] : @"";
+            aentry.aired_start = entry[@"endDate"] != [NSNull null]  && entry[@"endDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",entry[@"endDate"][@"year"],entry[@"endDate"][@"month"],entry[@"endDate"][@"day"]] : @"";
             [tmparray addObject:[aentry NSDictionaryRepresentation]];
         }
     }

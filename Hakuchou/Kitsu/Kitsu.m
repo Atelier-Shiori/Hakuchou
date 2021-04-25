@@ -83,7 +83,7 @@
     switch (type) {
         case 0:
             listtype = @"anime";
-            includes = @"canonicalTitle,episodeCount,episodeLength,showType,posterImage,status";
+            includes = @"canonicalTitle,episodeCount,episodeLength,showType,posterImage,status,startDate,endDate";
             break;
         case 1:
             listtype = @"manga";

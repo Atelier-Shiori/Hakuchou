@@ -47,6 +47,13 @@
             aentry.watching_end = listStatus[@"finish_date"] ? listStatus[@"finish_date"] : @"";
             aentry.personal_comments = listStatus[@"comments"] ? listStatus[@"comments"] : @"";
             aentry.lastupdated = [[HUtility isodateStringToDate:listStatus[@"updated_at"]] timeIntervalSince1970];
+            if (attributes[@"start_date"]) {
+                NSDictionary *aireddata = [HUtility dateStringToAiringSeasonAndYear:attributes[@"start_date"]];
+                aentry.aired_season = aireddata[@"aired_season"];
+                aentry.aired_year = ((NSNumber *)aireddata[@"aired_year"]).intValue;
+            }
+            aentry.aired_start = attributes[@"start_date"] ? attributes[@"start_date"] : @"";
+            aentry.aired_finish = attributes[@"end_date"] ? attributes[@"end_date"] : @"";
             [tmparray addObject:aentry.NSDictionaryRepresentation];
         }
     }
