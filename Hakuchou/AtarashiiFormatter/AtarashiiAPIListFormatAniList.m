@@ -72,7 +72,7 @@
                 aentry.aired_year = ((NSNumber *)aireddata[@"aired_year"]).intValue;
             }
             aentry.aired_start = entry[@"startDate"][@"startDate"] != [NSNull null] && entry[@"startDate"][@"startDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",entry[@"startDate"][@"startDate"][@"year"],entry[@"startDate"][@"startDate"][@"month"],entry[@"startDate"][@"startDate"][@"day"]] : @"";
-            aentry.aired_start = entry[@"endDate"] != [NSNull null]  && entry[@"endDate"][@"endDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",entry[@"endDate"][@"endDate"][@"year"],entry[@"endDate"][@"endDate"][@"month"],entry[@"endDate"][@"endDate"][@"day"]] : @"";
+            aentry.aired_finish = entry[@"endDate"] != [NSNull null]  && entry[@"endDate"][@"endDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",entry[@"endDate"][@"endDate"][@"year"],entry[@"endDate"][@"endDate"][@"month"],entry[@"endDate"][@"endDate"][@"day"]] : @"";
             [tmparray addObject:[aentry NSDictionaryRepresentation]];
         }
     }
