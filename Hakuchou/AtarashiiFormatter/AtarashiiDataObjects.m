@@ -243,6 +243,12 @@
     if (!self.custom_lists) {
         self.custom_lists = @"";
     }
+    if (!self.aired_start || self.aired_start == (NSString *)[NSNull null]) {
+        self.aired_start = @"";
+    }
+    if (!self.aired_finish || self.aired_finish == (NSString *)[NSNull null]) {
+        self.aired_finish = @"";
+    }
 }
 
 - (NSDictionary *)NSDictionaryRepresentation {
@@ -301,6 +307,12 @@
     }
     if (!self.custom_lists) {
         self.custom_lists = @"";
+    }
+    if (!self.publishing_start || self.publishing_start == (NSString *)[NSNull null]) {
+        self.publishing_start = @"";
+    }
+    if (!self.publishing_finish || self.publishing_finish == (NSString *)[NSNull null]) {
+        self.publishing_start = @"";
     }
 }
 
