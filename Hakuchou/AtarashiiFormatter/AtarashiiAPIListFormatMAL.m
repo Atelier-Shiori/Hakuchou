@@ -95,6 +95,8 @@
             mentry.reading_end = listStatus[@"finish_date"] ? listStatus[@"finish_date"] : @"";
             mentry.personal_comments = listStatus[@"comments"] ? listStatus[@"comments"] : @"";
             mentry.lastupdated = [[HUtility isodateStringToDate:listStatus[@"updated_at"]] timeIntervalSince1970];
+            mentry.publishing_start = attributes[@"start_date"] ? attributes[@"start_date"] : @"";
+            mentry.publishing_finish = attributes[@"end_date"] ? attributes[@"end_date"] : @"";
             [tmparray addObject:mentry.NSDictionaryRepresentation];
         }
     }

@@ -87,7 +87,7 @@
             break;
         case 1:
             listtype = @"manga";
-            includes = @"canonicalTitle,chapterCount,volumeCount,mangaType,posterImage,status";
+            includes = @"canonicalTitle,chapterCount,volumeCount,mangaType,posterImage,status,startDate,endDate";
             break;
         default:
             errorHandler(nil);

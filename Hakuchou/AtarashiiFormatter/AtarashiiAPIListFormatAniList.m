@@ -134,6 +134,8 @@
             mentry.reading_end = entry[@"read_end"][@"year"] != [NSNull null] && entry[@"read_end"][@"month"] != [NSNull null] && entry[@"read_end"][@"day"] != [NSNull null] ?  [self convertDate:entry[@"read_end"]] : @"";
             mentry.custom_lists = entry[@"customLists"] != [NSNull null] ? [self generateCustomListStringWithArray:entry[@"customLists"]] : @"";
             mentry.lastupdated = ((NSNumber *)entry[@"updatedAt"]).longValue;
+            mentry.publishing_start = entry[@"startDate"][@"startDate"] != [NSNull null] && entry[@"startDate"][@"startDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",entry[@"startDate"][@"startDate"][@"year"],entry[@"startDate"][@"startDate"][@"month"],entry[@"startDate"][@"startDate"][@"day"]] : @"";
+            mentry.publishing_finish = entry[@"endDate"] != [NSNull null]  && entry[@"endDate"][@"endDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",entry[@"endDate"][@"endDate"][@"year"],entry[@"endDate"][@"endDate"][@"month"],entry[@"endDate"][@"endDate"][@"day"]] : @"";
             [tmparray addObject:[mentry NSDictionaryRepresentation]];
         }
     }
