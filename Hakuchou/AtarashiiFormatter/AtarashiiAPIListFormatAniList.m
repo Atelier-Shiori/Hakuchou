@@ -613,6 +613,8 @@
             aobject.episodes = d[@"episodes"] && d[@"episodes"] != [NSNull null] ? ((NSNumber *)d[@"episodes"]).intValue : 0;
             aobject.type = d[@"format"] != [NSNull null] ? [HUtility convertAnimeType:d[@"format"]] : @"";
             aobject.status = @"currently airing";
+            aobject.nextairdate = d[@"nextAiringEpisode"] != [NSNull null] ? ((NSNumber *)d[@"nextAiringEpisode"][@"airingAt"]).longValue : 0;
+            aobject.nextepisode = d[@"nextAiringEpisode"] != [NSNull null] ? ((NSNumber *)d[@"nextAiringEpisode"][@"episode"]).intValue : 0;
             NSMutableDictionary *finaldictionary = [[NSMutableDictionary alloc] initWithDictionary:[aobject NSDictionaryRepresentation]];
             if (d[@"nextAiringEpisode"] != [NSNull null]) {
                 switch ([self getDayFromDateInterval:((NSNumber *)d[@"nextAiringEpisode"][@"airingAt"]).intValue]) {
