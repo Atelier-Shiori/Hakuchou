@@ -105,30 +105,35 @@
 + (NSDictionary *)aniListdateStringToAiringSeasonAndYear:(NSDictionary *)dateDict {
     long year = ((NSNumber *)dateDict[@"year"]).longValue;
     NSString *season = @"";
-    switch (((NSNumber *)dateDict[@"month"]).longValue) {
-        case 1:
-        case 2:
-        case 3:
-            season = @"winter";
-            break;
-        case 4:
-        case 5:
-        case 6:
-            season = @"spring";
-            break;
-        case 7:
-        case 8:
-        case 9:
-            season = @"summer";
-            break;
-        case 10:
-        case 11:
-        case 12:
-            season = @"fall";
-            break;
-        default:
-            season = @"unkown";
-            break;
+    if (dateDict[@"month"] && dateDict[@"month"] != [NSNull null]) {
+        switch (((NSNumber *)dateDict[@"month"]).longValue) {
+            case 1:
+            case 2:
+            case 3:
+                season = @"winter";
+                break;
+            case 4:
+            case 5:
+            case 6:
+                season = @"spring";
+                break;
+            case 7:
+            case 8:
+            case 9:
+                season = @"summer";
+                break;
+            case 10:
+            case 11:
+            case 12:
+                season = @"fall";
+                break;
+            default:
+                season = @"unknown";
+                break;
+        }
+    }
+    else {
+        season = @"unknown";
     }
     return @{@"aired_year" : @(year), @"aired_season" : season};
 }
