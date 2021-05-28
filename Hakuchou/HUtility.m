@@ -103,7 +103,7 @@
 
 
 + (NSDictionary *)aniListdateStringToAiringSeasonAndYear:(NSDictionary *)dateDict {
-    long year = ((NSNumber *)dateDict[@"year"]).longValue;
+    long year = dateDict[@"year"] ? ((NSNumber *)dateDict[@"year"]).longValue : 0;
     NSString *season = @"";
     if (dateDict[@"month"] && dateDict[@"month"] != [NSNull null]) {
         switch (((NSNumber *)dateDict[@"month"]).longValue) {
