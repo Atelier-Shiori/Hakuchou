@@ -74,8 +74,8 @@
                             lentry.aired_season = aireddata[@"aired_season"];
                             lentry.aired_year = ((NSNumber *)aireddata[@"aired_year"]).intValue;
                         }
-                        lentry.aired_start = metadata[@"attributes"][@"startDate"] ? metadata[@"attributes"][@"startDate"] : @"";
-                        lentry.aired_finish = metadata[@"attributes"][@"endDate"] ? metadata[@"attributes"][@"endDate"] : @"";
+                        lentry.aired_start = metadata[@"attributes"][@"startDate"] && metadata[@"attributes"][@"startDate"] != [NSNull null] ? metadata[@"attributes"][@"startDate"] : @"";
+                        lentry.aired_finish = metadata[@"attributes"][@"endDate"] && metadata[@"attributes"][@"endDate"] != [NSNull null] ? metadata[@"attributes"][@"endDate"] : @"";
                         [tmpanimelist addObject: lentry.NSDictionaryRepresentation];
                     }
                 }
