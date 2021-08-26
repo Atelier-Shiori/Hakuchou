@@ -69,7 +69,7 @@
                         lentry.personal_comments = entry[@"attributes"][@"notes"];
                         lentry.private_entry = ((NSNumber *) entry[@"attributes"][@"private"]).boolValue;
                         lentry.lastupdated = [HUtility dateStringToDate:entry[@"attributes"][@"updatedAt"]].timeIntervalSince1970;
-                        if (metadata[@"attributes"][@"startDate"]) {
+                        if (metadata[@"attributes"][@"startDate"] && metadata[@"attributes"][@"startDate"] != [NSNull null]) {
                             NSDictionary *aireddata = [HUtility dateStringToAiringSeasonAndYear:metadata[@"attributes"][@"startDate"]];
                             lentry.aired_season = aireddata[@"aired_season"];
                             lentry.aired_year = ((NSNumber *)aireddata[@"aired_year"]).intValue;
