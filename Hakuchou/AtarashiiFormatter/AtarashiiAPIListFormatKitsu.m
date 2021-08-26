@@ -143,8 +143,8 @@
                     lentry.personal_comments = entry[@"attributes"][@"notes"];
                     lentry.private_entry = ((NSNumber *) entry[@"attributes"][@"private"]).boolValue;
                     lentry.lastupdated = [HUtility dateStringToDate:entry[@"attributes"][@"updatedAt"]].timeIntervalSince1970;
-                    lentry.publishing_start = metadata[@"attributes"][@"startDate"] ? metadata[@"attributes"][@"startDate"] : @"";
-                    lentry.publishing_finish = metadata[@"attributes"][@"endDate"] ? metadata[@"attributes"][@"endDate"] : @"";
+                    lentry.publishing_start = metadata[@"attributes"][@"startDate"] && metadata[@"attributes"][@"startDate"] != [NSNull null] ? metadata[@"attributes"][@"startDate"] : @"";
+                    lentry.publishing_finish = metadata[@"attributes"][@"endDate"] && metadata[@"attributes"][@"endDate"] != [NSNull null] ? metadata[@"attributes"][@"endDate"] : @"";
                     [tmpmangalist addObject: lentry.NSDictionaryRepresentation];
                 }
             }
