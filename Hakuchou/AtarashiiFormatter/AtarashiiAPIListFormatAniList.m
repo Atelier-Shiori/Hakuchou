@@ -68,8 +68,10 @@
             aentry.lastupdated = ((NSNumber *)entry[@"updatedAt"]).longValue;
             if (entry[@"startDate"] != [NSNull null] && entry[@"startDate"][@"startDate"][@"year"] != [NSNull null]) {
                 NSDictionary *aireddata = [HUtility aniListdateStringToAiringSeasonAndYear:entry[@"startDate"][@"startDate"]];
-                aentry.aired_season = aireddata[@"aired_season"];
-                aentry.aired_year = ((NSNumber *)aireddata[@"aired_year"]).intValue;
+                if (aireddata) {
+                    aentry.aired_season = aireddata[@"aired_season"];
+                    aentry.aired_year = ((NSNumber *)aireddata[@"aired_year"]).intValue;
+                }
             }
             aentry.aired_start = entry[@"startDate"][@"startDate"] != [NSNull null] && entry[@"startDate"][@"startDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",entry[@"startDate"][@"startDate"][@"year"],entry[@"startDate"][@"startDate"][@"month"],entry[@"startDate"][@"startDate"][@"day"]] : @"";
             aentry.aired_finish = entry[@"endDate"] != [NSNull null]  && entry[@"endDate"][@"endDate"][@"year"] != [NSNull null] ? [NSString stringWithFormat:@"%@-%@-%@",entry[@"endDate"][@"endDate"][@"year"],entry[@"endDate"][@"endDate"][@"month"],entry[@"endDate"][@"endDate"][@"day"]] : @"";

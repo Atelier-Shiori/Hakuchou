@@ -70,35 +70,38 @@
     NSDateFormatter *formatter = [NSDateFormatter new];
     formatter.dateFormat = @"yyyy-MM-dd";
     NSDate *date = [formatter dateFromString:datestring];
-    NSDateComponents *components = [NSCalendar.currentCalendar components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:date];
-    long year = components.year;
-    NSString *season = @"";
-    switch (components.month) {
-        case 1:
-        case 2:
-        case 3:
-            season = @"winter";
-            break;
-        case 4:
-        case 5:
-        case 6:
-            season = @"spring";
-            break;
-        case 7:
-        case 8:
-        case 9:
-            season = @"summer";
-            break;
-        case 10:
-        case 11:
-        case 12:
-            season = @"fall";
-            break;
-        default:
-            season = @"unkown";
-            break;
+    if (date) {
+        NSDateComponents *components = [NSCalendar.currentCalendar components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:date];
+        long year = components.year;
+        NSString *season = @"";
+        switch (components.month) {
+            case 1:
+            case 2:
+            case 3:
+                season = @"winter";
+                break;
+            case 4:
+            case 5:
+            case 6:
+                season = @"spring";
+                break;
+            case 7:
+            case 8:
+            case 9:
+                season = @"summer";
+                break;
+            case 10:
+            case 11:
+            case 12:
+                season = @"fall";
+                break;
+            default:
+                season = @"unkown";
+                break;
+        }
+        return @{@"aired_year" : @(year), @"aired_season" : season};
     }
-    return @{@"aired_year" : @(year), @"aired_season" : season};
+    return nil;
 }
 
 

@@ -17,7 +17,7 @@
     NSMutableArray *tmpanimelist = [NSMutableArray new];
         for (NSDictionary *entry in tmplist) {
             @autoreleasepool {
-                if (entry[@"relationships"][@"anime"][@"data"]) {
+                if (entry[@"relationships"][@"anime"][@"data"] && entry[@"relationships"][@"anime"][@"data"] != [NSNull null]) {
                     NSDictionary *metadata = [self retrieveMetaDataWithID:((NSNumber *)entry[@"relationships"][@"anime"][@"data"][@"id"]).intValue withMetaData:metadataa];;
                     if (metadata) {
                         //Populate fields
@@ -68,11 +68,14 @@
                         lentry.rewatch_count = ((NSNumber *)entry[@"attributes"][@"reconsumeCount"]).intValue;
                         lentry.personal_comments = entry[@"attributes"][@"notes"];
                         lentry.private_entry = ((NSNumber *) entry[@"attributes"][@"private"]).boolValue;
+
                         lentry.lastupdated = [HUtility dateStringToDate:entry[@"attributes"][@"updatedAt"]].timeIntervalSince1970;
                         if (metadata[@"attributes"][@"startDate"] && metadata[@"attributes"][@"startDate"] != [NSNull null]) {
                             NSDictionary *aireddata = [HUtility dateStringToAiringSeasonAndYear:metadata[@"attributes"][@"startDate"]];
-                            lentry.aired_season = aireddata[@"aired_season"];
-                            lentry.aired_year = ((NSNumber *)aireddata[@"aired_year"]).intValue;
+                            if (aireddata) {
+                                lentry.aired_season = aireddata[@"aired_season"];
+                                lentry.aired_year = ((NSNumber *)aireddata[@"aired_year"]).intValue;
+                            }
                         }
                         lentry.aired_start = metadata[@"attributes"][@"startDate"] && metadata[@"attributes"][@"startDate"] != [NSNull null] ? metadata[@"attributes"][@"startDate"] : @"";
                         lentry.aired_finish = metadata[@"attributes"][@"endDate"] && metadata[@"attributes"][@"endDate"] != [NSNull null] ? metadata[@"attributes"][@"endDate"] : @"";
@@ -87,7 +90,7 @@
     NSMutableArray *tmpmangalist = [NSMutableArray new];
         for (NSDictionary *entry in tmplist) {
             @autoreleasepool {
-            if (entry[@"relationships"][@"manga"][@"data"]) {
+            if (entry[@"relationships"][@"manga"][@"data"] && entry[@"relationships"][@"manga"][@"data"] != [NSNull null]) {
                 NSDictionary *metadata = [self retrieveMetaDataWithID:((NSNumber *)entry[@"relationships"][@"manga"][@"data"][@"id"]).intValue withMetaData:metadataa];
                 if (metadata) {
                     //Populate fields
