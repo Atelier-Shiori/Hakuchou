@@ -168,6 +168,10 @@ NSString *const malAPIversion = @"v3";
     [manager.requestSerializer clearAuthorizationHeader];
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
+        [manager.requestSerializer setValue:nil forHTTPHeaderField:@"X-MAL-CLIENT-ID"];
+    }
+    else {
+        [manager.requestSerializer setValue:[NSString stringWithFormat:@"%@",_clientid] forHTTPHeaderField:@"X-MAL-CLIENT-ID"];
     }
     NSString * URL = @"";
     if (type == MALAnime) {
@@ -221,8 +225,12 @@ NSString *const malAPIversion = @"v3";
     [manager.requestSerializer clearAuthorizationHeader];
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
+        [manager.requestSerializer setValue:nil forHTTPHeaderField:@"X-MAL-CLIENT-ID"];
     }
-    NSString *searchURL = type == MALAnime ? [NSString stringWithFormat:@"https://api.myanimelist.net/v2/anime"] : [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga"];
+    else {
+        [manager.requestSerializer setValue:[NSString stringWithFormat:@"%@",_clientid] forHTTPHeaderField:@"X-MAL-CLIENT-ID"];
+    }
+    NSString *searchURL = type == MALAnime ? [NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime",malAPIversion] : [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga"];
     NSDictionary *parameters = @{@"q" : searchterm, @"limit" : @(25), @"offset" : @(currentpage), @"fields" : type == MALAnime ? @"alternative_titles,num_episodes,status,media_type,nsfw,rating,average_episode_duration" : @"alternative_titles,num_chapters,num_volumes,status,media_type,nsfw"};
     [manager GET:searchURL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         bool hasNextPage = false;
@@ -305,6 +313,10 @@ NSString *const malAPIversion = @"v3";
     [manager.requestSerializer clearAuthorizationHeader];
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
+        [manager.requestSerializer setValue:nil forHTTPHeaderField:@"X-MAL-CLIENT-ID"];
+    }
+    else {
+        [manager.requestSerializer setValue:[NSString stringWithFormat:@"%@",_clientid] forHTTPHeaderField:@"X-MAL-CLIENT-ID"];
     }
     [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALAnimeInfotoAtarashii:responseObject] : [AtarashiiAPIListFormatMAL MALMangaInfotoAtarashii:responseObject]);
