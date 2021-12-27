@@ -143,7 +143,7 @@
 
 + (int)parseSeason:(NSString *)string {
     // Season Parsing
-    NSArray *matches = [HUtility findMatches:string pattern:@"((S|s|Season )\\d+|\\d+(st|nd|rd|th) Season|\\d+)"];
+    NSArray *matches = [HUtility findMatches:string pattern:@"((S|s|Season )\\d+|\\d+(st|nd|rd|th) Season|\\s\\d+$)"];
     NSString *tmpseason;
     if (matches.count > 0) {
         tmpseason = matches[0];
