@@ -72,7 +72,8 @@ NSString *const malAPIversion = @"v3";
                                                                        secret:@""];
     [OAuth2Manager setUseHTTPBasicAuthentication:NO];
     [OAuth2Manager authenticateUsingOAuthWithURLString:@"v1/oauth2/token"
-                                            parameters:@{@"grant_type":@"refresh_token", @"refresh_token":cred.refreshToken, @"redirect_uri": _redirectURL} success:^(AFOAuthCredential *credential) {
+                                            parameters:@{@"grant_type":@"refresh_token", @"refresh_token":cred.refreshToken, @"redirect_uri": _redirectURL} headers:@{}
+                                               success:^(AFOAuthCredential *credential) {
                                                 NSLog(@"Token refreshed");
                                                 [credmanager saveCredentialForService:1 withCredential:credential];
                                                 completion(true);
@@ -89,7 +90,9 @@ NSString *const malAPIversion = @"v3";
                                     clientID:_clientid
                                       secret:@""];
     [OAuth2Manager authenticateUsingOAuthWithURLString:@"v1/oauth2/token"
-                                            parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": _redirectURL, @"code_verifier" : _verifier} success:^(AFOAuthCredential *credential) {
+                                            parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": _redirectURL, @"code_verifier" : _verifier}
+                                               headers:@{}
+                                               success:^(AFOAuthCredential *credential) {
         [[OAuthCredManager sharedInstance] saveCredentialForService:1 withCredential:credential];
         [self getOwnMALid:^(int userid, NSString *username, NSString *avatar) {
             [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"mal-username"];
@@ -110,7 +113,8 @@ NSString *const malAPIversion = @"v3";
                                     clientID:_clientid
                                       secret:@""];
     [OAuth2Manager authenticateUsingOAuthWithURLString:@"v1/oauth2/token"
-                                            parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": _redirectURL, @"code_verifier" : _verifier} success:^(AFOAuthCredential *credential) {
+                                            parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": _redirectURL, @"code_verifier" : _verifier} headers:@{}
+                                               success:^(AFOAuthCredential *credential) {
         [self getMALidWithCredential:credential completion:^(int userid, NSString *username, NSString *avatar) {
             if ([NSUserDefaults.standardUserDefaults integerForKey:@"mal-userid"] == userid) {
                 [[OAuthCredManager sharedInstance] saveCredentialForService:1 withCredential:credential];
@@ -131,7 +135,7 @@ NSString *const malAPIversion = @"v3";
 #pragma mark Profiles
 - (void)retrieveProfile:(NSString *)username completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
-    [manager GET:[NSString stringWithFormat:@"%@/user/%@/profile",kJikanAPIURL,username] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager GET:[NSString stringWithFormat:@"%@/user/%@/profile",kJikanAPIURL,username] parameters:nil headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler([AtarashiiAPIListFormatMAL MalUsertoAtarashii:responseObject]);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -181,7 +185,7 @@ NSString *const malAPIversion = @"v3";
         URL = [NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/%@/mangalist?fields=status,media_type,num_chapters,num_volumes,list_status%%7Bstart_date,finish_date,comments,num_times_reread%%7D,start_date,end_date,comments,num_times_reread%%7D&limit=1000&offset=%i&nsfw=1", malAPIversion,username, page];
     }
     
-    [manager GET:URL parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:URL parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         [listArray addObjectsFromArray:responseObject[@"data"]];
         if (responseObject[@"paging"][@"next"]) {
             int npage = page + 1000;
@@ -201,7 +205,7 @@ NSString *const malAPIversion = @"v3";
 
 - (void)retrieveAiringSchedule:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler{
     /*
-    [manager GET:[NSString stringWithFormat:@"%@/2.1/anime/schedule",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"]] parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:[NSString stringWithFormat:@"%@/2.1/anime/schedule",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"]] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -232,7 +236,7 @@ NSString *const malAPIversion = @"v3";
     }
     NSString *searchURL = type == MALAnime ? [NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime",malAPIversion] : [NSString stringWithFormat:@"https://api.myanimelist.net/v2/manga"];
     NSDictionary *parameters = @{@"q" : searchterm, @"limit" : @(25), @"offset" : @(currentpage), @"fields" : type == MALAnime ? @"alternative_titles,num_episodes,status,media_type,nsfw,rating,average_episode_duration" : @"alternative_titles,num_chapters,num_volumes,status,media_type,nsfw"};
-    [manager GET:searchURL parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager GET:searchURL parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         bool hasNextPage = false;
         int nextOffset = currentpage;
         NSData *data = [NSJSONSerialization dataWithJSONObject:responseObject options:NSJSONWritingPrettyPrinted error:nil];
@@ -279,7 +283,7 @@ NSString *const malAPIversion = @"v3";
     else {
         return;
     }
-    [manager GET:URL parameters:d progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:URL parameters:d headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -318,7 +322,7 @@ NSString *const malAPIversion = @"v3";
     else {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"%@",_clientid] forHTTPHeaderField:@"X-MAL-CLIENT-ID"];
     }
-    [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:url parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(type == MALAnime ? [AtarashiiAPIListFormatMAL MALAnimeInfotoAtarashii:responseObject] : [AtarashiiAPIListFormatMAL MALMangaInfotoAtarashii:responseObject]);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -339,7 +343,7 @@ NSString *const malAPIversion = @"v3";
         return;
     }
     [manager.requestSerializer clearAuthorizationHeader];
-    [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:url parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         [self.tmparray addObjectsFromArray:[AtarashiiAPIListFormatMAL MALReviewstoAtarashii:responseObject[@"reviews"] withType:type]];
         if (((NSArray *)responseObject[@"reviews"]).count > 0) {
             int tmppage = page+1;
@@ -356,7 +360,7 @@ NSString *const malAPIversion = @"v3";
 }
 
 /*- (void)retriveUpdateHistory:(NSString *)username completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler{
-    [manager GET:[NSString stringWithFormat:@"%@/2.1/history/%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"], username] parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:[NSString stringWithFormat:@"%@/2.1/history/%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"], username] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler([self processHistory:responseObject]);
         
     } failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -387,7 +391,7 @@ NSString *const malAPIversion = @"v3";
         errorHandler(nil);
         return;
     }
-    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime/%i/my_list_status", malAPIversion, titleid] parameters:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_watched_episodes"/*@"num_episodes_watched"*/:@(episode)} success:^(NSURLSessionTask *task, id responseObject) {
+    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime/%i/my_list_status", malAPIversion, titleid] parameters:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_watched_episodes"/*@"num_episodes_watched"*/:@(episode)} headers:@{} success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -417,7 +421,7 @@ NSString *const malAPIversion = @"v3";
         errorHandler(nil);
         return;
     }
-    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/manga/%i/my_list_status",malAPIversion, titleid] parameters:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_chapters_read":@(chapter), @"num_volumes_read":@(volume)} success:^(NSURLSessionTask *task, id responseObject) {
+    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/manga/%i/my_list_status",malAPIversion, titleid] parameters:@{@"status":[[status stringByReplacingOccurrencesOfString:@" " withString:@"_"] stringByReplacingOccurrencesOfString:@"-" withString:@"_"], @"score":@(score), @"num_chapters_read":@(chapter), @"num_volumes_read":@(volume)}  headers:@{} success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -451,7 +455,7 @@ NSString *const malAPIversion = @"v3";
     if (efields) {
         [parameters addEntriesFromDictionary:efields];
     }
-    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime/%i/my_list_status", malAPIversion, titleid] parameters:parameters success:^(NSURLSessionTask *task, id responseObject) {
+    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/anime/%i/my_list_status", malAPIversion, titleid] parameters:parameters  headers:@{} success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -488,7 +492,7 @@ NSString *const malAPIversion = @"v3";
     if (efields) {
         [parameters addEntriesFromDictionary:efields];
     }
-    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/manga/%i/my_list_status", malAPIversion, titleid] parameters:parameters success:^(NSURLSessionTask *task, id responseObject) {
+    [manager PATCH:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/manga/%i/my_list_status", malAPIversion, titleid] parameters:parameters  headers:@{} success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -530,7 +534,7 @@ NSString *const malAPIversion = @"v3";
     else {
         return;
     }
-    [manager DELETE:deleteURL parameters:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager DELETE:deleteURL parameters:nil headers:@{} success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -546,7 +550,7 @@ NSString *const malAPIversion = @"v3";
 - (void)retrievemessagelist:(int)page completionHandler:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     if ([self verifyAccount]) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Basic %@",[Keychain getBase64]] forHTTPHeaderField:@"Authorization"];
-        [manager GET:[NSString stringWithFormat:@"%@/2.1/messages",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"]] parameters:@{@"page":@(page)} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+        [manager GET:[NSString stringWithFormat:@"%@/2.1/messages",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"]] parameters:@{@"page":@(page)} headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
             completionHandler(responseObject);
         } failure:^(NSURLSessionTask *operation, NSError *error) {
             errorHandler(error);
@@ -560,7 +564,7 @@ NSString *const malAPIversion = @"v3";
 - (void)retrievemessage:(int)messageid completionHandler:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     if ([self verifyAccount]) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Basic %@",[Keychain getBase64]] forHTTPHeaderField:@"Authorization"];
-        [manager GET:[NSString stringWithFormat:@"%@/2.1/messages/%i",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"], messageid] parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+        [manager GET:[NSString stringWithFormat:@"%@/2.1/messages/%i",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"], messageid] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
             completionHandler(responseObject);
         } failure:^(NSURLSessionTask *operation, NSError *error) {
             errorHandler(error);
@@ -581,7 +585,7 @@ NSString *const malAPIversion = @"v3";
             pram = @{@"username":username, @"subject":subject, @"message":message, @"id":@(threadid)};
         }
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Basic %@",[Keychain getBase64]] forHTTPHeaderField:@"Authorization"];
-        [manager POST:[NSString stringWithFormat:@"%@/2.1/messages",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"]] parameters:pram progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+        [manager POST:[NSString stringWithFormat:@"%@/2.1/messages",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"]] parameters:pram headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
             completionHandler(responseObject);
         } failure:^(NSURLSessionTask *operation, NSError *error) {
             errorHandler(error);
@@ -610,7 +614,7 @@ NSString *const malAPIversion = @"v3";
 
 - (void)retrieveStaff:(int)titleid completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     /*NSString *url = [NSString stringWithFormat:@"%@/2.1/anime/cast/%i",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"],titleid];
-    [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:url parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -623,7 +627,7 @@ NSString *const malAPIversion = @"v3";
 
 - (void)retrievePersonDetails:(int)personid completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler{
     /*NSString *url = [NSString stringWithFormat:@"%@/2.1/people/%i",[[NSUserDefaults standardUserDefaults] valueForKey:@"malapiurl"],personid];
-    [manager GET:url parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:url parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -657,7 +661,7 @@ NSString *const malAPIversion = @"v3";
     }
     [manager.requestSerializer clearAuthorizationHeader];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
-    [manager GET:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/@me?fields=avatar", malAPIversion] parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/@me?fields=avatar", malAPIversion] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(((NSNumber *)responseObject[@"id"]).intValue, responseObject[@"name"], responseObject[@"picture"] != [NSNull null] && responseObject[@"picture"] ? responseObject[@"picture"] : @"");
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -667,7 +671,7 @@ NSString *const malAPIversion = @"v3";
 - (void)getMALidWithCredential:(AFOAuthCredential *)cred completion:(void (^)(int userid, NSString *username, NSString *avatar)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
-    [manager GET:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/@me?fields=avatar",malAPIversion] parameters:nil progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://api.myanimelist.net/%@/users/@me?fields=avatar",malAPIversion] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         completionHandler(((NSNumber *)responseObject[@"id"]).intValue, responseObject[@"name"], responseObject[@"picture"] != [NSNull null] && responseObject[@"picture"] ? responseObject[@"picture"] : @"");
     } failure:^(NSURLSessionTask *operation, NSError *error) {
         errorHandler(error);
@@ -696,7 +700,7 @@ NSString *const malAPIversion = @"v3";
     }
     NSError *error;
     
-    id responseObject = [smanager syncGET:[NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/@me?fields=avatar"] parameters:nil task:NULL error:&error];
+    id responseObject = [smanager syncGET:[NSString stringWithFormat:@"https://api.myanimelist.net/v2/users/@me?fields=avatar"] parameters:nil headers:@{} task:NULL error:&error];
     if (!error) {
         NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
         [defaults setValue:responseObject[@"id"] forKey:@"mal-userid"];

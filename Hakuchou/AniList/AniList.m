@@ -94,7 +94,7 @@
             return;
     }
     
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         bool nextpage = false;
         switch (type) {
             case AniListAnime:
@@ -139,7 +139,7 @@
         searchquery = [searchquery stringByReplacingOccurrencesOfString:@"media(search: $query, type: $type)" withString:[self generateSearchOptions:options]];
     }
     NSDictionary *parameters = @{@"query" : searchquery, @"variables" : @{@"query" : searchterm, @"type" : type == AniListAnime ? @"ANIME" : @"MANGA", @"page" : @(currentpage)}};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         int nextpage = ((NSNumber *)responseObject[@"data"][@"Page"][@"pageInfo"][@"currentPage"]).intValue + 1;
         switch (type) {
             case AniListAnime:
@@ -159,7 +159,7 @@
 - (void)searchPeople:(NSString *)searchterm withType:(int)type completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
     NSDictionary *parameters = @{@"query" : type == AniListCharacter ? kAnilistCharacterSearch : kAniListStaffSearch, @"variables" : @{@"query" : searchterm}};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler([AtarashiiAPIListFormatAniList normalizePersonSearchData:responseObject]);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -170,7 +170,7 @@
 - (void)retrieveTitleInfo:(int)titleid withType:(int)type completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
     NSDictionary *parameters = @{@"query" : kAnilistTitleIdInformation, @"variables" : @{@"id" : @(titleid), @"type" : type == AniListAnime ? @"ANIME" : @"MANGA"}};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         switch (type) {
             case AniListAnime:
                 completionHandler([AtarashiiAPIListFormatAniList AniListAnimeInfotoAtarashii:responseObject]);
@@ -196,7 +196,7 @@
     [manager.requestSerializer clearAuthorizationHeader];
     NSDictionary *parameters;
     parameters = @{@"query" : kAnilistreviewbytitleid,@"variables" : @{@"id" : @(titleid), @"page" : @(offset)}};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"] && responseObject[@"data"] != [NSNull null]) {
             [dataarray addObjectsFromArray:responseObject[@"data"][@"Page"][@"reviews"]];
         }
@@ -216,7 +216,7 @@
 - (void)retrieveStreamLinksForId:(int)animetitleid completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
     NSDictionary *parameters = @{@"query" : kAniListStreamingLinks, @"variables" : @{@"id" : @(animetitleid)}};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"]) {
             NSDictionary *finalDict = [self convertStreamingLinks:responseObject];
             if ([(NSArray *)finalDict[@"links"] count] > 0) {
@@ -272,7 +272,9 @@
 #endif
     [OAuth2Manager setUseHTTPBasicAuthentication:NO];
     [OAuth2Manager authenticateUsingOAuthWithURLString:@"api/v2/oauth/token"
-                                            parameters:@{@"grant_type":@"refresh_token", @"refresh_token":cred.refreshToken, @"redirect_uri": redirecturi} success:^(AFOAuthCredential *credential) {
+                                            parameters:@{@"grant_type":@"refresh_token", @"refresh_token":cred.refreshToken, @"redirect_uri": redirecturi}
+                                               headers:@{}
+                                               success:^(AFOAuthCredential *credential) {
                                                 NSLog(@"Token refreshed");
                                                 [credmanager saveCredentialForService:3 withCredential:credential];
                                                 completion(true);
@@ -293,7 +295,7 @@
 #else
     redirecturi = @"shukofukurouauth://anilistauth/";
 #endif
-    [OAuth2Manager authenticateUsingOAuthWithURLString:@"api/v2/oauth/token" parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": redirecturi} success:^(AFOAuthCredential *credential) {
+    [OAuth2Manager authenticateUsingOAuthWithURLString:@"api/v2/oauth/token" parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": redirecturi} headers:@{} success:^(AFOAuthCredential *credential) {
         [[OAuthCredManager sharedInstance] saveCredentialForService:3 withCredential:credential];
         [self getOwnAnilistid:^(int userid, NSString *username, NSString *scoreformat, NSString *avatar) {
             [[NSUserDefaults standardUserDefaults] setValue:username forKey:@"anilist-username"];
@@ -321,7 +323,7 @@
 #else
     redirecturi = @"shukofukurouauth://anilistauth/";
 #endif
-    [OAuth2Manager authenticateUsingOAuthWithURLString:@"api/v2/oauth/token" parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": redirecturi} success:^(AFOAuthCredential *credential) {
+    [OAuth2Manager authenticateUsingOAuthWithURLString:@"api/v2/oauth/token" parameters:@{@"grant_type":@"authorization_code", @"code" : pin, @"redirect_uri": redirecturi} headers:@{} success:^(AFOAuthCredential *credential) {
         [self getOwnAnilistidWithCredential:credential completion:^(int userid, NSString *username, NSString *scoreformat, NSString *avatar) {
             if ([NSUserDefaults.standardUserDefaults integerForKey:@"anilist-userid"] == userid) {
                 [[OAuthCredManager sharedInstance] saveCredentialForService:3 withCredential:credential];
@@ -357,7 +359,7 @@
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
-    [manager POST:@"https://graphql.anilist.co" parameters:@{@"query":kAnilistUserProfileByUsername, @"variables" : @{@"name" : username}} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:@{@"query":kAnilistUserProfileByUsername, @"variables" : @{@"name" : username}} headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"][@"User"] != [NSNull null]) {
             completionHandler([AtarashiiAPIListFormatAniList AniListUserProfiletoAtarashii:responseObject[@"data"][@"User"]]);
         }
@@ -391,7 +393,7 @@
     variables[@"mediaid"] = @(titleid);
     NSDictionary *parameters = @{@"query"
                                  : kAnilistAddAnimeListEntry, @"variables" : variables};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -418,7 +420,7 @@
     variables[@"mediaid"] = @(titleid);
     NSDictionary *parameters = @{@"query"
                                  : kAnilistAddMangaListEntry, @"variables" : variables};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -452,7 +454,7 @@
     else {
         parameters = @{@"query" : kAnilistUpdateAnimeListEntryAdvanced , @"variables" : variables};
     }
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -486,7 +488,7 @@
     else {
         parameters = @{@"query" : kAnilistUpdateMangaListEntryAdvanced, @"variables" : variables};
     }
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -512,7 +514,7 @@
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     NSDictionary *parameters = @{@"query" : kAnilistDeleteListEntry, @"variables" : @{@"id" : @(titleid) }};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"][@"DeleteMediaListEntry"] != [NSNull null]) {
             completionHandler(responseObject);
         }
@@ -543,7 +545,7 @@
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     NSDictionary *parameters = @{@"query" : kAnilistModifyCustomLists, @"variables" : @{@"id" : @(titleid), @"custom_lists" : customlists }};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(nil);
@@ -563,7 +565,7 @@
     [manager.requestSerializer clearAuthorizationHeader];
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     NSDictionary *parameters = @{@"query" : kAnilistcharacterslist , @"variables" : @{@"id" : @(titleid), @"page" : @(pageoffset), @"type" : type}};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"][@"Media"] != [NSNull null]) {
             [characters addObjectsFromArray:responseObject[@"data"][@"Media"][@"characters"][@"edges"]];
             if (((NSNumber *)responseObject[@"data"][@"Media"][@"characters"][@"pageInfo"][@"hasNextPage"]).boolValue) {
@@ -587,7 +589,7 @@
     [manager.requestSerializer clearAuthorizationHeader];
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     NSDictionary *parameters = @{@"query" : kAniliststafflist , @"variables" : @{@"id" : @(titleid), @"page" : @(pageoffset), @"type" : type}};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"][@"Media"] != [NSNull null]) {
             [staffarray addObjectsFromArray:responseObject[@"data"][@"Media"][@"staff"][@"staff"]];
             if (((NSNumber *)responseObject[@"data"][@"Media"][@"staff"][@"pageInfo"][@"hasNextPage"]).boolValue) {
@@ -610,7 +612,7 @@
     [manager.requestSerializer clearAuthorizationHeader];
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     NSDictionary *parameters = @{@"query" : kAniListstaffpage , @"variables" : @{@"id" : @(personid)}};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler([AtarashiiAPIListFormatAniList AniListPersontoAtarashii:responseObject[@"data"][@"Staff"]]);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -621,7 +623,7 @@
     [manager.requestSerializer clearAuthorizationHeader];
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     NSDictionary *parameters = @{@"query" : kAniListcharacterpage , @"variables" : @{@"id" : @(characterid)}};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler([AtarashiiAPIListFormatAniList AniListCharactertoAtarashii:responseObject[@"data"][@"Character"]]);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -655,7 +657,7 @@
     }
     NSDictionary *parameters = @{@"query" : kAnilistRetrieveListTitleIdsOnly, @"variables" : @{@"id":@(userid), @"page" : @(page), @"type" : type == AniListAnime ? @"ANIME" : @"MANGA"}};
     
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         bool nextpage = false;
         [tmparray addObjectsFromArray:responseObject[@"data"][@"List"][@"mediaList"]];
         nextpage = ((NSNumber *)responseObject[@"data"][@"List"][@"pageInfo"][@"hasNextPage"]).boolValue;
@@ -706,7 +708,7 @@
     }
     [manager.requestSerializer clearAuthorizationHeader];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
-    [manager POST:@"https://graphql.anilist.co" parameters:@{@"query" : kAnilistCurrentUsernametoUserId, @"variables" : @{}} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:@{@"query" : kAnilistCurrentUsernametoUserId, @"variables" : @{}} headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         if (responseObject[@"data"][@"Viewer"] != [NSNull null]) {
             NSDictionary *d = responseObject[@"data"][@"Viewer"];
             completionHandler(((NSNumber *)d[@"id"]).intValue,d[@"name"], d[@"mediaListOptions"][@"scoreFormat"], d[@"avatar"] != [NSNull null] && d[@"avatar"][@"large"] ? d[@"avatar"][@"large"] : @"");
@@ -722,7 +724,7 @@
 - (void)getOwnAnilistidWithCredential:(AFOAuthCredential*)cred completion:(void (^)(int userid, NSString *username, NSString *scoreformat, NSString *avatar)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
-    [manager POST:@"https://graphql.anilist.co" parameters:@{@"query" : kAnilistCurrentUsernametoUserId, @"variables" : @{}} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:@{@"query" : kAnilistCurrentUsernametoUserId, @"variables" : @{}} headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         if (responseObject[@"data"][@"Viewer"] != [NSNull null]) {
             NSDictionary *d = responseObject[@"data"][@"Viewer"];
             completionHandler(((NSNumber *)d[@"id"]).intValue,d[@"name"], d[@"mediaListOptions"][@"scoreFormat"], d[@"avatar"] != [NSNull null] && d[@"avatar"][@"large"] ? d[@"avatar"][@"large"] : @"");
@@ -756,7 +758,7 @@
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
     NSDictionary *parameters = @{@"query" : kAnilistUsernametoUserId, @"variables" : @{@"name" : username ? username : @""}};
-    [manager POST:@"https://graphql.anilist.co" parameters:parameters progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         if (responseObject[@"data"][@"User"] != [NSNull null]) {
             completionHandler(((NSNumber *)responseObject[@"data"][@"User"][@"id"]).intValue);
         }
@@ -824,7 +826,7 @@
     }
     [manager.requestSerializer clearAuthorizationHeader];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
-    [manager POST:@"https://graphql.anilist.co" parameters:@{@"query" : kAnilistCurrentUsernametoUserId, @"variables" : @{}} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://graphql.anilist.co" parameters:@{@"query" : kAnilistCurrentUsernametoUserId, @"variables" : @{}} headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"][@"Viewer"] != [NSNull null]) {
             NSDictionary *d = responseObject[@"data"][@"Viewer"];
             completionHandler(d[@"mediaListOptions"][@"scoreFormat"]);
@@ -888,7 +890,7 @@
     }
     NSError *error;
     
-    id responseObject = [smanager syncPOST:@"https://graphql.anilist.co" parameters:@{@"query" : kAnilistCurrentUsernametoUserId, @"variables" : @{}} task:NULL error:&error];
+    id responseObject = [smanager syncPOST:@"https://graphql.anilist.co" parameters:@{@"query" : kAnilistCurrentUsernametoUserId, @"variables" : @{}} headers:@{} task:NULL error:&error];
     if (!error) {
         if (responseObject[@"data"][@"Viewer"] != [NSNull null]) {
             NSDictionary *d = responseObject[@"data"][@"Viewer"];
