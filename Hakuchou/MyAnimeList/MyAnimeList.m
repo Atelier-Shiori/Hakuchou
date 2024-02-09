@@ -27,7 +27,7 @@
 @implementation MyAnimeList
 @synthesize manager;
 
-NSString *const kJikanAPIURL = @"https://api.jikan.moe/v3";
+NSString *const kJikanAPIURL = @"https://api.jikan.moe/v4";
 NSString *const malAPIversion = @"v3";
 
 - (instancetype)initWithClientId:(NSString *)clientid withRedirectURL:(NSString *)redirectURL {

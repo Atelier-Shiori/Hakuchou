@@ -290,7 +290,7 @@
                                     clientID:_clientid
                                       secret:_clientsecret];
     NSString *redirecturi;
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
     redirecturi = @"hiyokoauth://anilistauth/";
 #else
     redirecturi = @"shukofukurouauth://anilistauth/";
@@ -318,7 +318,7 @@
                                     clientID:_clientid
                                       secret:_clientsecret];
     NSString *redirecturi;
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS || TARGET_OS_VISION
     redirecturi = @"hiyokoauth://anilistauth/";
 #else
     redirecturi = @"shukofukurouauth://anilistauth/";
