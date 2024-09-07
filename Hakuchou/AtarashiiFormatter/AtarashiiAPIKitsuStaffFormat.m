@@ -7,8 +7,8 @@
 //
 //
 //
-//https://kitsu.io/api/edge/anime-staff?anime_id=7203&include=person&fields[people]=name,malId
-//https://kitsu.io/api/edge/anime-characters?anime_id=7203&include=character,character.castings,character.castings.person&fields[castings]=voiceActor,featured,person&fields[people]=name,image,malId
+//https://kitsu.app/api/edge/anime-staff?anime_id=7203&include=person&fields[people]=name,malId
+//https://kitsu.app/api/edge/anime-characters?anime_id=7203&include=character,character.castings,character.castings.person&fields[castings]=voiceActor,featured,person&fields[people]=name,image,malId
 
 #import "AtarashiiAPIKitsuStaffFormat.h"
 

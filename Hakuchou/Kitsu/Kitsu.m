@@ -108,7 +108,7 @@
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
-    [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/library-entries?filter[userId]=%i&filter[kind]=%@&include=%@&fields[%@]=%@&page[limit]=500&page[offset]=%i",userID, listtype, listtype, listtype, includes, pagenum] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://kitsu.app/api/edge/library-entries?filter[userId]=%i&filter[kind]=%@&include=%@&fields[%@]=%@&page[limit]=500&page[offset]=%i",userID, listtype, listtype, listtype, includes, pagenum] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         if (responseObject[@"data"]){
             [tmplist addObjectsFromArray:responseObject[@"data"]];
             if (responseObject[@"included"]){
@@ -170,7 +170,7 @@
         }
     }
 #endif
-    NSString *searchurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/%@/?filter[text]=%@&page[limit]=20&page[offset]=%i", type == KitsuAnime ? @"anime" : @"manga", [HUtility urlEncodeString:searchterm], offset];
+    NSString *searchurl = [NSString stringWithFormat:@"https://kitsu.app/api/edge/%@/?filter[text]=%@&page[limit]=20&page[offset]=%i", type == KitsuAnime ? @"anime" : @"manga", [HUtility urlEncodeString:searchterm], offset];
     if (options) {
         NSMutableString *optionsstr = [NSMutableString new];
         for (NSString *optionkey in options.allKeys) {
@@ -226,7 +226,7 @@
         }
     }
 #endif
-    [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/%@/%i?include=categories,mappings%@", type == KitsuAnime ? @"anime" : @"manga", titleid, type == KitsuAnime ? @",animeProductions,animeProductions.producer,mediaRelationships,mediaRelationships.destination" : @",mediaRelationships,mediaRelationships.destination"] parameters:nil headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://kitsu.app/api/edge/%@/%i?include=categories,mappings%@", type == KitsuAnime ? @"anime" : @"manga", titleid, type == KitsuAnime ? @",animeProductions,animeProductions.producer,mediaRelationships,mediaRelationships.destination" : @",mediaRelationships,mediaRelationships.destination"] parameters:nil headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         switch (type) {
             case KitsuAnime:
                 completionHandler([AtarashiiAPIListFormatKitsu KitsuAnimeInfotoAtarashii:responseObject]);
@@ -274,10 +274,10 @@
     NSString *reviewurl = @"";
     switch (type) {
         case KitsuAnime:
-            reviewurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/media-reactions/?filter[animeId]=%i&include=anime,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[anime]=episodeCount&page[limit]=20&page[offset]=%i", titleid,offset];
+            reviewurl = [NSString stringWithFormat:@"https://kitsu.app/api/edge/media-reactions/?filter[animeId]=%i&include=anime,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[anime]=episodeCount&page[limit]=20&page[offset]=%i", titleid,offset];
             break;
         case KitsuManga:
-            reviewurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/media-reactions/?filter[mangaId]=%i&include=manga,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[manga]=chapterCount&page[limit]=20&page[offset]=%i", titleid, offset];
+            reviewurl = [NSString stringWithFormat:@"https://kitsu.app/api/edge/media-reactions/?filter[mangaId]=%i&include=manga,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[manga]=chapterCount&page[limit]=20&page[offset]=%i", titleid, offset];
             break;
         default:
             return;
@@ -324,10 +324,10 @@
     NSString *reviewurl = @"";
     switch (type) {
         case KitsuAnime:
-        reviewurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/media-reactions/?filter[animeId]=%i&include=anime,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&sort=-upVotesCount&fields[anime]=episodeCount&page[limit]=20&page[offset]=%i", titleid,offset];
+        reviewurl = [NSString stringWithFormat:@"https://kitsu.app/api/edge/media-reactions/?filter[animeId]=%i&include=anime,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&sort=-upVotesCount&fields[anime]=episodeCount&page[limit]=20&page[offset]=%i", titleid,offset];
             break;
         case KitsuManga:
-            reviewurl = [NSString stringWithFormat:@"https://kitsu.io/api/edge/media-reactions/?filter[mangaId]=%i&include=manga,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[manga]=chapterCount&sort=-upVotesCount&page[limit]=20&page[offset]=%i", titleid, offset];
+            reviewurl = [NSString stringWithFormat:@"https://kitsu.app/api/edge/media-reactions/?filter[mangaId]=%i&include=manga,libraryEntry,user&fields[libraryEntries]=progress,status,ratingTwenty&fields[users]=name,avatar,slug&fields[manga]=chapterCount&sort=-upVotesCount&page[limit]=20&page[offset]=%i", titleid, offset];
             break;
         default:
             return;
@@ -366,7 +366,7 @@
 - (void)refreshToken:(void (^)(bool success))completion {
     OAuthCredManager *credmanager = [OAuthCredManager sharedInstance];
     AFOAuthCredential *cred = [credmanager getFirstAccountForService:2];
-    NSURL *baseURL = [NSURL URLWithString:@"https://kitsu.io/api/"];
+    NSURL *baseURL = [NSURL URLWithString:@"https://kitsu.app/api/"];
     AFOAuth2Manager *OAuth2Manager = [[AFOAuth2Manager alloc] initWithBaseURL:baseURL
                                                                      clientID:_clientid
                                                                        secret:_clientsecret];
@@ -383,7 +383,7 @@
 }
 
 - (void)verifyAccountWithUsername:(NSString *)username password:(NSString *)password completion:(void (^)(id responseObject))completionHandler error:(void (^)(NSError * error)) errorHandler {
-    NSURL *baseURL = [NSURL URLWithString:@"https://kitsu.io/api/"];
+    NSURL *baseURL = [NSURL URLWithString:@"https://kitsu.app/api/"];
     AFOAuth2Manager *OAuth2Manager =
     [[AFOAuth2Manager alloc] initWithBaseURL:baseURL
                                     clientID:_clientid
@@ -424,7 +424,7 @@
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
-    [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/users?filter[slug]=%@&include=profileLinks,userRoles,profileLinks.profileLinkSite",username] parameters:nil headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://kitsu.app/api/edge/users?filter[slug]=%@&include=profileLinks,userRoles,profileLinks.profileLinkSite",username] parameters:nil headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSDictionary *tmpdict = [AtarashiiAPIListFormatKitsu KitsuUsertoAtarashii:responseObject];
         if (tmpdict) {
             completionHandler(tmpdict);
@@ -454,7 +454,7 @@
     [manager.requestSerializer clearAuthorizationHeader];
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
-    [manager POST:@"https://kitsu.io/api/edge/library-entries" parameters:@{@"data" : @{ @"type" : @"libraryEntries", @"relationships" : [self generaterelationshipdictionary:titleid withType:KitsuAnime], @"attributes" :  [self generateAnimeAttributes:episode withStatus:status withScore:score withExtraFields:nil] }} headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://kitsu.app/api/edge/library-entries" parameters:@{@"data" : @{ @"type" : @"libraryEntries", @"relationships" : [self generaterelationshipdictionary:titleid withType:KitsuAnime], @"attributes" :  [self generateAnimeAttributes:episode withStatus:status withScore:score withExtraFields:nil] }} headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -477,7 +477,7 @@
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     
-    [manager POST:@"https://kitsu.io/api/edge/library-entries" parameters:@{@"data" : @{ @"type" : @"libraryEntries", @"relationships" : [self generaterelationshipdictionary:titleid withType:KitsuManga], @"attributes" : [self generateMangaAttributes:chapter withVolumes:volume withStatus:status withScore:score withExtraFields:nil] } } headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager POST:@"https://kitsu.app/api/edge/library-entries" parameters:@{@"data" : @{ @"type" : @"libraryEntries", @"relationships" : [self generaterelationshipdictionary:titleid withType:KitsuManga], @"attributes" : [self generateMangaAttributes:chapter withVolumes:volume withStatus:status withScore:score withExtraFields:nil] } } headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -503,7 +503,7 @@
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     
-    [manager PATCH:[NSString stringWithFormat:@"https://kitsu.io/api/edge/library-entries/%i",titleid] parameters:@{@"data" : @{ @"id" : @(titleid), @"type" : @"libraryEntries", @"attributes" :  [self generateAnimeAttributes:episode withStatus:status withScore:score withExtraFields:efields] }} headers:@{} success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager PATCH:[NSString stringWithFormat:@"https://kitsu.app/api/edge/library-entries/%i",titleid] parameters:@{@"data" : @{ @"id" : @(titleid), @"type" : @"libraryEntries", @"attributes" :  [self generateAnimeAttributes:episode withStatus:status withScore:score withExtraFields:efields] }} headers:@{} success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -528,7 +528,7 @@
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     
-    [manager PATCH:[NSString stringWithFormat:@"https://kitsu.io/api/edge/library-entries/%i",titleid] parameters:@{@"data" : @{ @"id" : @(titleid), @"type" : @"libraryEntries", @"attributes" :  [self generateMangaAttributes:chapter withVolumes:volume withStatus:status withScore:score withExtraFields:efields] }} headers:@{} success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager PATCH:[NSString stringWithFormat:@"https://kitsu.app/api/edge/library-entries/%i",titleid] parameters:@{@"data" : @{ @"id" : @(titleid), @"type" : @"libraryEntries", @"attributes" :  [self generateMangaAttributes:chapter withVolumes:volume withStatus:status withScore:score withExtraFields:efields] }} headers:@{} success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -553,7 +553,7 @@
     [manager.requestSerializer clearAuthorizationHeader];
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
-    [manager DELETE:[NSString stringWithFormat:@"https://kitsu.io/api/edge/library-entries/%i",titleid] parameters:nil headers:@{} success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager DELETE:[NSString stringWithFormat:@"https://kitsu.app/api/edge/library-entries/%i",titleid] parameters:nil headers:@{} success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         completionHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         errorHandler(error);
@@ -582,7 +582,7 @@
     manager.requestSerializer = [SharedHTTPManager jsonrequestserializer];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     NSString *typestr = type == KitsuAnime ? @"anime" : @"manga";
-    [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/library-entries?filter[userId]=%ifilter[kind]=%@&include=%@,%@.mappings&fields[library-entries]=%@&fields[%@]=mappings&fields[mappings]=externalSite,externalId&page[limit]=500&page[offset]=%i",userid,typestr,typestr,typestr,typestr,typestr,page] parameters:@{} headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://kitsu.app/api/edge/library-entries?filter[userId]=%ifilter[kind]=%@&include=%@,%@.mappings&fields[library-entries]=%@&fields[%@]=mappings&fields[mappings]=externalSite,externalId&page[limit]=500&page[offset]=%i",userid,typestr,typestr,typestr,typestr,typestr,page] parameters:@{} headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"included"]){
             [tmparray addObjectsFromArray:responseObject[@"included"]];
         }
@@ -600,9 +600,9 @@
 #pragma mark Characters
 - (void)retrieveStaff:(int)titleid completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     /*[manager.requestSerializer clearAuthorizationHeader];
-    [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/anime-characters?filter[animeId]=%i&include=character,character.castings,character.castings.person&fields[castings]=voiceActor,featured,person,language&fields[people]=name,image,malId",titleid] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://kitsu.app/api/edge/anime-characters?filter[animeId]=%i&include=character,character.castings,character.castings.person&fields[castings]=voiceActor,featured,person,language&fields[people]=name,image,malId",titleid] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         __block NSDictionary *characterData = responseObject;
-        [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/anime-staff?filter[animeId]=%i&include=person&fields[people]=name,malId,image",titleid] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+        [manager GET:[NSString stringWithFormat:@"https://kitsu.app/api/edge/anime-staff?filter[animeId]=%i&include=person&fields[people]=name,malId,image",titleid] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
             AtarashiiAPIKitsuStaffFormat *sformat = [[AtarashiiAPIKitsuStaffFormat alloc] initwithDataDictionary:characterData withStaffData:responseObject];
             completionHandler([sformat generateStaffList]);
         } failure:^(NSURLSessionTask *operation, NSError *error) {
@@ -626,7 +626,7 @@
 
 - (void)retrieveEpisodesList:(int)titleid withDataArray:(NSMutableArray *)darray withPageOffet:(int)offset completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
-    [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/anime/%i/episodes?fields[episodes]=titles,canonicalTitle,seasonNumber,number,thumbnail,airdate&page[limit]=20&page[offset]=%i", titleid, offset] parameters:nil headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://kitsu.app/api/edge/anime/%i/episodes?fields[episodes]=titles,canonicalTitle,seasonNumber,number,thumbnail,airdate&page[limit]=20&page[offset]=%i", titleid, offset] parameters:nil headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"] && responseObject[@"data"] != [NSNull null]) {
             [darray addObjectsFromArray:responseObject[@"data"]];
         }
@@ -644,7 +644,7 @@
 
 - (void)retrieveEpisodeDetails:(int)episodeId completion:(void (^)(id responseObject)) completionHandler error:(void (^)(NSError * error)) errorHandler {
     [manager.requestSerializer clearAuthorizationHeader];
-    [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/episodes/%i", episodeId] parameters:nil headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://kitsu.app/api/edge/episodes/%i", episodeId] parameters:nil headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (responseObject[@"data"] && responseObject[@"data"] != [NSNull null]) {
             completionHandler([AtarashiiAPIListFormatKitsu KitsuEpisodeDetailtoAtarashii:responseObject]);
         }
@@ -687,7 +687,7 @@
     }
     [manager.requestSerializer clearAuthorizationHeader];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
-    [manager GET:@"https://kitsu.io/api/edge/users?filter[self]=true" parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:@"https://kitsu.app/api/edge/users?filter[self]=true" parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         if (((NSArray *)responseObject[@"data"]).count > 0) {
             if (responseObject[@"data"][0]) {
                 completionHandler(((NSNumber *)responseObject[@"data"][0][@"id"]).intValue);
@@ -720,7 +720,7 @@
     if (cred) {
         [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
-    [manager GET:[NSString stringWithFormat:@"https://kitsu.io/api/edge/users?filter[slug]=%@", username] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
+    [manager GET:[NSString stringWithFormat:@"https://kitsu.app/api/edge/users?filter[slug]=%@", username] parameters:nil headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         if (((NSArray *)responseObject[@"data"]).count > 0) {
             completionHandler(((NSNumber *)responseObject[@"data"][0][@"id"]).intValue);
         }
@@ -767,7 +767,7 @@
     }
     [manager.requestSerializer clearAuthorizationHeader];
     [manager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
-    [manager GET:@"https://kitsu.io/api/edge/users?filter[self]=true&fields[users]=ratingSystem" parameters:nil headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [manager GET:@"https://kitsu.app/api/edge/users?filter[self]=true&fields[users]=ratingSystem" parameters:nil headers:@{} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (((NSArray *)responseObject[@"data"]).count > 0) {
             NSDictionary *d = [NSArray arrayWithArray:responseObject[@"data"]][0];
             NSDictionary *ratings = @{@"simple" : @(ratingSimple), @"standard" : @(ratingStandard), @"advanced" : @(ratingAdvanced)};
@@ -825,7 +825,7 @@
         [smanager.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", cred.accessToken] forHTTPHeaderField:@"Authorization"];
     }
     NSError *error;
-    id responseObject = [smanager syncGET:@"https://kitsu.io/api/edge/users?filter[self]=true&fields[users]=name,slug,avatar,ratingSystem" parameters:@{} headers:@{} task:NULL error:&error];
+    id responseObject = [smanager syncGET:@"https://kitsu.app/api/edge/users?filter[self]=true&fields[users]=name,slug,avatar,ratingSystem" parameters:@{} headers:@{} task:NULL error:&error];
     if (!error) {
         if (((NSArray *)responseObject[@"data"]).count > 0) {
             NSDictionary *d = [NSArray arrayWithArray:responseObject[@"data"]][0];
