@@ -96,6 +96,13 @@
     
     [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         bool nextpage = false;
+        NSHTTPURLResponse *r = (NSHTTPURLResponse *)task.response;
+        NSDictionary *responseHeaders = r.allHeaderFields;
+        NSInteger ratelimit = ((NSString *)responseHeaders[@"x-ratelimit-remaining"]).integerValue;
+        if (ratelimit <= 1) {
+            // Rate Limit Exceeded, wait 1 minute
+            sleep(60);
+        }
         switch (type) {
             case AniListAnime:
                 [tmparray addObjectsFromArray:responseObject[@"data"][@"AnimeList"][@"mediaList"]];
@@ -111,7 +118,6 @@
         }
         if (nextpage) {
             int newpagenum = page+1;
-            sleep(5);
             [self retrievelist:userid withArray:tmparray withType:type page:newpagenum completion:completionHandler error:errorHandler];
             return;
         }
@@ -660,11 +666,17 @@
     
     [manager POST:@"https://graphql.anilist.co" parameters:parameters headers:@{} progress:nil success:^(NSURLSessionTask *task, id responseObject) {
         bool nextpage = false;
+        NSHTTPURLResponse *r = (NSHTTPURLResponse *)task.response;
+        NSDictionary *responseHeaders = r.allHeaderFields;
+        NSInteger ratelimit = ((NSString *)responseHeaders[@"x-ratelimit-remaining"]).integerValue;
+        if (ratelimit <= 1) {
+            // Rate Limit Exceeded, wait 1 minute
+            sleep(60);
+        }
         [tmparray addObjectsFromArray:responseObject[@"data"][@"List"][@"mediaList"]];
         nextpage = ((NSNumber *)responseObject[@"data"][@"List"][@"pageInfo"][@"hasNextPage"]).boolValue;
         if (nextpage) {
             int newpagenum = page+1;
-            sleep(5);
             [self retrieveTitleIds:userid withArray:tmparray withType:type page:newpagenum completion:completionHandler error:errorHandler];
             return;
         }
