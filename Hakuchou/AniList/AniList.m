@@ -111,6 +111,7 @@
         }
         if (nextpage) {
             int newpagenum = page+1;
+            sleep(5);
             [self retrievelist:userid withArray:tmparray withType:type page:newpagenum completion:completionHandler error:errorHandler];
             return;
         }
@@ -663,6 +664,7 @@
         nextpage = ((NSNumber *)responseObject[@"data"][@"List"][@"pageInfo"][@"hasNextPage"]).boolValue;
         if (nextpage) {
             int newpagenum = page+1;
+            sleep(5);
             [self retrieveTitleIds:userid withArray:tmparray withType:type page:newpagenum completion:completionHandler error:errorHandler];
             return;
         }
